@@ -58,7 +58,7 @@ public class JtePsiJavaContent extends ASTWrapperPsiElement implements PsiLangua
 
             @Override
             public boolean isOneLine() {
-                return true;
+                return false;
             }
         };
     }

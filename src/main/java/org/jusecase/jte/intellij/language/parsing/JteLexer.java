@@ -38,6 +38,7 @@ public class JteLexer extends LexerBase {
                 new OutputTokenParser(this),
                 new IfTokenParser(this),
                 new IfConditionTokenParser(this),
+                new ElseTokenParser(this),
                 new EndIfTokenParser(),
                 new WhitespaceParser(),
         };

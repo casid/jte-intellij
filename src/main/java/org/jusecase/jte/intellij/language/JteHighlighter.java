@@ -24,6 +24,7 @@ public class JteHighlighter extends SyntaxHighlighterBase {
         MAPPING.put(JteTokenTypes.IMPORT, KEYWORD);
         MAPPING.put(JteTokenTypes.PARAM, KEYWORD);
         MAPPING.put(JteTokenTypes.IF, KEYWORD);
+        MAPPING.put(JteTokenTypes.ELSE, KEYWORD);
         MAPPING.put(JteTokenTypes.ENDIF, KEYWORD);
 
         MAPPING.put(JteTokenTypes.OUTPUT_BEGIN, KEYWORD);

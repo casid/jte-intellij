@@ -34,8 +34,8 @@ public class JteParsing {
             processOutput();
         } else if (tokenType == JteTokenTypes.IF) {
             processIf();
-        } else if (tokenType == JteTokenTypes.ENDIF) {
-            processEndIf();
+        } else if (tokenType == JteTokenTypes.ELSE) {
+            processElse();
         } else {
             builder.advanceLexer();
         }
@@ -122,14 +122,20 @@ public class JteParsing {
         do {
             processBlock();
         } while (builder.getTokenType() != JteTokenTypes.ENDIF && !builder.eof());
-        builder.advanceLexer();
+        processEndIf();
 
         ifMarker.done(JteTokenTypes.IF);
     }
 
-    private void processEndIf() {
-        Marker paramMaker = builder.mark();
+    private void processElse() {
+        Marker marker = builder.mark();
         builder.advanceLexer();
-        paramMaker.done(JteTokenTypes.ENDIF);
+        marker.done(JteTokenTypes.ELSE);
+    }
+
+    private void processEndIf() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(JteTokenTypes.ENDIF);
     }
 }

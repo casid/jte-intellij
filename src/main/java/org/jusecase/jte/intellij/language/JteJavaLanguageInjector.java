@@ -76,8 +76,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     processTemplateBody(conditionSibling, host, registrar);
                 }
             }
+        } else if (child instanceof JtePsiElse) {
+            int startOffsetInHost = getStartOffsetInHost(host, child);
+            registrar.addPlace("\n} else {\n", null, host, new TextRange(startOffsetInHost, startOffsetInHost));
         } else if (child instanceof JtePsiEndIf) {
-            injectJavaPart("}\n", null, registrar, host, child);
+            int startOffsetInHost = getStartOffsetInHost(host, child);
+            registrar.addPlace(null, "}\n", host, new TextRange(startOffsetInHost, startOffsetInHost));
         }
     }
 
