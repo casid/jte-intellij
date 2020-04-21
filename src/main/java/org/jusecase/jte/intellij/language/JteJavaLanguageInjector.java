@@ -15,8 +15,8 @@ import java.util.List;
 public class JteJavaLanguageInjector implements MultiHostInjector {
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
-        if (context instanceof JtePsiJavaCodeElement) {
-            JtePsiJavaCodeElement host = (JtePsiJavaCodeElement)context;
+        if (context instanceof JtePsiJavaContent) {
+            JtePsiJavaContent host = (JtePsiJavaContent)context;
 
             registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
 
@@ -24,12 +24,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
             for (PsiElement child : host.getChildren()) {
                 if (child instanceof JtePsiImport) {
-                    JtePsiJavaImport javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaImport.class);
+                    JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
                         injectJavaPart("import ", ";\n", registrar, host, javaPart);
                     }
                 } else if (child instanceof JtePsiParam) {
-                    JtePsiJavaParam javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaParam.class);
+                    JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
                         if (!hasWrittenClass) {
                             String classPrefix = "class DummyTemplate { public void render(String output, ";
@@ -50,7 +50,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                         }
                     }
                 } else if (child instanceof JtePsiOutput) {
-                    JtePsiJavaOutput javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaOutput.class);
+                    JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     injectJavaPart("output = ", ";\n", registrar, host, javaPart);
                 }
             }
@@ -63,12 +63,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
     }
 
-    private void injectJavaPart(String prefix, String suffix, MultiHostRegistrar registrar, JtePsiJavaCodeElement host, JtePsiElement javaPart) {
+    private void injectJavaPart(String prefix, String suffix, MultiHostRegistrar registrar, JtePsiJavaContent host, JtePsiElement javaPart) {
         int startOffsetInHost = getStartOffsetInHost(host, javaPart);
         registrar.addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost + javaPart.getTextLength()));
     }
 
-    private int getStartOffsetInHost(JtePsiJavaCodeElement host, PsiElement node) {
+    private int getStartOffsetInHost(JtePsiJavaContent host, PsiElement node) {
         int result = node.getStartOffsetInParent();
         while (node != host) {
             node = node.getParent();
@@ -80,6 +80,6 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     @NotNull
     @Override
     public List<? extends Class<? extends PsiElement>> elementsToInjectIn() {
-        return Collections.singletonList(JtePsiJavaCodeElement.class);
+        return Collections.singletonList(JtePsiJavaContent.class);
     }
 }

@@ -11,8 +11,8 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
 import org.jetbrains.annotations.NotNull;
 
-public class JtePsiJavaCodeElement extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
-    public JtePsiJavaCodeElement(@NotNull ASTNode node) {
+public class JtePsiJavaContent extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
+    public JtePsiJavaContent(@NotNull ASTNode node) {
         super(node);
     }
 

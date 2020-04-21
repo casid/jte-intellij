@@ -33,7 +33,7 @@ public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
 
         SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(StdFileTypes.JAVA, project, virtualFile);
         if (outerJavaHighlighter != null) {
-            registerLayer(JteTokenTypes.JAVA_CONTENT, new LayerDescriptor(outerJavaHighlighter, ""));
+            registerLayer(JteTokenTypes.JAVA_INJECTION, new LayerDescriptor(outerJavaHighlighter, ""));
         }
     }
 }

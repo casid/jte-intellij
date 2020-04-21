@@ -10,9 +10,7 @@ public interface JteTokenTypes {
     IElementType HTML_CONTENT = new JteElementType("HTML_CONTENT");
     IElementType JAVA_CONTENT = new JteElementType("JAVA_CONTENT");
 
-    IElementType JAVA_IMPORT = new JteElementType("JAVA_IMPORT");
-    IElementType JAVA_PARAM = new JteElementType("JAVA_PARAM");
-    IElementType JAVA_OUTPUT = new JteElementType("JAVA_OUTPUT");
+    IElementType JAVA_INJECTION = new JteElementType("JAVA_INJECTION");
 
     IElementType LINE_BREAK = new JteElementType("LINE_BREAK");
     IElementType OUTER_ELEMENT_TYPE = new JteElementType("OUTER_ELEMENT_TYPE");

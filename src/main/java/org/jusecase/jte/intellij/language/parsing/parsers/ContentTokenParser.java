@@ -50,7 +50,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (currentState == JteLexer.CONTENT_STATE_HTML) {
             myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
         } else {
-            myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_CONTENT);
+            myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_INJECTION);
         }
         return true;
     }

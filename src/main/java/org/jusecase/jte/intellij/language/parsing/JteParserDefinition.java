@@ -50,19 +50,15 @@ public class JteParserDefinition implements ParserDefinition {
         IElementType elementType = node.getElementType();
 
         if (elementType == JteTokenTypes.JAVA_CONTENT) {
-            return new JtePsiJavaCodeElement(node);
+            return new JtePsiJavaContent(node);
         } else if (elementType == JteTokenTypes.PARAM) {
             return new JtePsiParam(node);
         } else if (elementType == JteTokenTypes.IMPORT) {
             return new JtePsiImport(node);
         } else if (elementType == JteTokenTypes.OUTPUT) {
             return new JtePsiOutput(node);
-        } else if (elementType == JteTokenTypes.JAVA_IMPORT) {
-            return new JtePsiJavaImport(node);
-        } else if (elementType == JteTokenTypes.JAVA_PARAM) {
-            return new JtePsiJavaParam(node);
-        } else if (elementType == JteTokenTypes.JAVA_OUTPUT) {
-            return new JtePsiJavaOutput(node);
+        } else if (elementType == JteTokenTypes.JAVA_INJECTION) {
+            return new JtePsiJavaInjection(node);
         }
 
         return new JtePsiElement(node);
