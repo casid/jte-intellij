@@ -12,9 +12,7 @@ public interface JteTokenTypes {
 
     IElementType JAVA_INJECTION = new JteElementType("JAVA_INJECTION");
 
-    IElementType LINE_BREAK = new JteElementType("LINE_BREAK");
     IElementType OUTER_ELEMENT_TYPE = new JteElementType("OUTER_ELEMENT_TYPE");
-    IElementType OUTER_JAVA_ELEMENT_TYPE = new JteElementType("OUTER_JAVA_ELEMENT_TYPE");
 
     IElementType IMPORT = new JteElementType("IMPORT");
     IElementType PARAM = new JteElementType("PARAM");
