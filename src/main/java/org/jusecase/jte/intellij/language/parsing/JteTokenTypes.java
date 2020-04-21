@@ -25,6 +25,7 @@ public interface JteTokenTypes {
     IElementType CONDITION_END = new JteElementType("CONDITION_END");
     IElementType ENDIF = new JteElementType("ENDIF");
     IElementType ELSE = new JteElementType("ELSE");
+    IElementType ELSEIF = new JteElementType("ELSEIF");
     IElementType FOR = new JteElementType("FOR");
     IElementType ENDFOR = new JteElementType("ENDFOR");
 

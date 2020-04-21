@@ -34,6 +34,8 @@ public class JteParsing {
             processOutput();
         } else if (tokenType == JteTokenTypes.IF) {
             processIf();
+        } else if (tokenType == JteTokenTypes.ELSEIF) {
+            processElseIf();
         } else if (tokenType == JteTokenTypes.ELSE) {
             processElse();
         } else if (tokenType == JteTokenTypes.FOR) {
@@ -131,6 +133,35 @@ public class JteParsing {
         processEndIf();
 
         ifMarker.done(JteTokenTypes.IF);
+    }
+
+    private void processElseIf() {
+        Marker elseIfMarker = builder.mark();
+        builder.advanceLexer();
+
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_BEGIN) {
+            Marker conditionBeginMarker = builder.mark();
+            builder.advanceLexer();
+            conditionBeginMarker.done(JteTokenTypes.CONDITION_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+            Marker javaBeginMarker = builder.mark();
+            builder.advanceLexer();
+            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
+            Marker conditionBeginMarker = builder.mark();
+            builder.advanceLexer();
+            conditionBeginMarker.done(JteTokenTypes.CONDITION_END);
+        }
+
+        elseIfMarker.done(JteTokenTypes.ELSEIF);
     }
 
     private void processElse() {

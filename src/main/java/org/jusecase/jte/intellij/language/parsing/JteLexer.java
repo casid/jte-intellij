@@ -25,6 +25,9 @@ public class JteLexer extends LexerBase {
     public static final int CONTENT_STATE_JAVA_FOR_BEGIN = 10;
     public static final int CONTENT_STATE_JAVA_FOR_CONDITION = 11;
     public static final int CONTENT_STATE_JAVA_FOR_END = 12;
+    public static final int CONTENT_STATE_JAVA_ELSEIF_BEGIN = 13;
+    public static final int CONTENT_STATE_JAVA_ELSEIF_CONDITION = 14;
+    public static final int CONTENT_STATE_JAVA_ELSEIF_END = 15;
 
     private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
@@ -41,6 +44,8 @@ public class JteLexer extends LexerBase {
                 new OutputTokenParser(this),
                 new IfTokenParser(this),
                 new IfConditionTokenParser(this),
+                new ElseIfTokenParser(this),
+                new ElseIfConditionTokenParser(this),
                 new ElseTokenParser(this),
                 new EndIfTokenParser(),
                 new ForTokenParser(this),
@@ -158,6 +163,7 @@ public class JteLexer extends LexerBase {
             case CONTENT_STATE_JAVA_OUTPUT_END:
             case CONTENT_STATE_JAVA_IF_END:
             case CONTENT_STATE_JAVA_FOR_END:
+            case CONTENT_STATE_JAVA_ELSEIF_END:
                 return true;
         }
         return false;

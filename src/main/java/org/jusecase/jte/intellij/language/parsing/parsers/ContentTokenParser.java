@@ -9,12 +9,12 @@ public class ContentTokenParser extends AbstractTokenParser {
             "!{", // TODO
             "@if",
             "@else",
-            "@elseif", // TODO
+            "@elseif",
             "@endif",
             "@for",
             "@endfor",
             "@import",
-            "@param", // TODO skip whitespaces
+            "@param",
             "@tag", // TODO
             "@layout", // TODO
             "@section" // TODO
@@ -63,6 +63,7 @@ public class ContentTokenParser extends AbstractTokenParser {
                 state == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN ||
                 state == JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN ||
                 state == JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN ||
+                state == JteLexer.CONTENT_STATE_JAVA_ELSEIF_BEGIN ||
                 state == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN;
     }
 
@@ -94,9 +95,11 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, '(')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IF_BEGIN:
+                case JteLexer.CONTENT_STATE_JAVA_ELSEIF_BEGIN:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN:
                     return true;
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_ELSEIF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
                     lexer.incrementCurrentCount();
                     return false;
@@ -106,6 +109,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, ')')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_ELSEIF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();

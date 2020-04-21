@@ -76,6 +76,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     processTemplateBody(conditionSibling, host, registrar);
                 }
             }
+        } else if (child instanceof JtePsiElseIf) {
+            JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+            injectJavaPart("} elseif (", ") {\n", registrar, host, javaPart);
         } else if (child instanceof JtePsiElse) {
             int startOffsetInHost = getStartOffsetInHost(host, child);
             registrar.addPlace("\n} else {\n", null, host, new TextRange(startOffsetInHost, startOffsetInHost));
@@ -99,6 +102,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     }
 
     private void injectJavaPart(String prefix, String suffix, MultiHostRegistrar registrar, JtePsiJavaContent host, PsiElement javaPart) {
+        if (javaPart == null) {
+            return;
+        }
+
         int startOffsetInHost = getStartOffsetInHost(host, javaPart);
         registrar.addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost + javaPart.getTextLength()));
     }
