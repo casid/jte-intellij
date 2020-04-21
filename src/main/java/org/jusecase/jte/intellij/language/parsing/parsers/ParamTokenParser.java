@@ -13,7 +13,7 @@ public class ParamTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         if (hasToken(position, "@param", JteTokenTypes.PARAM)) {
-            lexer.setState(JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN);
             return true;
         }
         return false;

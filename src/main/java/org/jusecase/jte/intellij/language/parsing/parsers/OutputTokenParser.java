@@ -12,15 +12,15 @@ public class OutputTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        int state = lexer.getState();
+        int state = lexer.getCurrentState();
 
         if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "${", JteTokenTypes.OUTPUT_BEGIN)) {
-            lexer.setState(JteLexer.CONTENT_STATE_JAVA_OUTPUT_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_OUTPUT_BEGIN);
             return true;
         }
 
         if (state == JteLexer.CONTENT_STATE_JAVA_OUTPUT_BEGIN && hasToken(position, "}", JteTokenTypes.OUTPUT_END)) {
-            lexer.setState(JteLexer.CONTENT_STATE_JAVA_OUTPUT_END);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_OUTPUT_END);
             return true;
         }
 

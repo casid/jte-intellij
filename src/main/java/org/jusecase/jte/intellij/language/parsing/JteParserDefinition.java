@@ -51,14 +51,22 @@ public class JteParserDefinition implements ParserDefinition {
 
         if (elementType == JteTokenTypes.JAVA_CONTENT) {
             return new JtePsiJavaContent(node);
+        } else if (elementType == JteTokenTypes.JAVA_INJECTION) {
+            return new JtePsiJavaInjection(node);
         } else if (elementType == JteTokenTypes.PARAM) {
             return new JtePsiParam(node);
         } else if (elementType == JteTokenTypes.IMPORT) {
             return new JtePsiImport(node);
         } else if (elementType == JteTokenTypes.OUTPUT) {
             return new JtePsiOutput(node);
-        } else if (elementType == JteTokenTypes.JAVA_INJECTION) {
-            return new JtePsiJavaInjection(node);
+        } else if (elementType == JteTokenTypes.CONDITION_BEGIN) {
+            return new JtePsiConditionBegin(node);
+        } else if (elementType == JteTokenTypes.CONDITION_END) {
+            return new JtePsiConditionEnd(node);
+        } else if (elementType == JteTokenTypes.IF) {
+            return new JtePsiIf(node);
+        } else if (elementType == JteTokenTypes.ENDIF) {
+            return new JtePsiEndIf(node);
         }
 
         return new JtePsiElement(node);

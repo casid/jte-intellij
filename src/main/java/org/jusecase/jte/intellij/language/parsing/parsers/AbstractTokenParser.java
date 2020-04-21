@@ -6,6 +6,10 @@ import com.intellij.psi.tree.IElementType;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
 public abstract class AbstractTokenParser extends TokenParser {
+    protected final boolean isBeginOf(int position, char token) {
+        return myBuffer.charAt(position) == token;
+    }
+
     protected final boolean isBeginOf(int position, String token) {
         int endPosition = position + token.length();
         if (endPosition > myEndOffset) {

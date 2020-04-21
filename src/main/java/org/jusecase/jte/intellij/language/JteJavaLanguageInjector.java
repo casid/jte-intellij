@@ -49,9 +49,8 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                             }
                         }
                     }
-                } else if (child instanceof JtePsiOutput) {
-                    JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                    injectJavaPart("output = ", ";\n", registrar, host, javaPart);
+                } else {
+                    processTemplateBody(child, host, registrar);
                 }
             }
 
@@ -63,7 +62,26 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
     }
 
-    private void injectJavaPart(String prefix, String suffix, MultiHostRegistrar registrar, JtePsiJavaContent host, JtePsiElement javaPart) {
+    private void processTemplateBody(PsiElement child, JtePsiJavaContent host, MultiHostRegistrar registrar) {
+        if (child instanceof JtePsiOutput) {
+            JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+            injectJavaPart("output = ", ";\n", registrar, host, javaPart);
+        } else if (child instanceof JtePsiIf) {
+            JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+            injectJavaPart("if (", ") {\n", registrar, host, javaPart);
+
+            JtePsiConditionEnd conditionEnd = PsiTreeUtil.getNextSiblingOfType(javaPart, JtePsiConditionEnd.class);
+            if (conditionEnd != null) {
+                for (PsiElement conditionSibling = conditionEnd.getNextSibling(); conditionSibling != null; conditionSibling = conditionSibling.getNextSibling()) {
+                    processTemplateBody(conditionSibling, host, registrar);
+                }
+            }
+        } else if (child instanceof JtePsiEndIf) {
+            injectJavaPart("}\n", null, registrar, host, child);
+        }
+    }
+
+    private void injectJavaPart(String prefix, String suffix, MultiHostRegistrar registrar, JtePsiJavaContent host, PsiElement javaPart) {
         int startOffsetInHost = getStartOffsetInHost(host, javaPart);
         registrar.addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost + javaPart.getTextLength()));
     }

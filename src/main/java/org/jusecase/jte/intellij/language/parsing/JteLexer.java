@@ -19,13 +19,16 @@ public class JteLexer extends LexerBase {
     public static final int CONTENT_STATE_JAVA_PARAM_END = 4;
     public static final int CONTENT_STATE_JAVA_OUTPUT_BEGIN = 5;
     public static final int CONTENT_STATE_JAVA_OUTPUT_END = 6;
+    public static final int CONTENT_STATE_JAVA_IF_BEGIN = 7;
+    public static final int CONTENT_STATE_JAVA_IF_CONDITION = 8;
+    public static final int CONTENT_STATE_JAVA_IF_END = 9;
 
     private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
     private final TokenParser[] myTokenParsers;
     private TokenInfo myCurrentToken;
     private int myPosition;
-    private int myState = CONTENT_STATE_HTML;
+    private int myState;
 
     public JteLexer() {
         myTokenParsers = new TokenParser[]{
@@ -33,7 +36,8 @@ public class JteLexer extends LexerBase {
                 new ImportTokenParser(this),
                 new ParamTokenParser(this),
                 new OutputTokenParser(this),
-                new IfTokenParser(),
+                new IfTokenParser(this),
+                new IfConditionTokenParser(this),
                 new EndIfTokenParser(),
                 new WhitespaceParser(),
         };
@@ -52,6 +56,7 @@ public class JteLexer extends LexerBase {
         advance();
     }
 
+    // Method used by jetbrains, do not use for state checks
     @Override
     public int getState() {
         return myState;
@@ -111,15 +116,40 @@ public class JteLexer extends LexerBase {
         return myEndOffset;
     }
 
-    public void setState(int state) {
-        myState = state;
+    public int getCurrentState() {
+        return myState & 0xFFFF;
+    }
+
+    public int getCurrentCount() {
+        return myState >> 16;
+    }
+
+    public void setCurrentState(int state) {
+        setStateInternal(state, getCurrentCount());
+    }
+
+    public void incrementCurrentCount() {
+        setCurrentCount(getCurrentCount() + 1);
+    }
+
+    public void decrementCurrentCount() {
+        setCurrentCount(getCurrentCount() - 1);
+    }
+
+    public void setCurrentCount(int count) {
+        setStateInternal(getCurrentState(), count);
+    }
+
+    private void setStateInternal(int state, int count) {
+        myState = (count << 16) | (state & 0xFFFF);
     }
 
     public boolean isInJavaEndState() {
-        switch (myState) {
+        switch (getCurrentState()) {
             case CONTENT_STATE_JAVA_IMPORT_END:
             case CONTENT_STATE_JAVA_PARAM_END:
             case CONTENT_STATE_JAVA_OUTPUT_END:
+            case CONTENT_STATE_JAVA_IF_END:
                 return true;
         }
         return false;

@@ -27,7 +27,7 @@ public class ContentTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (lexer.getState() == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN && isWhitespace(position)) {
+        if ((lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN || lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN) && isWhitespace(position)) {
             return skipWhitespaces(position);
         }
 
@@ -36,10 +36,10 @@ public class ContentTokenParser extends AbstractTokenParser {
         }
 
         if (lexer.isInJavaEndState()) {
-            lexer.setState(JteLexer.CONTENT_STATE_HTML);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_HTML);
         }
 
-        int currentState = lexer.getState();
+        int currentState = lexer.getCurrentState();
         int start = position;
         position++;
 
@@ -62,21 +62,40 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (isBeginOf(position, "\n")) {
-            switch (lexer.getState()) {
+        if (isBeginOf(position, '\n')) {
+            switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN:
-                    lexer.setState(JteLexer.CONTENT_STATE_JAVA_IMPORT_END);
+                    lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_IMPORT_END);
                     return true;
                 case JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN:
-                    lexer.setState(JteLexer.CONTENT_STATE_JAVA_PARAM_END);
+                    lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_PARAM_END);
                     return true;
             }
         }
 
-        if (isBeginOf(position, "}")) {
-            switch (lexer.getState()) {
+        if (isBeginOf(position, '}')) {
+            switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_OUTPUT_BEGIN:
                     return true;
+            }
+        }
+
+        if (isBeginOf(position, '(')) {
+            switch (lexer.getCurrentState()) {
+                case JteLexer.CONTENT_STATE_JAVA_IF_BEGIN:
+                    return true;
+                case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                    lexer.incrementCurrentCount();
+                    return false;
+            }
+        }
+
+        if (isBeginOf(position, ')')) {
+            switch (lexer.getCurrentState()) {
+                case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                    int count = lexer.getCurrentCount();
+                    lexer.decrementCurrentCount();
+                    return count <= 0;
             }
         }
 
