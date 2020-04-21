@@ -69,6 +69,10 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiElse(node);
         } else if (elementType == JteTokenTypes.ENDIF) {
             return new JtePsiEndIf(node);
+        } else if (elementType == JteTokenTypes.FOR) {
+            return new JtePsiFor(node);
+        } else if (elementType == JteTokenTypes.ENDFOR) {
+            return new JtePsiEndFor(node);
         }
 
         return new JtePsiElement(node);

@@ -36,6 +36,8 @@ public class JteParsing {
             processIf();
         } else if (tokenType == JteTokenTypes.ELSE) {
             processElse();
+        } else if (tokenType == JteTokenTypes.FOR) {
+            processFor();
         } else {
             builder.advanceLexer();
         }
@@ -137,5 +139,45 @@ public class JteParsing {
         Marker marker = builder.mark();
         builder.advanceLexer();
         marker.done(JteTokenTypes.ENDIF);
+    }
+
+    private void processFor() {
+        Marker forMarker = builder.mark();
+        builder.advanceLexer();
+
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_BEGIN) {
+            Marker conditionBeginMarker = builder.mark();
+            builder.advanceLexer();
+            conditionBeginMarker.done(JteTokenTypes.CONDITION_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+            Marker javaBeginMarker = builder.mark();
+            builder.advanceLexer();
+            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
+            Marker conditionBeginMarker = builder.mark();
+            builder.advanceLexer();
+            conditionBeginMarker.done(JteTokenTypes.CONDITION_END);
+        }
+
+        do {
+            processBlock();
+        } while (builder.getTokenType() != JteTokenTypes.ENDFOR && !builder.eof());
+        processEndFor();
+
+        forMarker.done(JteTokenTypes.FOR);
+    }
+
+    private void processEndFor() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(JteTokenTypes.ENDFOR);
     }
 }

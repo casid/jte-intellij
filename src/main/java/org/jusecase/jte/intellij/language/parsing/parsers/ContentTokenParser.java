@@ -6,17 +6,19 @@ import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
             "${",
-            "!{",
+            "!{", // TODO
             "@if",
             "@else",
-            "@elseif",
+            "@elseif", // TODO
             "@endif",
             "@for",
+            "@endfor",
             "@import",
-            "@param",
-            "@tag",
-            "@layout",
-            "@section"
+            "@param", // TODO skip whitespaces
+            "@tag", // TODO
+            "@layout", // TODO
+            "@section" // TODO
+            // TODO native comment
     };
 
     private final JteLexer lexer;
@@ -27,7 +29,7 @@ public class ContentTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if ((lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN || lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN) && isWhitespace(position)) {
+        if (shouldSkipWhitespaces() && isWhitespace(position)) {
             return skipWhitespaces(position);
         }
 
@@ -53,6 +55,14 @@ public class ContentTokenParser extends AbstractTokenParser {
             myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_INJECTION);
         }
         return true;
+    }
+
+    private boolean shouldSkipWhitespaces() {
+        int state = lexer.getCurrentState();
+        return
+                state == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN ||
+                state == JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN ||
+                state == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN;
     }
 
     private boolean isBeginOfJteKeyword(int position) {
@@ -83,8 +93,10 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, '(')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IF_BEGIN:
+                case JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN:
                     return true;
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
                     lexer.incrementCurrentCount();
                     return false;
             }
@@ -93,6 +105,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, ')')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;
