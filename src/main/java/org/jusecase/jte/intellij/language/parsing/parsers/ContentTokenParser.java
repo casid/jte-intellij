@@ -61,6 +61,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         int state = lexer.getCurrentState();
         return
                 state == JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN ||
+                state == JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN ||
                 state == JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN ||
                 state == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN;
     }

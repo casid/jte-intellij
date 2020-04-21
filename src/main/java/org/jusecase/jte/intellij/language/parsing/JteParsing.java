@@ -69,6 +69,10 @@ public class JteParsing {
         Marker paramMarker = builder.mark();
         builder.advanceLexer();
 
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+            builder.advanceLexer();
+        }
+
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
             Marker javaBeginMarker = builder.mark();
             builder.advanceLexer();
