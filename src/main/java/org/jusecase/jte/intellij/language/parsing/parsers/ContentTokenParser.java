@@ -19,7 +19,6 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@tag", // TODO
             "@layout", // TODO
             "@section" // TODO
-            // TODO native comment
     };
 
     private final JteLexer lexer;
