@@ -7,6 +7,7 @@ public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
             "${",
             "!{", // TODO
+            "<%--",
             "@if",
             "@else",
             "@elseif",

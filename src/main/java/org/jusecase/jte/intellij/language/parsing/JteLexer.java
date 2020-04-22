@@ -39,6 +39,7 @@ public class JteLexer extends LexerBase {
     public JteLexer() {
         myTokenParsers = new TokenParser[]{
                 new ContentTokenParser(this),
+                new CommentTokenParser(),
                 new ImportTokenParser(this),
                 new ParamTokenParser(this),
                 new OutputTokenParser(this),

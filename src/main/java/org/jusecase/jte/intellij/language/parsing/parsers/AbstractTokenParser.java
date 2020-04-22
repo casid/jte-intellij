@@ -25,6 +25,21 @@ public abstract class AbstractTokenParser extends TokenParser {
         return true;
     }
 
+    protected final boolean isEndOf(int position, String token) {
+        int startPosition = position - token.length();
+        if (startPosition < myStartOffset) {
+            return false;
+        }
+
+        for (int i = startPosition; i < position; ++i) {
+            if (myBuffer.charAt(i) != token.charAt(i - startPosition)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected final boolean hasToken(int position, String keyword, IElementType type) {
         if (isBeginOf(position, keyword)) {
             myTokenInfo.updateData(position, position + keyword.length(), type);
