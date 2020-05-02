@@ -37,7 +37,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, null, registrar, host, javaPart);
                             } else {
-                                injectJavaPart(classPrefix, ") {", registrar, host, javaPart);
+                                injectJavaPart(classPrefix, ") {\n", registrar, host, javaPart);
                             }
                             hasWrittenClass = true;
                         } else {
@@ -45,7 +45,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                             if (nextParam != null) {
                                 injectJavaPart(", ", null, registrar, host, javaPart);
                             } else {
-                                injectJavaPart(", ", ") {", registrar, host, javaPart);
+                                injectJavaPart(", ", ") {\n", registrar, host, javaPart);
                             }
                         }
                     }
@@ -55,7 +55,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
 
             if (hasWrittenClass) {
-                registrar.addPlace(null, "}}", host, new TextRange(host.getTextLength(), host.getTextLength()));
+                registrar.addPlace(null, "\n}}", host, new TextRange(host.getTextLength(), host.getTextLength()));
             }
 
             registrar.doneInjecting();

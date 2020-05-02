@@ -25,6 +25,8 @@
         <editorHighlighterProvider filetype="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteHighlighterProvider"/>
 
         <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
+        <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
+                                 implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
     </extensions>
 
     <actions>

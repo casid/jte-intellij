@@ -1,30 +1,15 @@
 package org.jusecase.jte.intellij.language.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.LiteralTextEscaper;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
+import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class JtePsiJavaContent extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
+public class JtePsiJavaContent extends JtePsiElement implements PsiLanguageInjectionHost {
     public JtePsiJavaContent(@NotNull ASTNode node) {
         super(node);
-    }
-
-    @Override
-    public ItemPresentation getPresentation() {
-        return ItemPresentationProviders.getItemPresentation(this);
-    }
-
-    @NotNull
-    @Override
-    public PsiReference[] getReferences() {
-        return ReferenceProvidersRegistry.getReferencesFromProviders(this);
     }
 
     @Override
@@ -34,8 +19,7 @@ public class JtePsiJavaContent extends ASTWrapperPsiElement implements PsiLangua
 
     @Override
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
-        //return (PsiLanguageInjectionHost) replaceWithText(text);
-        return this; // TODO how?
+        return ElementManipulators.handleContentChange(this, text);
     }
 
     @NotNull
@@ -50,9 +34,21 @@ public class JtePsiJavaContent extends ASTWrapperPsiElement implements PsiLangua
 
             @Override
             public int getOffsetInHost(int offsetInDecoded, @NotNull TextRange rangeInsideHost) {
+//                int offset = offsetInDecoded + rangeInsideHost.getStartOffset();
+//                if (offset < rangeInsideHost.getStartOffset()) offset = rangeInsideHost.getStartOffset();
+//                if (offset > rangeInsideHost.getEndOffset()) offset = rangeInsideHost.getEndOffset();
+//                return offset;
+
                 int offset = offsetInDecoded + rangeInsideHost.getStartOffset();
-                if (offset < rangeInsideHost.getStartOffset()) offset = rangeInsideHost.getStartOffset();
-                if (offset > rangeInsideHost.getEndOffset()) offset = rangeInsideHost.getEndOffset();
+
+                if (offset < rangeInsideHost.getStartOffset()) {
+                    return -1;
+                }
+
+                if (offset > rangeInsideHost.getEndOffset()) {
+                    return -1;
+                }
+
                 return offset;
             }
 
