@@ -114,7 +114,7 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     @Override
     public IElementType getContentElementType(@NotNull Language language) {
         if (language.is(getTemplateDataLanguage())) {
-            return getTemplateDataElementType(language, s -> new TemplateDataElementType("JTE_TEMPLATE_DATA_HTML", language, HTML_CONTENT, OUTER_ELEMENT_TYPE));
+            return getTemplateDataElementType(language, s -> new JteTemplateDataElementType(language));
         }
         return null;
     }
