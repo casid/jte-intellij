@@ -32,6 +32,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
+        private boolean hasStartedInjection;
 
         public Injector(JtePsiJavaContent host, MultiHostRegistrar registrar) {
             this.host = host;
@@ -39,8 +40,6 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
 
         public void inject() {
-            registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
-
             for (PsiElement child : host.getChildren()) {
                 if (child instanceof JtePsiImport) {
                     JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
@@ -74,10 +73,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
 
             if (hasWrittenClass) {
-                registrar.addPlace(null, "\n}}", host, new TextRange(host.getTextLength(), host.getTextLength()));
+                getRegistrar().addPlace(null, "\n}}", host, new TextRange(host.getTextLength(), host.getTextLength()));
             }
 
-            registrar.doneInjecting();
+            if (hasStartedInjection) {
+                getRegistrar().doneInjecting();
+            }
         }
 
         private void processTemplateBody(PsiElement child) {
@@ -101,11 +102,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("} elseif (", ") {\n", javaPart);
             } else if (child instanceof JtePsiElse) {
-                int startOffsetInHost = getStartOffsetInHost(child);
-                registrar.addPlace("\n} else {\n", null, host, new TextRange(startOffsetInHost, startOffsetInHost));
+                injectEmptyJavaPart("\n} else {\n", null, child);
             } else if (child instanceof JtePsiEndIf) {
-                int startOffsetInHost = getStartOffsetInHost(child);
-                registrar.addPlace(null, "}\n", host, new TextRange(startOffsetInHost, startOffsetInHost));
+                injectEmptyJavaPart(null, "}\n", child);
             } else if (child instanceof JtePsiFor) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("for (", ") {\n", javaPart);
@@ -117,8 +116,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     }
                 }
             } else if (child instanceof JtePsiEndFor) {
-                int startOffsetInHost = getStartOffsetInHost(child);
-                registrar.addPlace(null, "}\n", host, new TextRange(startOffsetInHost, startOffsetInHost));
+                injectEmptyJavaPart(null, "}\n", child);
             } else if (child instanceof JtePsiTag) {
                 // TODO try to call real static tag method
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
@@ -126,13 +124,26 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
         }
 
-        private void injectJavaPart(String prefix, String suffix, PsiElement javaPart) {
+        private void injectEmptyJavaPart(String prefix, String suffix, @NotNull PsiElement child) {
+            int startOffsetInHost = getStartOffsetInHost(child);
+            getRegistrar().addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost));
+        }
+
+        private void injectJavaPart(String prefix, String suffix, JtePsiJavaInjection javaPart) {
             if (javaPart == null) {
                 return;
             }
 
             int startOffsetInHost = getStartOffsetInHost(javaPart);
-            registrar.addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost + javaPart.getTextLength()));
+            getRegistrar().addPlace(prefix, suffix, host, new TextRange(startOffsetInHost, startOffsetInHost + javaPart.getTextLength()));
+        }
+
+        public MultiHostRegistrar getRegistrar() {
+            if (!hasStartedInjection) {
+                registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                hasStartedInjection = true;
+            }
+            return registrar;
         }
 
         private int getStartOffsetInHost(PsiElement node) {
