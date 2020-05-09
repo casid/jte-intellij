@@ -7,6 +7,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.idea.KotlinLanguage;
 import org.jusecase.jte.intellij.language.psi.*;
 
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
+        private boolean hasWrittenPackage;
         private boolean hasStartedInjection;
 
         public Injector(JtePsiJavaContent host, MultiHostRegistrar registrar) {
@@ -44,13 +46,18 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 if (child instanceof JtePsiImport) {
                     JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
-                        injectJavaPart("import ", ";\n", javaPart);
+                        if (!hasWrittenPackage) {
+                            injectJavaPart("package template.support\nimport ", "\n", javaPart);
+                            hasWrittenPackage = true;
+                        } else {
+                            injectJavaPart("import ", "\n", javaPart);
+                        }
                     }
                 } else if (child instanceof JtePsiParam) {
                     JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "class DummyTemplate { public void render(String output, ";
+                            String classPrefix = "object { fun render(output:String, ";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, null, javaPart);
@@ -84,10 +91,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         private void processTemplateBody(PsiElement child) {
             if (child instanceof JtePsiOutput) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("output = ", ";\n", javaPart);
+                injectJavaPart("output = ", "\n", javaPart);
             } else if (child instanceof JtePsiStatement) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart(null, ";\n", javaPart);
+                injectJavaPart(null, "\n", javaPart);
             } else if (child instanceof JtePsiIf) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("if (", ") {\n", javaPart);
@@ -141,7 +148,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
         public MultiHostRegistrar getRegistrar() {
             if (!hasStartedInjection) {
-                registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                registrar.startInjecting(KotlinLanguage.INSTANCE);
                 hasStartedInjection = true;
             }
             return registrar;

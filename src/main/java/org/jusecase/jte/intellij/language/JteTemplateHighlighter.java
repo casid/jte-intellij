@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.templateLanguages.TemplateDataLanguageMappings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.idea.KotlinLanguage;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
 public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
@@ -31,7 +32,7 @@ public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
             registerLayer(JteTokenTypes.HTML_CONTENT, new LayerDescriptor(outerHighlighter, ""));
         }
 
-        SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(StdFileTypes.JAVA, project, virtualFile);
+        SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(KotlinLanguage.INSTANCE, project, virtualFile);
         if (outerJavaHighlighter != null) {
             registerLayer(JteTokenTypes.JAVA_INJECTION, new LayerDescriptor(outerJavaHighlighter, ""));
         }
