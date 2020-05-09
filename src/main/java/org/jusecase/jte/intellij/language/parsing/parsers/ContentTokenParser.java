@@ -6,7 +6,7 @@ import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
             "${",
-            "!{", // TODO
+            "!{",
             "<%--",
             "@if",
             "@else",
@@ -16,7 +16,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@endfor",
             "@import",
             "@param",
-            "@tag", // TODO
+            "@tag",
             "@layout", // TODO
             "@define", // TODO
             "@render" // TODO
@@ -91,6 +91,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, '}')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_OUTPUT_BEGIN:
+                case JteLexer.CONTENT_STATE_JAVA_STATEMENT_BEGIN:
                     return true;
             }
         }

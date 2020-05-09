@@ -19,6 +19,9 @@ public interface JteTokenTypes {
     IElementType OUTPUT = new JteElementType("OUTPUT");
     IElementType OUTPUT_BEGIN = new JteElementType("OUTPUT_BEGIN");
     IElementType OUTPUT_END = new JteElementType("OUTPUT_END");
+    IElementType STATEMENT = new JteElementType("STATEMENT");
+    IElementType STATEMENT_BEGIN = new JteElementType("STATEMENT_BEGIN");
+    IElementType STATEMENT_END = new JteElementType("STATEMENT_END");
 
     IElementType IF = new JteElementType("IF");
     IElementType CONDITION_BEGIN = new JteElementType("CONDITION_BEGIN");

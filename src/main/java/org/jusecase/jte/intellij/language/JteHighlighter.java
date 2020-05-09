@@ -40,6 +40,8 @@ public class JteHighlighter extends SyntaxHighlighterBase {
 
         MAPPING.put(JteTokenTypes.OUTPUT_BEGIN, KEYWORD);
         MAPPING.put(JteTokenTypes.OUTPUT_END, KEYWORD);
+        MAPPING.put(JteTokenTypes.STATEMENT_BEGIN, KEYWORD);
+        MAPPING.put(JteTokenTypes.STATEMENT_END, KEYWORD);
     }
 
     @NotNull

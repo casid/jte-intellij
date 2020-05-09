@@ -66,6 +66,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         if (child instanceof JtePsiOutput) {
             JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
             injectJavaPart("output = ", ";\n", registrar, host, javaPart);
+        } else if (child instanceof JtePsiStatement) {
+            JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+            injectJavaPart(null, ";\n", registrar, host, javaPart);
         } else if (child instanceof JtePsiIf) {
             JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
             injectJavaPart("if (", ") {\n", registrar, host, javaPart);
@@ -101,9 +104,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         } else if (child instanceof JtePsiTag) {
             // TODO try to call real static tag method
             JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-            if (javaPart != null) {
-                injectJavaPart("System.out.println(", ");\n", registrar, host, javaPart);
-            }
+            injectJavaPart("System.out.println(", ");\n", registrar, host, javaPart);
         }
     }
 

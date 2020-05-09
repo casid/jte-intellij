@@ -59,6 +59,8 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiImport(node);
         } else if (elementType == JteTokenTypes.OUTPUT) {
             return new JtePsiOutput(node);
+        } else if (elementType == JteTokenTypes.STATEMENT) {
+            return new JtePsiStatement(node);
         } else if (elementType == JteTokenTypes.CONDITION_BEGIN) {
             return new JtePsiConditionBegin(node);
         } else if (elementType == JteTokenTypes.CONDITION_END) {

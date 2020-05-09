@@ -2,6 +2,7 @@ package org.jusecase.jte.intellij.language.parsing;
 
 import org.junit.Test;
 
+// TODO write proper tests after proof of concept is done!
 public class JteLexerTest {
     @Test
     public void testImport() {
@@ -31,7 +32,6 @@ public class JteLexerTest {
         System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
     }
 
-    // TODO write proper tests!!
     @Test
     public void testIfOutput() {
         JteLexer lexer = new JteLexer();
@@ -60,6 +60,30 @@ public class JteLexerTest {
         JteLexer lexer = new JteLexer();
 
         lexer.start("@tag.simple(a, b, c)");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
+    public void testTag_withParamsCallingMethods() {
+        JteLexer lexer = new JteLexer();
+
+        lexer.start("@tag.simple(a.getDuration(x.getOffset()), b, c)");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
+    public void testStatement() {
+        JteLexer lexer = new JteLexer();
+
+        lexer.start("!{String x = \"hello\"}");
 
         while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
             System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
