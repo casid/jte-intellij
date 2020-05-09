@@ -77,6 +77,13 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
+        if (isBeginOf(position, '=')) {
+            if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_PARAM_BEGIN) {
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_PARAM_END);
+                return true;
+            }
+        }
+
         if (isBeginOf(position, '\n')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_JAVA_IMPORT_BEGIN:
