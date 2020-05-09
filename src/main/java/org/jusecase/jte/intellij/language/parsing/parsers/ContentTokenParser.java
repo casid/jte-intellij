@@ -18,7 +18,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@param",
             "@tag", // TODO
             "@layout", // TODO
-            "@section" // TODO
+            "@define", // TODO
+            "@render" // TODO
     };
 
     private final JteLexer lexer;
@@ -49,7 +50,9 @@ public class ContentTokenParser extends AbstractTokenParser {
             position++;
         }
 
-        if (currentState == JteLexer.CONTENT_STATE_HTML) {
+        if (currentState == JteLexer.CONTENT_STATE_JAVA_TAG_NAME_BEGIN) {
+            myTokenInfo.updateData(start, position, JteTokenTypes.TAG_NAME);
+        } else if (currentState == JteLexer.CONTENT_STATE_HTML) {
             myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
         } else {
             myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_INJECTION);
@@ -97,10 +100,12 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case JteLexer.CONTENT_STATE_JAVA_IF_BEGIN:
                 case JteLexer.CONTENT_STATE_JAVA_ELSEIF_BEGIN:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN:
+                case JteLexer.CONTENT_STATE_JAVA_TAG_NAME_BEGIN:
                     return true;
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_ELSEIF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_TAG_PARAMS:
                     lexer.incrementCurrentCount();
                     return false;
             }
@@ -111,9 +116,17 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case JteLexer.CONTENT_STATE_JAVA_IF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_ELSEIF_CONDITION:
                 case JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION:
+                case JteLexer.CONTENT_STATE_JAVA_TAG_PARAMS:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;
+            }
+        }
+
+        if (isBeginOf(position, '.')) {
+            switch (lexer.getCurrentState()) {
+                case JteLexer.CONTENT_STATE_JAVA_TAG_BEGIN:
+                    return true;
             }
         }
 

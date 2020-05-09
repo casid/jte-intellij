@@ -40,6 +40,8 @@ public class JteParsing {
             processElse();
         } else if (tokenType == JteTokenTypes.FOR) {
             processFor();
+        } else if (tokenType == JteTokenTypes.TAG) {
+            processTag();
         } else {
             builder.advanceLexer();
         }
@@ -88,7 +90,7 @@ public class JteParsing {
         Marker importMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
             builder.advanceLexer();
         }
 
@@ -105,7 +107,7 @@ public class JteParsing {
         Marker ifMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
             builder.advanceLexer();
         }
 
@@ -139,7 +141,7 @@ public class JteParsing {
         Marker elseIfMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
             builder.advanceLexer();
         }
 
@@ -180,7 +182,7 @@ public class JteParsing {
         Marker forMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() == JteTokenTypes.WHITESPACE) {
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
             builder.advanceLexer();
         }
 
@@ -214,5 +216,38 @@ public class JteParsing {
         Marker marker = builder.mark();
         builder.advanceLexer();
         marker.done(JteTokenTypes.ENDFOR);
+    }
+
+    private void processTag() {
+        Marker tagMarker = builder.mark();
+        builder.advanceLexer();
+
+        while (builder.getTokenType() != JteTokenTypes.TAG_NAME && !builder.eof()) {
+            builder.advanceLexer();
+        }
+
+        Marker tagNameMarker = builder.mark();
+        builder.advanceLexer();
+        tagNameMarker.done(JteTokenTypes.TAG_NAME);
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+            Marker javaBeginMarker = builder.mark();
+            builder.advanceLexer();
+            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_END);
+        }
+
+        tagMarker.done(JteTokenTypes.TAG);
     }
 }

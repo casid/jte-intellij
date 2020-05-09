@@ -29,6 +29,12 @@ public interface JteTokenTypes {
     IElementType FOR = new JteElementType("FOR");
     IElementType ENDFOR = new JteElementType("ENDFOR");
 
+    IElementType TAG = new JteElementType("TAG");
+    IElementType TAG_NAME = new JteElementType("TAG_NAME");
+    IElementType NAME_BEGIN = new JteElementType("NAME_BEGIN");
+    IElementType PARAMS_BEGIN = new JteElementType("PARAMS_BEGIN");
+    IElementType PARAMS_END = new JteElementType("PARAMS_END");
+
     IElementType COMMENT = new JteElementType("COMMENT");
     IElementType COMMENT_CONTENT = new JteElementType("COMMENT_CONTENT");
 

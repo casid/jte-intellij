@@ -98,6 +98,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         } else if (child instanceof JtePsiEndFor) {
             int startOffsetInHost = getStartOffsetInHost(host, child);
             registrar.addPlace(null, "}\n", host, new TextRange(startOffsetInHost, startOffsetInHost));
+        } else if (child instanceof JtePsiTag) {
+            // TODO try to call real static tag method
+            JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+            if (javaPart != null) {
+                injectJavaPart("System.out.println(", ");\n", registrar, host, javaPart);
+            }
         }
     }
 

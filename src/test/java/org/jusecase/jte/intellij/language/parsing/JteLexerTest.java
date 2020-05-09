@@ -42,4 +42,28 @@ public class JteLexerTest {
             lexer.advance();
         }
     }
+
+    @Test
+    public void testTag_simple() {
+        JteLexer lexer = new JteLexer();
+
+        lexer.start("@tag.simple()");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
+    public void testTag_withParams() {
+        JteLexer lexer = new JteLexer();
+
+        lexer.start("@tag.simple(a, b, c)");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
 }
