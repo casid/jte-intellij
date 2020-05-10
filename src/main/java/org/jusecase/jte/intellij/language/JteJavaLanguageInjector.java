@@ -2,7 +2,6 @@ package org.jusecase.jte.intellij.language;
 
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -57,7 +56,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "object { fun render(output:String, ";
+                            String classPrefix = "object DummyTemplate {\nfun render(output:String, ";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, null, javaPart);
