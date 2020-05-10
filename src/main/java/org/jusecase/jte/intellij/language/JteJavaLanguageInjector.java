@@ -56,7 +56,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (javaPart != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "object DummyTemplate {\nfun render(output:String, ";
+                            String classPrefix = "object DummyTemplate {\nfun render(";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, null, javaPart);
@@ -79,7 +79,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
 
             if (hasWrittenClass) {
-                getRegistrar().addPlace(null, "\n}}", host, new TextRange(host.getTextLength(), host.getTextLength()));
+                getRegistrar().addPlace(null, "\n}\n}", host, new TextRange(host.getTextLength(), host.getTextLength()));
             }
 
             if (hasStartedInjection) {
@@ -90,7 +90,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         private void processTemplateBody(PsiElement child) {
             if (child instanceof JtePsiOutput) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("output = ", "\n", javaPart);
+                injectJavaPart("print(", ")\n", javaPart);
             } else if (child instanceof JtePsiStatement) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart(null, "\n", javaPart);
