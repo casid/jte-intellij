@@ -1,10 +1,10 @@
 <idea-plugin>
-    <id>org.jusecase.jte-intellij</id>
-    <name>jte</name>
+    <id>org.jusecase.kte-intellij</id>
+    <name>kte</name>
     <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
     <description><![CDATA[
-    Java Template Engine support.
+    Kotlin Template Engine support.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -13,20 +13,20 @@
     <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteFileType"
-                  fieldName="INSTANCE" language="JavaTemplateEngine" extensions="jte"/>
+        <fileType name="Kotlin Template Engine File" implementationClass="org.jusecase.kte.intellij.language.KteFileType"
+                  fieldName="INSTANCE" language="KotlinTemplateEngine" extensions="kte"/>
 
-        <lang.parserDefinition language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.parsing.JteParserDefinition"/>
+        <lang.parserDefinition language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.parsing.KteParserDefinition"/>
 
-        <lang.fileViewProviderFactory language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFileViewProviderFactory"/>
+        <lang.fileViewProviderFactory language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.KteFileViewProviderFactory"/>
 
-        <lang.syntaxHighlighter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteHighlighter"/>
+        <lang.syntaxHighlighter language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.KteHighlighter"/>
 
-        <editorHighlighterProvider filetype="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteHighlighterProvider"/>
+        <editorHighlighterProvider filetype="Kotlin Template Engine File" implementationClass="org.jusecase.kte.intellij.language.KteHighlighterProvider"/>
 
-        <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
-        <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
-                                 implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
+        <multiHostInjector implementation="org.jusecase.kte.intellij.language.KteKotlinLanguageInjector"/>
+        <lang.elementManipulator forClass="org.jusecase.kte.intellij.language.psi.KtePsiKotlinContent"
+                                 implementationClass="org.jusecase.kte.intellij.language.KteKotlinContentManipulator"/>
     </extensions>
 
     <actions>
