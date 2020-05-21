@@ -141,12 +141,11 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                 }
             } else if (child instanceof KtePsiEndFor) {
                 injectEmptyKotlinPart(null, "}\n", child);
-            } /*else if (child instanceof KtePsiTag) {
-                // Disabled for now, as it breaks named parameters
+            } else if (child instanceof KtePsiTag) {
                 // TODO try to call real static tag method
-                KtePsiKotlinInjection part = PsiTreeUtil.getChildOfType(child, KtePsiJavaInjection.class);
-                injectKotlinPart("System.out.println(", ");\n", part);
-            }*/
+                KtePsiKotlinInjection part = PsiTreeUtil.getChildOfType(child, KtePsiKotlinInjection.class);
+                injectKotlinPart("print(", ")\n", part);
+            }
         }
 
         private void injectEmptyKotlinPart(String prefix, String suffix, @NotNull PsiElement child) {
