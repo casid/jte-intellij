@@ -4,12 +4,17 @@ import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.kotlin.idea.KotlinFileType;
 import org.jetbrains.kotlin.idea.KotlinLanguage;
+import org.jetbrains.kotlin.idea.UserDataModuleInfoKt;
+import org.jetbrains.kotlin.psi.KtFile;
 import org.jusecase.kte.intellij.language.psi.*;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,6 +90,18 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
 
             if (hasStartedInjection) {
                 getRegistrar().doneInjecting();
+
+                try {
+                    Field resultFiles = getRegistrar().getClass().getDeclaredField("resultFiles");
+                    resultFiles.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    List<PsiFile> files = (List<PsiFile>)resultFiles.get(getRegistrar());
+                    KtFile injectedFile= (KtFile)files.get(0);
+                    injectedFile.putUserData(UserDataModuleInfoKt.MODULE_ROOT_TYPE_KEY, JavaSourceRootType.SOURCE);
+                }
+                catch ( Exception e ) {
+                    // noop
+                }
             }
         }
 
