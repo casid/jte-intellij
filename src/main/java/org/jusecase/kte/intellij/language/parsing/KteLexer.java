@@ -34,6 +34,10 @@ public class KteLexer extends LexerBase {
     public static final int CONTENT_STATE_TAG_END = 19;
     public static final int CONTENT_STATE_STATEMENT_BEGIN = 20;
     public static final int CONTENT_STATE_STATEMENT_END = 21;
+    public static final int CONTENT_STATE_LAYOUT_BEGIN = 22;
+    public static final int CONTENT_STATE_LAYOUT_NAME_BEGIN = 23;
+    public static final int CONTENT_STATE_LAYOUT_PARAMS = 24;
+    public static final int CONTENT_STATE_LAYOUT_END = 25;
 
     private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
@@ -62,6 +66,10 @@ public class KteLexer extends LexerBase {
                 new TagTokenParser(this),
                 new TagNameTokenParser(this),
                 new TagParamsTokenParser(this),
+                new LayoutTokenParser(this),
+                new LayoutNameTokenParser(this),
+                new LayoutParamsTokenParser(this),
+                new EndLayoutTokenParser(),
                 new WhitespaceParser(),
         };
     }
@@ -177,6 +185,7 @@ public class KteLexer extends LexerBase {
             case CONTENT_STATE_FOR_END:
             case CONTENT_STATE_ELSEIF_END:
             case CONTENT_STATE_TAG_END:
+            case CONTENT_STATE_LAYOUT_END:
                 return true;
         }
         return false;

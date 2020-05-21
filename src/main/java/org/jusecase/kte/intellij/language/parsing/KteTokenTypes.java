@@ -37,6 +37,9 @@ public interface KteTokenTypes {
     IElementType NAME_BEGIN = new KteElementType("NAME_BEGIN");
     IElementType PARAMS_BEGIN = new KteElementType("PARAMS_BEGIN");
     IElementType PARAMS_END = new KteElementType("PARAMS_END");
+    IElementType LAYOUT = new KteElementType("LAYOUT");
+    IElementType LAYOUT_NAME = new KteElementType("LAYOUT_NAME");
+    IElementType ENDLAYOUT = new KteElementType("ENDLAYOUT");
 
     IElementType COMMENT = new KteElementType("COMMENT");
     IElementType COMMENT_CONTENT = new KteElementType("COMMENT_CONTENT");

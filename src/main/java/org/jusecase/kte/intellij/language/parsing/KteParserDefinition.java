@@ -85,6 +85,12 @@ public class KteParserDefinition implements ParserDefinition {
             return new KtePsiParamsBegin(node);
         } else if (elementType == KteTokenTypes.PARAMS_END) {
             return new KtePsiParamsEnd(node);
+        } else if (elementType == KteTokenTypes.LAYOUT) {
+            return new KtePsiLayout(node);
+        } else if (elementType == KteTokenTypes.LAYOUT_NAME) {
+            return new KtePsiLayoutName(node);
+        } else if (elementType == KteTokenTypes.ENDLAYOUT) {
+            return new KtePsiEndLayout(node);
         }
 
         return new KtePsiElement(node);

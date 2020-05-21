@@ -6,6 +6,7 @@ import org.jusecase.kte.intellij.language.parsing.KteTokenTypes;
 public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
             "${",
+            "$safe{", // TODO
             "!{",
             "<%--",
             "@if",
@@ -17,9 +18,10 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@import",
             "@param",
             "@tag",
-            "@layout", // TODO
+            "@layout",
             "@define", // TODO
-            "@render" // TODO
+            "@render", // TODO
+            "@endlayout"
     };
 
     private final KteLexer lexer;
@@ -52,6 +54,8 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (currentState == KteLexer.CONTENT_STATE_TAG_NAME_BEGIN) {
             myTokenInfo.updateData(start, position, KteTokenTypes.TAG_NAME);
+        } else if (currentState == KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN) {
+            myTokenInfo.updateData(start, position, KteTokenTypes.LAYOUT_NAME);
         } else if (currentState == KteLexer.CONTENT_STATE_HTML) {
             myTokenInfo.updateData(start, position, KteTokenTypes.HTML_CONTENT);
         } else {
@@ -109,11 +113,13 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case KteLexer.CONTENT_STATE_ELSEIF_BEGIN:
                 case KteLexer.CONTENT_STATE_FOR_BEGIN:
                 case KteLexer.CONTENT_STATE_TAG_NAME_BEGIN:
+                case KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN:
                     return true;
                 case KteLexer.CONTENT_STATE_IF_CONDITION:
                 case KteLexer.CONTENT_STATE_ELSEIF_CONDITION:
                 case KteLexer.CONTENT_STATE_FOR_CONDITION:
                 case KteLexer.CONTENT_STATE_TAG_PARAMS:
+                case KteLexer.CONTENT_STATE_LAYOUT_PARAMS:
                     lexer.incrementCurrentCount();
                     return false;
             }
@@ -125,6 +131,7 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case KteLexer.CONTENT_STATE_ELSEIF_CONDITION:
                 case KteLexer.CONTENT_STATE_FOR_CONDITION:
                 case KteLexer.CONTENT_STATE_TAG_PARAMS:
+                case KteLexer.CONTENT_STATE_LAYOUT_PARAMS:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;
@@ -134,6 +141,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (isBeginOf(position, '.')) {
             switch (lexer.getCurrentState()) {
                 case KteLexer.CONTENT_STATE_TAG_BEGIN:
+                case KteLexer.CONTENT_STATE_LAYOUT_BEGIN:
                     return true;
             }
         }

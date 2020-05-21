@@ -44,6 +44,8 @@ public class KteParsing {
             processFor();
         } else if (tokenType == KteTokenTypes.TAG) {
             processTag();
+        } else if (tokenType == KteTokenTypes.LAYOUT) {
+            processLayout();
         } else {
             builder.advanceLexer();
         }
@@ -273,5 +275,49 @@ public class KteParsing {
         }
 
         tagMarker.done(KteTokenTypes.TAG);
+    }
+
+    private void processLayout() {
+        Marker layoutMarker = builder.mark();
+        builder.advanceLexer();
+
+        while (builder.getTokenType() != KteTokenTypes.LAYOUT_NAME && !builder.eof()) {
+            builder.advanceLexer();
+        }
+
+        Marker layoutNameMarker = builder.mark();
+        builder.advanceLexer();
+        layoutNameMarker.done(KteTokenTypes.LAYOUT_NAME);
+
+        if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(KteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == KteTokenTypes.KOTLIN_INJECTION) {
+            Marker kotlinBeginMarker = builder.mark();
+            builder.advanceLexer();
+            kotlinBeginMarker.done(KteTokenTypes.KOTLIN_INJECTION);
+        }
+
+        if (builder.getTokenType() == KteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(KteTokenTypes.PARAMS_END);
+        }
+
+        do {
+            processBlock();
+        } while (builder.getTokenType() != KteTokenTypes.ENDLAYOUT && !builder.eof());
+        processEndLayout();
+
+        layoutMarker.done(KteTokenTypes.LAYOUT);
+    }
+
+    private void processEndLayout() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(KteTokenTypes.ENDLAYOUT);
     }
 }

@@ -35,6 +35,8 @@ public class KteHighlighter extends SyntaxHighlighterBase {
         MAPPING.put(KteTokenTypes.FOR, KEYWORD);
         MAPPING.put(KteTokenTypes.ENDFOR, KEYWORD);
         MAPPING.put(KteTokenTypes.TAG, KEYWORD);
+        MAPPING.put(KteTokenTypes.LAYOUT, KEYWORD);
+        MAPPING.put(KteTokenTypes.ENDLAYOUT, KEYWORD);
 
         MAPPING.put(KteTokenTypes.COMMENT, COMMENT);
 
