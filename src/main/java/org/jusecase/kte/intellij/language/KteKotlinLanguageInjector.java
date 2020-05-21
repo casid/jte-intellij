@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.idea.KotlinFileType;
 import org.jetbrains.kotlin.idea.KotlinLanguage;
 import org.jusecase.kte.intellij.language.psi.*;
 
@@ -147,7 +148,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
 
         public MultiHostRegistrar getRegistrar() {
             if (!hasStartedInjection) {
-                registrar.startInjecting(KotlinLanguage.INSTANCE);
+                registrar.startInjecting(KotlinLanguage.INSTANCE, KotlinFileType.EXTENSION);
                 hasStartedInjection = true;
             }
             return registrar;
