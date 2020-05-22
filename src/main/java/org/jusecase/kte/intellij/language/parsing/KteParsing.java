@@ -48,6 +48,8 @@ public class KteParsing {
             processLayout();
         } else if (tokenType == KteTokenTypes.DEFINE) {
             processDefine();
+        } else if (tokenType == KteTokenTypes.RENDER) {
+            processRender();
         } else {
             builder.advanceLexer();
         }
@@ -357,5 +359,30 @@ public class KteParsing {
         Marker marker = builder.mark();
         builder.advanceLexer();
         marker.done(KteTokenTypes.ENDDEFINE);
+    }
+
+    private void processRender() {
+        Marker renderMarker = builder.mark();
+        builder.advanceLexer();
+
+        if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(KteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == KteTokenTypes.RENDER_NAME) {
+            Marker defineNameMarker = builder.mark();
+            builder.advanceLexer();
+            defineNameMarker.done(KteTokenTypes.RENDER_NAME);
+        }
+
+        if (builder.getTokenType() == KteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(KteTokenTypes.PARAMS_END);
+        }
+
+        renderMarker.done(KteTokenTypes.RENDER);
     }
 }

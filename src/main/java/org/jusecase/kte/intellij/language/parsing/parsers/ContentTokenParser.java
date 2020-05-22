@@ -21,7 +21,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@layout",
             "@define",
             "@enddefine",
-            "@render", // TODO
+            "@render",
             "@endlayout"
     };
 
@@ -59,6 +59,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             myTokenInfo.updateData(start, position, KteTokenTypes.LAYOUT_NAME);
         } else if (currentState == KteLexer.CONTENT_STATE_DEFINE_NAME) {
             myTokenInfo.updateData(start, position, KteTokenTypes.DEFINE_NAME);
+        } else if (currentState == KteLexer.CONTENT_STATE_RENDER_NAME) {
+            myTokenInfo.updateData(start, position, KteTokenTypes.RENDER_NAME);
         } else if (currentState == KteLexer.CONTENT_STATE_HTML) {
             myTokenInfo.updateData(start, position, KteTokenTypes.HTML_CONTENT);
         } else {
@@ -75,7 +77,8 @@ public class ContentTokenParser extends AbstractTokenParser {
                 state == KteLexer.CONTENT_STATE_FOR_BEGIN ||
                 state == KteLexer.CONTENT_STATE_ELSEIF_BEGIN ||
                 state == KteLexer.CONTENT_STATE_IF_BEGIN ||
-                state == KteLexer.CONTENT_STATE_DEFINE_NAME;
+                state == KteLexer.CONTENT_STATE_DEFINE_NAME ||
+                state == KteLexer.CONTENT_STATE_RENDER_NAME;
     }
 
     private boolean isBeginOfKteKeyword(int position) {
@@ -119,6 +122,7 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case KteLexer.CONTENT_STATE_TAG_NAME_BEGIN:
                 case KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN:
                 case KteLexer.CONTENT_STATE_DEFINE_BEGIN:
+                case KteLexer.CONTENT_STATE_RENDER_BEGIN:
                     return true;
                 case KteLexer.CONTENT_STATE_IF_CONDITION:
                 case KteLexer.CONTENT_STATE_ELSEIF_CONDITION:
@@ -138,6 +142,7 @@ public class ContentTokenParser extends AbstractTokenParser {
                 case KteLexer.CONTENT_STATE_TAG_PARAMS:
                 case KteLexer.CONTENT_STATE_LAYOUT_PARAMS:
                 case KteLexer.CONTENT_STATE_DEFINE_NAME:
+                case KteLexer.CONTENT_STATE_RENDER_NAME:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;

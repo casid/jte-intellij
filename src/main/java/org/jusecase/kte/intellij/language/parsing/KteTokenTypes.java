@@ -42,6 +42,8 @@ public interface KteTokenTypes {
     IElementType DEFINE = new KteElementType("DEFINE");
     IElementType DEFINE_NAME = new KteElementType("DEFINE_NAME");
     IElementType ENDDEFINE = new KteElementType("ENDDEFINE");
+    IElementType RENDER = new KteElementType("RENDER");
+    IElementType RENDER_NAME = new KteElementType("RENDER_NAME");
     IElementType ENDLAYOUT = new KteElementType("ENDLAYOUT");
 
     IElementType COMMENT = new KteElementType("COMMENT");

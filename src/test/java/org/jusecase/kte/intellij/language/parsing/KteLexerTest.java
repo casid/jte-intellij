@@ -96,6 +96,21 @@ public class KteLexerTest {
     }
 
     @Test
+    public void testLayout() {
+        KteLexer lexer = new KteLexer();
+
+        lexer.start("@param name:String\n" +
+                "@render(header)\n" +
+                "@render(content)\n" +
+                "@render(footer)\n");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
     public void testStatement() {
         KteLexer lexer = new KteLexer();
 
