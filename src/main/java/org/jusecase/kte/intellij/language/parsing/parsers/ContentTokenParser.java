@@ -6,7 +6,7 @@ import org.jusecase.kte.intellij.language.parsing.KteTokenTypes;
 public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
             "${",
-            "$safe{", // TODO
+            "$safe{",
             "!{",
             "<%--",
             "@if",

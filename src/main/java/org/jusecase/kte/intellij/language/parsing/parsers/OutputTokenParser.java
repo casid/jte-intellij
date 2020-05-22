@@ -19,6 +19,11 @@ public class OutputTokenParser extends AbstractTokenParser {
             return true;
         }
 
+        if (state == KteLexer.CONTENT_STATE_HTML && hasToken(position, "$safe{", KteTokenTypes.OUTPUT_BEGIN)) {
+            lexer.setCurrentState(KteLexer.CONTENT_STATE_OUTPUT_BEGIN);
+            return true;
+        }
+
         if (state == KteLexer.CONTENT_STATE_OUTPUT_BEGIN && hasToken(position, "}", KteTokenTypes.OUTPUT_END)) {
             lexer.setCurrentState(KteLexer.CONTENT_STATE_OUTPUT_END);
             return true;
