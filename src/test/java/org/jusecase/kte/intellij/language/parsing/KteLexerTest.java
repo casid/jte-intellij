@@ -83,7 +83,11 @@ public class KteLexerTest {
     public void testLayout_withParamsCallingMethods() {
         KteLexer lexer = new KteLexer();
 
-        lexer.start("@layout.simple(a.getDuration(x.getOffset()), b, c)\n@endlayout");
+        lexer.start("@layout.simple(a.getDuration(x.getOffset()), b, c)\n" +
+                "@define(content)\n" +
+                "<p>Hello, ${x}</p>\n" +
+                "@enddefine\n" +
+                "@endlayout");
 
         while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
             System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());

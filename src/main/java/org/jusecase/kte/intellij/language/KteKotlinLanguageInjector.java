@@ -156,6 +156,14 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                         processTemplateBody(sibling);
                     }
                 }
+            } else if (child instanceof KtePsiDefine) {
+                KtePsiParamsEnd paramsEnd = PsiTreeUtil.getChildOfType(child, KtePsiParamsEnd.class);
+
+                if (paramsEnd != null) {
+                    for (PsiElement sibling = paramsEnd.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                        processTemplateBody(sibling);
+                    }
+                }
             }
         }
 
