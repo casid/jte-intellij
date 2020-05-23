@@ -105,7 +105,8 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
 
             @Override
             public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-                return null; // TODO ???
+                setName(newElementName);
+                return KtePsiTagOrLayoutName.this;
             }
 
             @Override
