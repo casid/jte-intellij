@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.SharedPsiElementImplUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -12,7 +13,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
+public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements PsiNamedElement {
     public KtePsiTagOrLayoutName(@NotNull ASTNode node) {
         super(node);
     }
@@ -163,7 +164,7 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
 
             @Override
             public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-                return null; // TODO ???
+                return setName(getFileNameWithoutExtension(newElementName));
             }
 
             @Override
@@ -219,5 +220,30 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
     @Override
     public PsiReference[] getReferences() {
         return SharedPsiElementImplUtil.getReferences(this);
+    }
+
+    private String getFileNameWithoutExtension(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        if (index == -1) {
+            return fileName;
+        }
+
+        return fileName.substring(0, index);
+    }
+
+    @Override
+    public String getName() {
+        return getText();
+    }
+
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        LeafPsiElement leaf = PsiTreeUtil.getChildOfType(this, LeafPsiElement.class);
+        if (leaf == null) {
+            throw new IncorrectOperationException("Could not rename, no leaf found!");
+        }
+
+        leaf.replaceWithText(name);
+        return this;
     }
 }
