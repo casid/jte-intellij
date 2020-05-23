@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
     public KtePsiTagOrLayoutName(@NotNull ASTNode node) {
@@ -37,65 +38,75 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
     @Override
     public PsiReference getReference() {
         if (isDirectory()) {
-            return null; // TODO
+            return resolveDirectoryReference();
         } else {
-            KtePsiTagOrLayoutName prevName = PsiTreeUtil.getPrevSiblingOfType(this, getClass());
+            return resolveFileReference();
+        }
+    }
 
-            PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), getText() + ".kte", GlobalSearchScope.allScope(getProject()));
-            for (PsiFile psiFile : filesByName) {
-                if (matchesParent(psiFile.getParent(), prevName)) {
-                    return new PsiFileReference() {
+    @Nullable
+    private PsiReference resolveDirectoryReference() {
+        return null; // TODO
+    }
 
-                        @NotNull
-                        @Override
-                        public PsiElement getElement() {
-                            return KtePsiTagOrLayoutName.this;
-                        }
+    @Nullable
+    private PsiReference resolveFileReference() {
+        KtePsiTagOrLayoutName prevName = PsiTreeUtil.getPrevSiblingOfType(this, getClass());
 
-                        @NotNull
-                        @Override
-                        public TextRange getRangeInElement() {
-                            return TextRange.from(0, getTextLength());
-                        }
+        PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), getText() + ".kte", GlobalSearchScope.allScope(getProject()));
+        for (PsiFile psiFile : filesByName) {
+            if (matchesParent(psiFile.getParent(), prevName)) {
+                return new PsiFileReference() {
 
-                        @Override
-                        public PsiElement resolve() {
-                            return psiFile;
-                        }
+                    @NotNull
+                    @Override
+                    public PsiElement getElement() {
+                        return KtePsiTagOrLayoutName.this;
+                    }
 
-                        @NotNull
-                        @Override
-                        public String getCanonicalText() {
-                            return getText();
-                        }
+                    @NotNull
+                    @Override
+                    public TextRange getRangeInElement() {
+                        return TextRange.from(0, getTextLength());
+                    }
 
-                        @Override
-                        public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-                            return null; // TODO ???
-                        }
+                    @Override
+                    public PsiElement resolve() {
+                        return psiFile;
+                    }
 
-                        @Override
-                        public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
-                            return null; // TODO ???
-                        }
+                    @NotNull
+                    @Override
+                    public String getCanonicalText() {
+                        return getText();
+                    }
 
-                        @Override
-                        public boolean isReferenceTo(@NotNull PsiElement element) {
-                            return element == psiFile;
-                        }
+                    @Override
+                    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+                        return null; // TODO ???
+                    }
 
-                        @Override
-                        public boolean isSoft() {
-                            return false; // TODO ???
-                        }
+                    @Override
+                    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+                        return null; // TODO ???
+                    }
 
-                        @NotNull
-                        @Override
-                        public ResolveResult[] multiResolve(boolean incompleteCode) {
-                            return new ResolveResult[0]; // TODO ???
-                        }
-                    };
-                }
+                    @Override
+                    public boolean isReferenceTo(@NotNull PsiElement element) {
+                        return element == psiFile;
+                    }
+
+                    @Override
+                    public boolean isSoft() {
+                        return false; // TODO ???
+                    }
+
+                    @NotNull
+                    @Override
+                    public ResolveResult[] multiResolve(boolean incompleteCode) {
+                        return new ResolveResult[0]; // TODO ???
+                    }
+                };
             }
         }
 
