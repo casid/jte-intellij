@@ -8,5 +8,6 @@ public class KteCompletionContributor extends CompletionContributor {
     public KteCompletionContributor() {
         extend(null, PlatformPatterns.psiElement(KteTokenTypes.TAG_NAME), new KteTagOrLayoutCompletionProvider());
         extend(null, PlatformPatterns.psiElement(KteTokenTypes.LAYOUT_NAME), new KteTagOrLayoutCompletionProvider());
+        extend(null, PlatformPatterns.psiElement(KteTokenTypes.DEFINE_NAME), new KteDefineCompletionProvider());
     }
 }

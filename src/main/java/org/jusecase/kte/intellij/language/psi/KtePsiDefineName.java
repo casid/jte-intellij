@@ -20,6 +20,22 @@ public class KtePsiDefineName extends KtePsiElement {
 
     @Override
     public PsiReference getReference() {
+        Collection<KtePsiRenderName> renderNames = getRenderNames();
+        if (renderNames == null) {
+            return null;
+        }
+
+        for (KtePsiRenderName renderName : renderNames) {
+            if (getText().equals(renderName.getName())) {
+                return createReferenceFor(renderName);
+            }
+        }
+
+        return super.getReference();
+    }
+
+    @Nullable
+    public Collection<KtePsiRenderName> getRenderNames() {
         KtePsiLayout layout = PsiTreeUtil.getParentOfType(this, KtePsiLayout.class);
         if (layout == null) {
             return null;
@@ -40,14 +56,7 @@ public class KtePsiDefineName extends KtePsiElement {
             return null;
         }
 
-        Collection<KtePsiRenderName> renderNames = PsiTreeUtil.findChildrenOfType(psiFile, KtePsiRenderName.class);
-        for (KtePsiRenderName renderName : renderNames) {
-            if (getText().equals(renderName.getName())) {
-                return createReferenceFor(renderName);
-            }
-        }
-
-        return super.getReference();
+        return PsiTreeUtil.findChildrenOfType(psiFile, KtePsiRenderName.class);
     }
 
     private PsiReference createReferenceFor(KtePsiRenderName renderName) {
@@ -103,5 +112,10 @@ public class KtePsiDefineName extends KtePsiElement {
     @Override
     public PsiReference[] getReferences() {
         return SharedPsiElementImplUtil.getReferences(this);
+    }
+
+    @Override
+    public String getName() {
+        return getText();
     }
 }
