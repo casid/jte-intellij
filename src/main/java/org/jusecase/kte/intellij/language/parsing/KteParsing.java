@@ -252,15 +252,7 @@ public class KteParsing {
         Marker tagMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() != KteTokenTypes.PARAMS_BEGIN && !builder.eof()) {
-            if (builder.getTokenType() == KteTokenTypes.TAG_NAME) {
-                Marker layoutNameMarker = builder.mark();
-                builder.advanceLexer();
-                layoutNameMarker.done(KteTokenTypes.TAG_NAME);
-            } else {
-                builder.advanceLexer();
-            }
-        }
+        processTagOrLayoutName(KteTokenTypes.TAG_NAME);
 
         if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
             Marker paramsBeginMarker = builder.mark();
@@ -283,19 +275,27 @@ public class KteParsing {
         tagMarker.done(KteTokenTypes.TAG);
     }
 
-    private void processLayout() {
-        Marker layoutMarker = builder.mark();
-        builder.advanceLexer();
-
+    private void processTagOrLayoutName(IElementType type) {
         while (builder.getTokenType() != KteTokenTypes.PARAMS_BEGIN && !builder.eof()) {
-            if (builder.getTokenType() == KteTokenTypes.LAYOUT_NAME) {
-                Marker layoutNameMarker = builder.mark();
+            if (builder.getTokenType() == type) {
+                Marker marker = builder.mark();
                 builder.advanceLexer();
-                layoutNameMarker.done(KteTokenTypes.LAYOUT_NAME);
+                marker.done(type);
+            } else if (builder.getTokenType() == KteTokenTypes.NAME_SEPARATOR) {
+                Marker marker = builder.mark();
+                builder.advanceLexer();
+                marker.done(KteTokenTypes.NAME_SEPARATOR);
             } else {
                 builder.advanceLexer();
             }
         }
+    }
+
+    private void processLayout() {
+        Marker layoutMarker = builder.mark();
+        builder.advanceLexer();
+
+        processTagOrLayoutName(KteTokenTypes.LAYOUT_NAME);
 
         if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
             Marker paramsBeginMarker = builder.mark();
