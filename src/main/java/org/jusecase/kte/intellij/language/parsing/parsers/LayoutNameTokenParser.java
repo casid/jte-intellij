@@ -12,8 +12,8 @@ public class LayoutNameTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (lexer.getCurrentState() == KteLexer.CONTENT_STATE_LAYOUT_BEGIN) {
-            if (hasToken(position, ".", KteTokenTypes.NAME_BEGIN)) {
+        if (lexer.getCurrentState() == KteLexer.CONTENT_STATE_LAYOUT_BEGIN || lexer.getCurrentState() == KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN) {
+            if (hasToken(position, ".", KteTokenTypes.NAME_SEPARATOR)) {
                 lexer.setCurrentState(KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN);
                 return true;
             }

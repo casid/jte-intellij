@@ -7,6 +7,7 @@ import com.intellij.psi.impl.SharedPsiElementImplUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,86 +18,92 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement {
 
     abstract String getIdentifier();
 
-    private boolean matchesParent(PsiDirectory parent, String[] parts, int index) {
+    private boolean matchesParent(PsiDirectory parent, KtePsiTagOrLayoutName prevName) {
         if (parent == null) {
             return false;
         }
 
-        if (index < 0) {
+        if (prevName == null) {
             return getIdentifier().equals(parent.getName());
         }
 
-        if (!parts[index].equals(parent.getName())) {
+        if (!prevName.getText().equals(parent.getName())) {
             return false;
         }
 
-        return matchesParent(parent.getParent(), parts, index - 1);
+        return matchesParent(parent.getParent(), PsiTreeUtil.getPrevSiblingOfType(prevName, getClass()));
     }
 
     @Override
     public PsiReference getReference() {
-        String[] parts = getText().split("\\.");
+        if (isDirectory()) {
+            return null; // TODO
+        } else {
+            KtePsiTagOrLayoutName prevName = PsiTreeUtil.getPrevSiblingOfType(this, getClass());
 
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), parts[parts.length - 1] + ".kte", GlobalSearchScope.allScope(getProject()));
-        for (PsiFile psiFile : filesByName) {
-            if (!matchesParent(psiFile.getParent(), parts, parts.length - 2)) {
-                continue;
+            PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), getText() + ".kte", GlobalSearchScope.allScope(getProject()));
+            for (PsiFile psiFile : filesByName) {
+                if (matchesParent(psiFile.getParent(), prevName)) {
+                    return new PsiFileReference() {
+
+                        @NotNull
+                        @Override
+                        public PsiElement getElement() {
+                            return KtePsiTagOrLayoutName.this;
+                        }
+
+                        @NotNull
+                        @Override
+                        public TextRange getRangeInElement() {
+                            return TextRange.from(0, getTextLength());
+                        }
+
+                        @Override
+                        public PsiElement resolve() {
+                            return psiFile;
+                        }
+
+                        @NotNull
+                        @Override
+                        public String getCanonicalText() {
+                            return getText();
+                        }
+
+                        @Override
+                        public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+                            return null; // TODO ???
+                        }
+
+                        @Override
+                        public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+                            return null; // TODO ???
+                        }
+
+                        @Override
+                        public boolean isReferenceTo(@NotNull PsiElement element) {
+                            return element == psiFile;
+                        }
+
+                        @Override
+                        public boolean isSoft() {
+                            return false; // TODO ???
+                        }
+
+                        @NotNull
+                        @Override
+                        public ResolveResult[] multiResolve(boolean incompleteCode) {
+                            return new ResolveResult[0]; // TODO ???
+                        }
+                    };
+                }
             }
-
-            return new PsiFileReference() {
-
-                @NotNull
-                @Override
-                public PsiElement getElement() {
-                    return KtePsiTagOrLayoutName.this;
-                }
-
-                @NotNull
-                @Override
-                public TextRange getRangeInElement() {
-                    return TextRange.from(0, getTextLength());
-                }
-
-                @Override
-                public PsiElement resolve() {
-                    return psiFile;
-                }
-
-                @NotNull
-                @Override
-                public String getCanonicalText() {
-                    return getText();
-                }
-
-                @Override
-                public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-                    return null; // TODO ???
-                }
-
-                @Override
-                public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
-                    return null; // TODO ???
-                }
-
-                @Override
-                public boolean isReferenceTo(@NotNull PsiElement element) {
-                    return element == psiFile;
-                }
-
-                @Override
-                public boolean isSoft() {
-                    return false; // TODO ???
-                }
-
-                @NotNull
-                @Override
-                public ResolveResult[] multiResolve(boolean incompleteCode) {
-                    return new ResolveResult[0]; // TODO ???
-                }
-            };
         }
 
         return null;
+    }
+
+    private boolean isDirectory() {
+        return getNextSibling() instanceof KtePsiNameSeparator;
     }
 
     @NotNull

@@ -252,13 +252,15 @@ public class KteParsing {
         Marker tagMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() != KteTokenTypes.TAG_NAME && !builder.eof()) {
-            builder.advanceLexer();
+        while (builder.getTokenType() != KteTokenTypes.PARAMS_BEGIN && !builder.eof()) {
+            if (builder.getTokenType() == KteTokenTypes.TAG_NAME) {
+                Marker layoutNameMarker = builder.mark();
+                builder.advanceLexer();
+                layoutNameMarker.done(KteTokenTypes.TAG_NAME);
+            } else {
+                builder.advanceLexer();
+            }
         }
-
-        Marker tagNameMarker = builder.mark();
-        builder.advanceLexer();
-        tagNameMarker.done(KteTokenTypes.TAG_NAME);
 
         if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
             Marker paramsBeginMarker = builder.mark();
@@ -285,13 +287,15 @@ public class KteParsing {
         Marker layoutMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() != KteTokenTypes.LAYOUT_NAME && !builder.eof()) {
-            builder.advanceLexer();
+        while (builder.getTokenType() != KteTokenTypes.PARAMS_BEGIN && !builder.eof()) {
+            if (builder.getTokenType() == KteTokenTypes.LAYOUT_NAME) {
+                Marker layoutNameMarker = builder.mark();
+                builder.advanceLexer();
+                layoutNameMarker.done(KteTokenTypes.LAYOUT_NAME);
+            } else {
+                builder.advanceLexer();
+            }
         }
-
-        Marker layoutNameMarker = builder.mark();
-        builder.advanceLexer();
-        layoutNameMarker.done(KteTokenTypes.LAYOUT_NAME);
 
         if (builder.getTokenType() == KteTokenTypes.PARAMS_BEGIN) {
             Marker paramsBeginMarker = builder.mark();

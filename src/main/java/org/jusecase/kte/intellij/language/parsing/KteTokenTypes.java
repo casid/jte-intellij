@@ -34,7 +34,7 @@ public interface KteTokenTypes {
 
     IElementType TAG = new KteElementType("TAG");
     IElementType TAG_NAME = new KteElementType("TAG_NAME");
-    IElementType NAME_BEGIN = new KteElementType("NAME_BEGIN");
+    IElementType NAME_SEPARATOR = new KteElementType("NAME_SEPARATOR");
     IElementType PARAMS_BEGIN = new KteElementType("PARAMS_BEGIN");
     IElementType PARAMS_END = new KteElementType("PARAMS_END");
     IElementType LAYOUT = new KteElementType("LAYOUT");

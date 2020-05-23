@@ -56,6 +56,18 @@ public class KteLexerTest {
     }
 
     @Test
+    public void testTag_simple_withPackage() {
+        KteLexer lexer = new KteLexer();
+
+        lexer.start("@tag.my.test.simple()");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
     public void testTag_withParams() {
         KteLexer lexer = new KteLexer();
 
@@ -103,6 +115,18 @@ public class KteLexerTest {
                 "@render(header)\n" +
                 "@render(content)\n" +
                 "@render(footer)\n");
+
+        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
+            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
+            lexer.advance();
+        }
+    }
+
+    @Test
+    public void testLayout_simple_withPackage() {
+        KteLexer lexer = new KteLexer();
+
+        lexer.start("@layout.my.test.simple()\n@endlayout");
 
         while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
             System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());

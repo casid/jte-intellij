@@ -153,6 +153,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             switch (lexer.getCurrentState()) {
                 case KteLexer.CONTENT_STATE_TAG_BEGIN:
                 case KteLexer.CONTENT_STATE_LAYOUT_BEGIN:
+                case KteLexer.CONTENT_STATE_TAG_NAME_BEGIN:
+                case KteLexer.CONTENT_STATE_LAYOUT_NAME_BEGIN:
                     return true;
             }
         }

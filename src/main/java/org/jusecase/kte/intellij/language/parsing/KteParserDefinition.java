@@ -101,6 +101,8 @@ public class KteParserDefinition implements ParserDefinition {
             return new KtePsiRender(node);
         } else if (elementType == KteTokenTypes.RENDER_NAME) {
             return new KtePsiRenderName(node);
+        } else if (elementType == KteTokenTypes.NAME_SEPARATOR) {
+            return new KtePsiNameSeparator(node);
         }
 
         return new KtePsiElement(node);
