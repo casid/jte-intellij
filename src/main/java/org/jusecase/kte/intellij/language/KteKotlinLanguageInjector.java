@@ -151,6 +151,10 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                 injectKotlinPart("print(", ")\n", part);
 
                 KtePsiParamsEnd paramsEnd = PsiTreeUtil.getNextSiblingOfType(part, KtePsiParamsEnd.class);
+                if (paramsEnd == null) {
+                    paramsEnd = PsiTreeUtil.getChildOfType(child, KtePsiParamsEnd.class);
+                }
+
                 if (paramsEnd != null) {
                     for (PsiElement sibling = paramsEnd.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
                         processTemplateBody(sibling);
