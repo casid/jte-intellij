@@ -32,6 +32,9 @@
                                  implementationClass="org.jusecase.kte.intellij.language.refactoring.KteRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="KotlinTemplateEngine"
                                  implementationClass="org.jusecase.kte.intellij.language.refactoring.KteFindUsagesProvider"/>
+        <completion.contributor
+                language="KotlinTemplateEngine"
+                implementationClass="org.jusecase.kte.intellij.language.completion.KteCompletionContributor"/>
     </extensions>
 
     <actions>

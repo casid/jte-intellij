@@ -4,6 +4,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.Objects;
+
 public class KteParsing {
     private final PsiBuilder builder;
 
@@ -276,18 +278,11 @@ public class KteParsing {
     }
 
     private void processTagOrLayoutName(IElementType type) {
-        while (builder.getTokenType() != KteTokenTypes.PARAMS_BEGIN && !builder.eof()) {
-            if (builder.getTokenType() == type) {
-                Marker marker = builder.mark();
-                builder.advanceLexer();
-                marker.done(type);
-            } else if (builder.getTokenType() == KteTokenTypes.NAME_SEPARATOR) {
-                Marker marker = builder.mark();
-                builder.advanceLexer();
-                marker.done(KteTokenTypes.NAME_SEPARATOR);
-            } else {
-                builder.advanceLexer();
-            }
+        while (builder.getTokenType() == type || builder.getTokenType() == KteTokenTypes.NAME_SEPARATOR) {
+            IElementType currentType = Objects.requireNonNull(builder.getTokenType());
+            Marker marker = builder.mark();
+            builder.advanceLexer();
+            marker.done(currentType);
         }
     }
 

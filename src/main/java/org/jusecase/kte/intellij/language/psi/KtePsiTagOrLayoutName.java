@@ -46,32 +46,30 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
 
     @Nullable
     private PsiReference resolveDirectoryReference() {
-        KtePsiTagOrLayoutName fileElement = resolveFileElement(this);
-        if (fileElement == null) {
+        PsiDirectory rootDirectory = findRootDirectory();
+
+        KtePsiTagOrLayoutName nextSibling = KtePsiUtil.getFirstSiblingOfType(this, KtePsiTagOrLayoutName.class);
+        if (nextSibling.getName() == null) {
             return null;
         }
 
-        PsiFile file = resolveFile(fileElement);
-        if (file == null) {
-            return null;
-        }
+        PsiDirectory nextDirectory = rootDirectory.findSubdirectory(nextSibling.getName());
 
-        KtePsiTagOrLayoutName prevSibling = PsiTreeUtil.getPrevSiblingOfType(fileElement, KtePsiTagOrLayoutName.class);
-        PsiDirectory prevDirectory = file.getParent();
-
-        while (prevSibling != null && prevDirectory != null) {
-            if (prevSibling == this) {
-                if (getText().equals(prevDirectory.getName())) {
-                    return createDirectoryReference(prevDirectory);
+        while (nextDirectory != null) {
+            if (nextSibling == this) {
+                if (getText().equals(nextDirectory.getName())) {
+                    return createDirectoryReference(nextDirectory);
                 } else {
                     return null;
                 }
             }
 
-            prevSibling = PsiTreeUtil.getPrevSiblingOfType(prevSibling, KtePsiTagOrLayoutName.class);
-            prevDirectory = prevDirectory.getParent();
+            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, KtePsiTagOrLayoutName.class);
+            if (nextSibling == null || nextSibling.getName() == null) {
+                return null;
+            }
+            nextDirectory = nextDirectory.findSubdirectory(nextSibling.getName());
         }
-
 
         return null;
     }
@@ -244,5 +242,27 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         KtePsiUtil.rename(this, name);
         return this;
+    }
+
+    public PsiDirectory findRootDirectory() {
+        return findRootDirectory(getContainingFile().getParent());
+    }
+
+    private PsiDirectory findRootDirectory(PsiDirectory directory) {
+        if (directory == null) {
+            return null;
+        }
+
+        String directoryName = getIdentifier();
+        if (directoryName.equals(directory.getName())) {
+            return directory;
+        }
+
+        PsiDirectory subdirectory = directory.findSubdirectory(directoryName);
+        if (subdirectory != null) {
+            return subdirectory;
+        }
+
+        return findRootDirectory(directory.getParent());
     }
 }
