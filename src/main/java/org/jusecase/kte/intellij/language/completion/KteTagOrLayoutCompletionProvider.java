@@ -13,7 +13,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.kte.intellij.language.psi.KtePsiTagOrLayoutName;
 
-public class KteTagCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class KteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
         PsiElement position = parameters.getOriginalPosition();
