@@ -27,6 +27,9 @@
         <multiHostInjector implementation="org.jusecase.kte.intellij.language.KteKotlinLanguageInjector"/>
         <lang.elementManipulator forClass="org.jusecase.kte.intellij.language.psi.KtePsiKotlinContent"
                                  implementationClass="org.jusecase.kte.intellij.language.KteKotlinContentManipulator"/>
+
+        <lang.refactoringSupport language="KotlinTemplateEngine"
+                                 implementationClass="org.jusecase.kte.intellij.language.refactoring.KteRefactoringSupportProvider"/>
     </extensions>
 
     <actions>

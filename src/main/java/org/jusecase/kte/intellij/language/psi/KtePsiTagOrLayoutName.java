@@ -5,7 +5,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.SharedPsiElementImplUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -191,6 +190,10 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
         };
     }
 
+    public PsiFile resolveFile() {
+        return resolveFile(this);
+    }
+
     private PsiFile resolveFile(KtePsiTagOrLayoutName fileElement) {
         KtePsiTagOrLayoutName prevName = PsiTreeUtil.getPrevSiblingOfType(fileElement, getClass());
 
@@ -208,7 +211,7 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
         return getNextSibling() instanceof KtePsiNameSeparator;
     }
 
-    private KtePsiTagOrLayoutName resolveFileElement(KtePsiTagOrLayoutName element) {
+    public KtePsiTagOrLayoutName resolveFileElement(KtePsiTagOrLayoutName element) {
         KtePsiTagOrLayoutName sibling = PsiTreeUtil.getNextSiblingOfType(element, KtePsiTagOrLayoutName.class);
         if (sibling == null) {
             return element;
@@ -239,12 +242,7 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        LeafPsiElement leaf = PsiTreeUtil.getChildOfType(this, LeafPsiElement.class);
-        if (leaf == null) {
-            throw new IncorrectOperationException("Could not rename, no leaf found!");
-        }
-
-        leaf.replaceWithText(name);
+        KtePsiUtil.rename(this, name);
         return this;
     }
 }
