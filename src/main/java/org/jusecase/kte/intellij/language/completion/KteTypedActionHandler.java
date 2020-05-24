@@ -26,7 +26,7 @@ public class KteTypedActionHandler extends TypedActionHandlerBase {
         }
 
         // Must be invoked after original handler, otherwise android xml handler overwrites the auto popup after we set it...
-        if (charTyped == '@') {
+        if (charTyped == '@' || charTyped == '$') {
             Project project = editor.getProject();
             if (project == null) {
                 return;
@@ -41,16 +41,16 @@ public class KteTypedActionHandler extends TypedActionHandlerBase {
                 return;
             }
 
-            invokeAutoPopup(project, editor);
+            invokeAutoPopup(project, editor, charTyped);
         }
     }
 
-    private void invokeAutoPopup(@NotNull Project project, @NotNull Editor editor) {
+    private void invokeAutoPopup(@NotNull Project project, @NotNull Editor editor, char charTyped) {
         AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, file -> {
             int offset = editor.getCaretModel().getOffset();
 
             PsiElement lastElement = file.findElementAt(offset - 1);
-            return lastElement != null && StringUtil.endsWithChar(lastElement.getText(), '@');
+            return lastElement != null && StringUtil.endsWithChar(lastElement.getText(), charTyped);
         });
     }
 }

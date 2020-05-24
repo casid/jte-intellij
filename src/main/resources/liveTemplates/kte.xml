@@ -25,4 +25,11 @@
     <template name="@render" value="@render($END$)" description="kte layout render" toReformat="false" toShortenFQNames="false">
         <context><option name="kte" value="true"/></context>
     </template>
+
+    <template name="${" value="${$END$}" description="kte output" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="$safe{" value="$safe{$END$}" description="kte safe output" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
 </templateSet>
