@@ -245,7 +245,7 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
     }
 
     public PsiDirectory findRootDirectory() {
-        return findRootDirectory(getContainingFile().getParent());
+        return findRootDirectory(getContainingFile().getOriginalFile().getParent());
     }
 
     private PsiDirectory findRootDirectory(PsiDirectory directory) {

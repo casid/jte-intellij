@@ -16,8 +16,8 @@ import org.jusecase.kte.intellij.language.psi.KtePsiTagOrLayoutName;
 public class KteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
-        PsiElement position = parameters.getOriginalPosition();
-        if (position == null || position.getParent() == null) {
+        PsiElement position = parameters.getPosition();
+        if (position.getParent() == null) {
             return;
         }
 
