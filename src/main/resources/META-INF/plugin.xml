@@ -38,6 +38,13 @@
 
         <defaultLiveTemplates file="liveTemplates/kte.xml"/>
         <liveTemplateContext implementation="org.jusecase.kte.intellij.language.completion.KteContext"/>
+
+        <editorTypedHandler implementationClass="org.jusecase.kte.intellij.language.completion.KteTypedActionHandler"/>
+
+        <completion.confidence
+                language="HTML"
+                order="first"
+                implementationClass="org.jusecase.kte.intellij.language.completion.KteHtmlCompletionConfidence"/>
     </extensions>
 
     <actions>
