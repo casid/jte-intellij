@@ -35,6 +35,9 @@
         <completion.contributor
                 language="KotlinTemplateEngine"
                 implementationClass="org.jusecase.kte.intellij.language.completion.KteCompletionContributor"/>
+
+        <defaultLiveTemplates file="liveTemplates/kte.xml"/>
+        <liveTemplateContext implementation="org.jusecase.kte.intellij.language.completion.KteContext"/>
     </extensions>
 
     <actions>

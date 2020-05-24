@@ -1,0 +1,28 @@
+<templateSet group="kte">
+    <template name="@import" value="@import $END$" description="kte import" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@param" value="@param $END$" description="kte param" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@if" value="@if($END$)&#10;@endif" description="kte if statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@for" value="@for($END$)&#10;@endfor" description="kte for statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@tag" value="@tag.$NAME$($END$)" description="kte tag" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@layout" value="@layout.$NAME$($END$)&#10;@endlayout" description="kte layout" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@define" value="@define($END$)&#10;@enddefine" description="kte layout define" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@render" value="@render($END$)" description="kte layout render" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+</templateSet>
