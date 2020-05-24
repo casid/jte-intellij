@@ -208,17 +208,16 @@ public class KteLexerTest {
         );
     }
 
-//    @Test
-//    public void testStatementWithKotlinTemplate() {
-//        KteLexer lexer = new KteLexer();
-//
-//        lexer.start("!{String x = \"hello ${world}\"}");
-//
-//        while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd()) {
-//            System.out.println(lexer.getTokenType() + ": " + lexer.getTokenText());
-//            lexer.advance();
-//        }
-//    }
+    @Test
+    public void testStatementWithKotlinTemplate() {
+        givenInput("!{x:String = \"hello ${world}\"}");
+
+        thenTokensAre(
+                STATEMENT_BEGIN, "!{",
+                KOTLIN_INJECTION, "x:String = \"hello ${world}\"",
+                STATEMENT_END, "}"
+        );
+    }
 
     private void givenInput(String input) {
         lexer.start(input);

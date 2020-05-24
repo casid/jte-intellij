@@ -82,9 +82,11 @@ public class ContentTokenParser extends AbstractTokenParser {
     }
 
     private boolean isBeginOfKteKeyword(int position) {
-        for (String keyword : KEYWORDS) {
-            if (isBeginOf(position, keyword)) {
-                return true;
+        if (lexer.getCurrentState() == KteLexer.CONTENT_STATE_HTML || lexer.isInKotlinEndState()) {
+            for (String keyword : KEYWORDS) {
+                if (isBeginOf(position, keyword)) {
+                    return true;
+                }
             }
         }
 
@@ -106,11 +108,22 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
+        if (isBeginOf(position, '{')) {
+            switch (lexer.getCurrentState()) {
+                case KteLexer.CONTENT_STATE_OUTPUT_BEGIN:
+                case KteLexer.CONTENT_STATE_STATEMENT_BEGIN:
+                    lexer.incrementCurrentCount();
+                    return false;
+            }
+        }
+
         if (isBeginOf(position, '}')) {
             switch (lexer.getCurrentState()) {
                 case KteLexer.CONTENT_STATE_OUTPUT_BEGIN:
                 case KteLexer.CONTENT_STATE_STATEMENT_BEGIN:
-                    return true;
+                    int count = lexer.getCurrentCount();
+                    lexer.decrementCurrentCount();
+                    return count <= 0;
             }
         }
 

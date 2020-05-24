@@ -167,7 +167,7 @@ public class KteLexer extends LexerBase {
     }
 
     public void setCurrentState(int state) {
-        setStateInternal(state, getCurrentCount());
+        setStateInternal(state, 0);
     }
 
     public void incrementCurrentCount() {
