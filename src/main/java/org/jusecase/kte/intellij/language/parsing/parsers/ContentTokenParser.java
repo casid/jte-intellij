@@ -90,13 +90,6 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (isBeginOf(position, '=')) {
-            if (lexer.getCurrentState() == KteLexer.CONTENT_STATE_PARAM_BEGIN) {
-                lexer.setCurrentState(KteLexer.CONTENT_STATE_PARAM_END);
-                return true;
-            }
-        }
-
         if (isBeginOf(position, '\n')) {
             switch (lexer.getCurrentState()) {
                 case KteLexer.CONTENT_STATE_IMPORT_BEGIN:
