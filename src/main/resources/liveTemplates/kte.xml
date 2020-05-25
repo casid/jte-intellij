@@ -8,6 +8,12 @@
     <template name="@if" value="@if($END$)&#10;@endif" description="kte if statement" toReformat="false" toShortenFQNames="false">
         <context><option name="kte" value="true"/></context>
     </template>
+    <template name="@elseif" value="@elseif($END$)" description="kte elseif statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
+    <template name="@else" value="@else$END$" description="kte else statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="kte" value="true"/></context>
+    </template>
     <template name="@for" value="@for($END$)&#10;@endfor" description="kte for statement" toReformat="false" toShortenFQNames="false">
         <context><option name="kte" value="true"/></context>
     </template>
