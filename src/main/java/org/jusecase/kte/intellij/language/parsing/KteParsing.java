@@ -42,14 +42,22 @@ public class KteParsing {
             processElseIf();
         } else if (tokenType == KteTokenTypes.ELSE) {
             processElse();
+        } else if (tokenType == KteTokenTypes.ENDIF) {
+            processEndIf();
         } else if (tokenType == KteTokenTypes.FOR) {
             processFor();
+        } else if (tokenType == KteTokenTypes.ENDFOR) {
+            processEndFor();
         } else if (tokenType == KteTokenTypes.TAG) {
             processTag();
         } else if (tokenType == KteTokenTypes.LAYOUT) {
             processLayout();
+        } else if (tokenType == KteTokenTypes.ENDLAYOUT) {
+            processEndLayout();
         } else if (tokenType == KteTokenTypes.DEFINE) {
             processDefine();
+        } else if (tokenType == KteTokenTypes.ENDDEFINE) {
+            processEndDefine();
         } else if (tokenType == KteTokenTypes.RENDER) {
             processRender();
         } else {
@@ -161,10 +169,7 @@ public class KteParsing {
             conditionBeginMarker.done(KteTokenTypes.CONDITION_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != KteTokenTypes.ENDIF && !builder.eof());
-        processEndIf();
+        processEnd(KteTokenTypes.ENDIF);
 
         ifMarker.done(KteTokenTypes.IF);
     }
@@ -205,11 +210,9 @@ public class KteParsing {
     }
 
     private void processEndIf() {
-        if (builder.getTokenType() == KteTokenTypes.ENDIF) {
-            Marker marker = builder.mark();
-            builder.advanceLexer();
-            marker.done(KteTokenTypes.ENDIF);
-        }
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(KteTokenTypes.ENDIF);
     }
 
     private void processFor() {
@@ -238,20 +241,15 @@ public class KteParsing {
             conditionBeginMarker.done(KteTokenTypes.CONDITION_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != KteTokenTypes.ENDFOR && !builder.eof());
-        processEndFor();
+        processEnd(KteTokenTypes.ENDFOR);
 
         forMarker.done(KteTokenTypes.FOR);
     }
 
     private void processEndFor() {
-        if (builder.getTokenType() == KteTokenTypes.ENDFOR) {
-            Marker marker = builder.mark();
-            builder.advanceLexer();
-            marker.done(KteTokenTypes.ENDFOR);
-        }
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(KteTokenTypes.ENDFOR);
     }
 
     private void processTag() {
@@ -314,20 +312,15 @@ public class KteParsing {
             paramsBeginMarker.done(KteTokenTypes.PARAMS_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != KteTokenTypes.ENDLAYOUT && !builder.eof());
-        processEndLayout();
+        processEnd(KteTokenTypes.ENDLAYOUT);
 
         layoutMarker.done(KteTokenTypes.LAYOUT);
     }
 
     private void processEndLayout() {
-        if (builder.getTokenType() == KteTokenTypes.ENDLAYOUT) {
-            Marker marker = builder.mark();
-            builder.advanceLexer();
-            marker.done(KteTokenTypes.ENDLAYOUT);
-        }
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(KteTokenTypes.ENDLAYOUT);
     }
 
     private void processDefine() {
@@ -352,20 +345,15 @@ public class KteParsing {
             paramsBeginMarker.done(KteTokenTypes.PARAMS_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != KteTokenTypes.ENDDEFINE && !builder.eof());
-        processEndDefine();
+        processEnd(KteTokenTypes.ENDDEFINE);
 
         defineMarker.done(KteTokenTypes.DEFINE);
     }
 
     private void processEndDefine() {
-        if (builder.getTokenType() == KteTokenTypes.ENDDEFINE) {
-            Marker marker = builder.mark();
-            builder.advanceLexer();
-            marker.done(KteTokenTypes.ENDDEFINE);
-        }
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(KteTokenTypes.ENDDEFINE);
     }
 
     private void processRender() {
@@ -391,5 +379,15 @@ public class KteParsing {
         }
 
         renderMarker.done(KteTokenTypes.RENDER);
+    }
+
+    private void processEnd(IElementType tokenType) {
+        while (builder.getTokenType() != tokenType && !builder.eof()) {
+            processBlock();
+        }
+
+        if (builder.getTokenType() == tokenType) {
+            processBlock();
+        }
     }
 }
