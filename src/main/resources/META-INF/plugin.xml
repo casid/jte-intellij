@@ -45,6 +45,8 @@
                 language="HTML"
                 order="first"
                 implementationClass="org.jusecase.kte.intellij.language.completion.KteHtmlCompletionConfidence"/>
+
+        <annotator language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.KteAnnotator"/>
     </extensions>
 
     <actions>

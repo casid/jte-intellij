@@ -9,7 +9,7 @@ public class KtePsiTagName extends KtePsiTagOrLayoutName {
     }
 
     @Override
-    String getIdentifier() {
+    public String getIdentifier() {
         return "tag";
     }
 }

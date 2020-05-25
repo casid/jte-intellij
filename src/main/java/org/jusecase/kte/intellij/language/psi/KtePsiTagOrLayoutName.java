@@ -17,7 +17,7 @@ public abstract class KtePsiTagOrLayoutName extends KtePsiElement implements Psi
         super(node);
     }
 
-    abstract String getIdentifier();
+    public abstract String getIdentifier();
 
     private boolean matchesParent(PsiDirectory parent, KtePsiTagOrLayoutName prevName) {
         if (parent == null) {
