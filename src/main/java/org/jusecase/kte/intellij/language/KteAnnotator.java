@@ -20,6 +20,8 @@ public class KteAnnotator implements Annotator {
             doAnnotate((KtePsiLayout) element, holder);
         } else if (element instanceof KtePsiDefine) {
             doAnnotate((KtePsiDefine) element, holder);
+        } else if (element instanceof KtePsiElse || element instanceof KtePsiElseIf) {
+            checkParentIsIf(element, holder);
         }
     }
 
@@ -50,6 +52,12 @@ public class KteAnnotator implements Annotator {
     private void doAnnotate(KtePsiDefine element, AnnotationHolder holder) {
         if (!(element.getLastChild() instanceof KtePsiEndDefine)) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Missing @enddefine").create();
+        }
+    }
+
+    private void checkParentIsIf(PsiElement element, AnnotationHolder holder) {
+        if (!(element.getParent() instanceof KtePsiIf)) {
+            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @if").create();
         }
     }
 }
