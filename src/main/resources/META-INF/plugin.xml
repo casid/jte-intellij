@@ -47,6 +47,8 @@
                 implementationClass="org.jusecase.kte.intellij.language.completion.KteHtmlCompletionConfidence"/>
 
         <annotator language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.KteAnnotator"/>
+
+        <lang.commenter language="KotlinTemplateEngine" implementationClass="org.jusecase.kte.intellij.language.KteCommenter"/>
     </extensions>
 
     <actions>
