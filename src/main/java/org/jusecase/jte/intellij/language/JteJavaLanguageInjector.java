@@ -117,12 +117,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 }
             } else if (child instanceof JtePsiEndFor) {
                 injectEmptyJavaPart(null, "}\n", child);
-            } /*else if (child instanceof JtePsiTag) {
-                // Disabled for now, as it breaks named parameters
-                // TODO try to call real static tag method
+            } else if (child instanceof JtePsiTag) {
                 JtePsiJavaInjection javaPart = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("System.out.println(", ");\n", javaPart);
-            }*/
+            }
         }
 
         private void injectEmptyJavaPart(String prefix, String suffix, @NotNull PsiElement child) {
