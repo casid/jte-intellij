@@ -12,15 +12,15 @@ public class IfConditionTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IF_BEGIN) {
+        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_IF_BEGIN) {
             if (hasToken(position, "(", JteTokenTypes.CONDITION_BEGIN)) {
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_IF_CONDITION);
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_IF_CONDITION);
                 return true;
             }
-        } else if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_IF_CONDITION && lexer.getCurrentCount() <= 0) {
+        } else if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_IF_CONDITION && lexer.getCurrentCount() <= 0) {
             if (hasToken(position, ")", JteTokenTypes.CONDITION_END)) {
                 lexer.setCurrentCount(0);
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_IF_END);
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_IF_END);
                 return true;
             }
         }

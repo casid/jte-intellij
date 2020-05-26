@@ -12,15 +12,15 @@ public class ForConditionTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN) {
+        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_FOR_BEGIN) {
             if (hasToken(position, "(", JteTokenTypes.CONDITION_BEGIN)) {
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION);
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_FOR_CONDITION);
                 return true;
             }
-        } else if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_JAVA_FOR_CONDITION && lexer.getCurrentCount() <= 0) {
+        } else if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_FOR_CONDITION && lexer.getCurrentCount() <= 0) {
             if (hasToken(position, ")", JteTokenTypes.CONDITION_END)) {
                 lexer.setCurrentCount(0);
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_FOR_END);
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_FOR_END);
                 return true;
             }
         }

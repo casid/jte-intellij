@@ -34,9 +34,17 @@ public interface JteTokenTypes {
 
     IElementType TAG = new JteElementType("TAG");
     IElementType TAG_NAME = new JteElementType("TAG_NAME");
-    IElementType NAME_BEGIN = new JteElementType("NAME_BEGIN");
+    IElementType NAME_SEPARATOR = new JteElementType("NAME_SEPARATOR");
     IElementType PARAMS_BEGIN = new JteElementType("PARAMS_BEGIN");
     IElementType PARAMS_END = new JteElementType("PARAMS_END");
+    IElementType LAYOUT = new JteElementType("LAYOUT");
+    IElementType LAYOUT_NAME = new JteElementType("LAYOUT_NAME");
+    IElementType DEFINE = new JteElementType("DEFINE");
+    IElementType DEFINE_NAME = new JteElementType("DEFINE_NAME");
+    IElementType ENDDEFINE = new JteElementType("ENDDEFINE");
+    IElementType RENDER = new JteElementType("RENDER");
+    IElementType RENDER_NAME = new JteElementType("RENDER_NAME");
+    IElementType ENDLAYOUT = new JteElementType("ENDLAYOUT");
 
     IElementType COMMENT = new JteElementType("COMMENT");
     IElementType COMMENT_CONTENT = new JteElementType("COMMENT_CONTENT");

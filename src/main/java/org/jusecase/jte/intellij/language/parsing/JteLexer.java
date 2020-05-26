@@ -13,27 +13,37 @@ import org.jusecase.jte.intellij.language.parsing.parsers.*;
 public class JteLexer extends LexerBase {
 
     public static final int CONTENT_STATE_HTML = 0;
-    public static final int CONTENT_STATE_JAVA_IMPORT_BEGIN = 1;
-    public static final int CONTENT_STATE_JAVA_IMPORT_END = 2;
-    public static final int CONTENT_STATE_JAVA_PARAM_BEGIN = 3;
-    public static final int CONTENT_STATE_JAVA_PARAM_END = 4;
-    public static final int CONTENT_STATE_JAVA_OUTPUT_BEGIN = 5;
-    public static final int CONTENT_STATE_JAVA_OUTPUT_END = 6;
-    public static final int CONTENT_STATE_JAVA_IF_BEGIN = 7;
-    public static final int CONTENT_STATE_JAVA_IF_CONDITION = 8;
-    public static final int CONTENT_STATE_JAVA_IF_END = 9;
-    public static final int CONTENT_STATE_JAVA_FOR_BEGIN = 10;
-    public static final int CONTENT_STATE_JAVA_FOR_CONDITION = 11;
-    public static final int CONTENT_STATE_JAVA_FOR_END = 12;
-    public static final int CONTENT_STATE_JAVA_ELSEIF_BEGIN = 13;
-    public static final int CONTENT_STATE_JAVA_ELSEIF_CONDITION = 14;
-    public static final int CONTENT_STATE_JAVA_ELSEIF_END = 15;
-    public static final int CONTENT_STATE_JAVA_TAG_BEGIN = 16;
-    public static final int CONTENT_STATE_JAVA_TAG_NAME_BEGIN = 17;
-    public static final int CONTENT_STATE_JAVA_TAG_PARAMS = 18;
-    public static final int CONTENT_STATE_JAVA_TAG_END = 19;
-    public static final int CONTENT_STATE_JAVA_STATEMENT_BEGIN = 20;
-    public static final int CONTENT_STATE_JAVA_STATEMENT_END = 21;
+    public static final int CONTENT_STATE_IMPORT_BEGIN = 1;
+    public static final int CONTENT_STATE_IMPORT_END = 2;
+    public static final int CONTENT_STATE_PARAM_BEGIN = 3;
+    public static final int CONTENT_STATE_PARAM_END = 4;
+    public static final int CONTENT_STATE_OUTPUT_BEGIN = 5;
+    public static final int CONTENT_STATE_OUTPUT_END = 6;
+    public static final int CONTENT_STATE_IF_BEGIN = 7;
+    public static final int CONTENT_STATE_IF_CONDITION = 8;
+    public static final int CONTENT_STATE_IF_END = 9;
+    public static final int CONTENT_STATE_FOR_BEGIN = 10;
+    public static final int CONTENT_STATE_FOR_CONDITION = 11;
+    public static final int CONTENT_STATE_FOR_END = 12;
+    public static final int CONTENT_STATE_ELSEIF_BEGIN = 13;
+    public static final int CONTENT_STATE_ELSEIF_CONDITION = 14;
+    public static final int CONTENT_STATE_ELSEIF_END = 15;
+    public static final int CONTENT_STATE_TAG_BEGIN = 16;
+    public static final int CONTENT_STATE_TAG_NAME_BEGIN = 17;
+    public static final int CONTENT_STATE_TAG_PARAMS = 18;
+    public static final int CONTENT_STATE_TAG_END = 19;
+    public static final int CONTENT_STATE_STATEMENT_BEGIN = 20;
+    public static final int CONTENT_STATE_STATEMENT_END = 21;
+    public static final int CONTENT_STATE_LAYOUT_BEGIN = 22;
+    public static final int CONTENT_STATE_LAYOUT_NAME_BEGIN = 23;
+    public static final int CONTENT_STATE_LAYOUT_PARAMS = 24;
+    public static final int CONTENT_STATE_LAYOUT_END = 25;
+    public static final int CONTENT_STATE_DEFINE_BEGIN = 26;
+    public static final int CONTENT_STATE_DEFINE_NAME = 27;
+    public static final int CONTENT_STATE_DEFINE_END = 28;
+    public static final int CONTENT_STATE_RENDER_BEGIN = 29;
+    public static final int CONTENT_STATE_RENDER_NAME = 30;
+    public static final int CONTENT_STATE_RENDER_END = 31;
 
     private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
@@ -62,6 +72,15 @@ public class JteLexer extends LexerBase {
                 new TagTokenParser(this),
                 new TagNameTokenParser(this),
                 new TagParamsTokenParser(this),
+                new LayoutTokenParser(this),
+                new LayoutNameTokenParser(this),
+                new LayoutParamsTokenParser(this),
+                new EndLayoutTokenParser(),
+                new DefineTokenParser(this),
+                new DefineNameTokenParser(this),
+                new EndDefineTokenParser(),
+                new RenderTokenParser(this),
+                new RenderNameTokenParser(this),
                 new WhitespaceParser(),
         };
     }
@@ -148,7 +167,7 @@ public class JteLexer extends LexerBase {
     }
 
     public void setCurrentState(int state) {
-        setStateInternal(state, getCurrentCount());
+        setStateInternal(state, 0);
     }
 
     public void incrementCurrentCount() {
@@ -169,14 +188,17 @@ public class JteLexer extends LexerBase {
 
     public boolean isInJavaEndState() {
         switch (getCurrentState()) {
-            case CONTENT_STATE_JAVA_IMPORT_END:
-            case CONTENT_STATE_JAVA_PARAM_END:
-            case CONTENT_STATE_JAVA_STATEMENT_END:
-            case CONTENT_STATE_JAVA_OUTPUT_END:
-            case CONTENT_STATE_JAVA_IF_END:
-            case CONTENT_STATE_JAVA_FOR_END:
-            case CONTENT_STATE_JAVA_ELSEIF_END:
-            case CONTENT_STATE_JAVA_TAG_END:
+            case CONTENT_STATE_IMPORT_END:
+            case CONTENT_STATE_PARAM_END:
+            case CONTENT_STATE_STATEMENT_END:
+            case CONTENT_STATE_OUTPUT_END:
+            case CONTENT_STATE_IF_END:
+            case CONTENT_STATE_FOR_END:
+            case CONTENT_STATE_ELSEIF_END:
+            case CONTENT_STATE_TAG_END:
+            case CONTENT_STATE_LAYOUT_END:
+            case CONTENT_STATE_DEFINE_END:
+            case CONTENT_STATE_RENDER_END:
                 return true;
         }
         return false;

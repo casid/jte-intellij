@@ -35,6 +35,11 @@ public class JteHighlighter extends SyntaxHighlighterBase {
         MAPPING.put(JteTokenTypes.FOR, KEYWORD);
         MAPPING.put(JteTokenTypes.ENDFOR, KEYWORD);
         MAPPING.put(JteTokenTypes.TAG, KEYWORD);
+        MAPPING.put(JteTokenTypes.LAYOUT, KEYWORD);
+        MAPPING.put(JteTokenTypes.ENDLAYOUT, KEYWORD);
+        MAPPING.put(JteTokenTypes.DEFINE, KEYWORD);
+        MAPPING.put(JteTokenTypes.ENDDEFINE, KEYWORD);
+        MAPPING.put(JteTokenTypes.RENDER, KEYWORD);
 
         MAPPING.put(JteTokenTypes.COMMENT, COMMENT);
 

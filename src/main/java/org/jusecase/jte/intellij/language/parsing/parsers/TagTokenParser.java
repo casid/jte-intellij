@@ -13,7 +13,7 @@ public class TagTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         if (hasToken(position, "@tag", JteTokenTypes.TAG)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_TAG_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_TAG_BEGIN);
             return true;
         }
         return false;

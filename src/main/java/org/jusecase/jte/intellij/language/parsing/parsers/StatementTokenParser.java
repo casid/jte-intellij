@@ -15,12 +15,12 @@ public class StatementTokenParser extends AbstractTokenParser {
         int state = lexer.getCurrentState();
 
         if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "!{", JteTokenTypes.STATEMENT_BEGIN)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_STATEMENT_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_STATEMENT_BEGIN);
             return true;
         }
 
-        if (state == JteLexer.CONTENT_STATE_JAVA_STATEMENT_BEGIN && hasToken(position, "}", JteTokenTypes.STATEMENT_END)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_STATEMENT_END);
+        if (state == JteLexer.CONTENT_STATE_STATEMENT_BEGIN && hasToken(position, "}", JteTokenTypes.STATEMENT_END)) {
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_STATEMENT_END);
             return true;
         }
 

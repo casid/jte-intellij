@@ -13,7 +13,7 @@ public class IfTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         if (hasToken(position, "@if", JteTokenTypes.IF)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_IF_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_IF_BEGIN);
             return true;
         }
         return false;

@@ -13,7 +13,7 @@ public class ForTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         if (hasToken(position, "@for", JteTokenTypes.FOR)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_JAVA_FOR_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_FOR_BEGIN);
             return true;
         }
         return false;

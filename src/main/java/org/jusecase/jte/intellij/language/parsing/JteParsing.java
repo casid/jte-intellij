@@ -4,6 +4,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.Objects;
+
 public class JteParsing {
     private final PsiBuilder builder;
 
@@ -40,10 +42,24 @@ public class JteParsing {
             processElseIf();
         } else if (tokenType == JteTokenTypes.ELSE) {
             processElse();
+        } else if (tokenType == JteTokenTypes.ENDIF) {
+            processEndIf();
         } else if (tokenType == JteTokenTypes.FOR) {
             processFor();
+        } else if (tokenType == JteTokenTypes.ENDFOR) {
+            processEndFor();
         } else if (tokenType == JteTokenTypes.TAG) {
             processTag();
+        } else if (tokenType == JteTokenTypes.LAYOUT) {
+            processLayout();
+        } else if (tokenType == JteTokenTypes.ENDLAYOUT) {
+            processEndLayout();
+        } else if (tokenType == JteTokenTypes.DEFINE) {
+            processDefine();
+        } else if (tokenType == JteTokenTypes.ENDDEFINE) {
+            processEndDefine();
+        } else if (tokenType == JteTokenTypes.RENDER) {
+            processRender();
         } else {
             builder.advanceLexer();
         }
@@ -57,9 +73,9 @@ public class JteParsing {
         outputBeginMarker.done(JteTokenTypes.OUTPUT_BEGIN);
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.OUTPUT_END) {
@@ -79,9 +95,9 @@ public class JteParsing {
         statementBeginMarker.done(JteTokenTypes.STATEMENT_BEGIN);
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.STATEMENT_END) {
@@ -102,9 +118,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         paramMarker.done(JteTokenTypes.PARAM);
@@ -119,9 +135,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         importMarker.done(JteTokenTypes.IMPORT);
@@ -142,9 +158,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
@@ -153,10 +169,7 @@ public class JteParsing {
             conditionBeginMarker.done(JteTokenTypes.CONDITION_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != JteTokenTypes.ENDIF && !builder.eof());
-        processEndIf();
+        processEnd(JteTokenTypes.ENDIF);
 
         ifMarker.done(JteTokenTypes.IF);
     }
@@ -176,9 +189,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
@@ -217,9 +230,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
@@ -228,10 +241,7 @@ public class JteParsing {
             conditionBeginMarker.done(JteTokenTypes.CONDITION_END);
         }
 
-        do {
-            processBlock();
-        } while (builder.getTokenType() != JteTokenTypes.ENDFOR && !builder.eof());
-        processEndFor();
+        processEnd(JteTokenTypes.ENDFOR);
 
         forMarker.done(JteTokenTypes.FOR);
     }
@@ -246,13 +256,7 @@ public class JteParsing {
         Marker tagMarker = builder.mark();
         builder.advanceLexer();
 
-        while (builder.getTokenType() != JteTokenTypes.TAG_NAME && !builder.eof()) {
-            builder.advanceLexer();
-        }
-
-        Marker tagNameMarker = builder.mark();
-        builder.advanceLexer();
-        tagNameMarker.done(JteTokenTypes.TAG_NAME);
+        processTagOrLayoutName(JteTokenTypes.TAG_NAME);
 
         if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
             Marker paramsBeginMarker = builder.mark();
@@ -261,9 +265,9 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker javaBeginMarker = builder.mark();
+            Marker kotlinBeginMarker = builder.mark();
             builder.advanceLexer();
-            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
         }
 
         if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
@@ -273,5 +277,117 @@ public class JteParsing {
         }
 
         tagMarker.done(JteTokenTypes.TAG);
+    }
+
+    private void processTagOrLayoutName(IElementType type) {
+        while (builder.getTokenType() == type || builder.getTokenType() == JteTokenTypes.NAME_SEPARATOR) {
+            IElementType currentType = Objects.requireNonNull(builder.getTokenType());
+            Marker marker = builder.mark();
+            builder.advanceLexer();
+            marker.done(currentType);
+        }
+    }
+
+    private void processLayout() {
+        Marker layoutMarker = builder.mark();
+        builder.advanceLexer();
+
+        processTagOrLayoutName(JteTokenTypes.LAYOUT_NAME);
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+            Marker kotlinBeginMarker = builder.mark();
+            builder.advanceLexer();
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_END);
+        }
+
+        processEnd(JteTokenTypes.ENDLAYOUT);
+
+        layoutMarker.done(JteTokenTypes.LAYOUT);
+    }
+
+    private void processEndLayout() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(JteTokenTypes.ENDLAYOUT);
+    }
+
+    private void processDefine() {
+        Marker defineMarker = builder.mark();
+        builder.advanceLexer();
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.DEFINE_NAME) {
+            Marker defineNameMarker = builder.mark();
+            builder.advanceLexer();
+            defineNameMarker.done(JteTokenTypes.DEFINE_NAME);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_END);
+        }
+
+        processEnd(JteTokenTypes.ENDDEFINE);
+
+        defineMarker.done(JteTokenTypes.DEFINE);
+    }
+
+    private void processEndDefine() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(JteTokenTypes.ENDDEFINE);
+    }
+
+    private void processRender() {
+        Marker renderMarker = builder.mark();
+        builder.advanceLexer();
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_BEGIN);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.RENDER_NAME) {
+            Marker defineNameMarker = builder.mark();
+            builder.advanceLexer();
+            defineNameMarker.done(JteTokenTypes.RENDER_NAME);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
+            Marker paramsBeginMarker = builder.mark();
+            builder.advanceLexer();
+            paramsBeginMarker.done(JteTokenTypes.PARAMS_END);
+        }
+
+        renderMarker.done(JteTokenTypes.RENDER);
+    }
+
+    private void processEnd(IElementType tokenType) {
+        while (builder.getTokenType() != tokenType && !builder.eof()) {
+            processBlock();
+        }
+
+        if (builder.getTokenType() == tokenType) {
+            processBlock();
+        }
     }
 }

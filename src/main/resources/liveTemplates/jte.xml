@@ -1,0 +1,41 @@
+<templateSet group="jte">
+    <template name="@import" value="@import $END$" description="jte import" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@param" value="@param $END$" description="jte param" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@if" value="@if($END$)&#10;@endif" description="jte if statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@elseif" value="@elseif($END$)" description="jte elseif statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@else" value="@else$END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@for" value="@for($END$)&#10;@endfor" description="jte for statement" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@tag" value="@tag$NAME$($END$)" description="jte tag" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@layout" value="@layout$NAME$($END$)&#10;@endlayout" description="jte layout" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@define" value="@define($END$)&#10;@enddefine" description="jte layout define" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="@render" value="@render($END$)" description="jte layout render" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+
+    <template name="${" value="${$END$}" description="jte output" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+    <template name="$safe{" value="$safe{$END$}" description="jte safe output" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
+</templateSet>

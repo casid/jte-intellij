@@ -26,6 +26,27 @@
         <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
         <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
                                  implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
+
+        <lang.refactoringSupport language="JavaTemplateEngine"
+                                 implementationClass="org.jusecase.jte.intellij.language.refactoring.JteRefactoringSupportProvider"/>
+        <lang.findUsagesProvider language="JavaTemplateEngine"
+                                 implementationClass="org.jusecase.jte.intellij.language.refactoring.JteFindUsagesProvider"/>
+        <completion.contributor language="JavaTemplateEngine"
+                                implementationClass="org.jusecase.jte.intellij.language.completion.JteCompletionContributor"/>
+
+        <defaultLiveTemplates file="liveTemplates/jte.xml"/>
+        <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext"/>
+
+        <editorTypedHandler implementationClass="org.jusecase.jte.intellij.language.completion.JteTypedActionHandler"/>
+
+        <completion.confidence
+                language="HTML"
+                order="first"
+                implementationClass="org.jusecase.jte.intellij.language.completion.JteHtmlCompletionConfidence"/>
+
+        <annotator language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
+
+        <lang.commenter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
     </extensions>
 
     <actions>
