@@ -8,7 +8,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
-import org.jetbrains.kotlin.idea.KotlinFileType;
 import org.jetbrains.kotlin.idea.KotlinLanguage;
 import org.jetbrains.kotlin.idea.UserDataModuleInfoKt;
 import org.jetbrains.kotlin.psi.KtFile;
@@ -38,7 +37,6 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
-        private boolean hasWrittenPackage;
         private boolean hasStartedInjection;
 
         public Injector(KtePsiKotlinContent host, MultiHostRegistrar registrar) {
@@ -51,18 +49,13 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                 if (child instanceof KtePsiImport) {
                     KtePsiKotlinInjection part = PsiTreeUtil.getChildOfType(child, KtePsiKotlinInjection.class);
                     if (part != null) {
-                        if (!hasWrittenPackage) {
-                            injectKotlinPart("package template.support\nimport ", "\n", part);
-                            hasWrittenPackage = true;
-                        } else {
-                            injectKotlinPart("import ", "\n", part);
-                        }
+                        injectKotlinPart("import ", "\n", part);
                     }
                 } else if (child instanceof KtePsiParam) {
                     KtePsiKotlinInjection part = PsiTreeUtil.getChildOfType(child, KtePsiKotlinInjection.class);
                     if (part != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "object DummyTemplate {\nfun render(";
+                            String classPrefix = "fun render(";
                             KtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, KtePsiParam.class);
                             if (nextParam != null) {
                                 injectKotlinPart(classPrefix, null, part);
@@ -85,7 +78,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
             }
 
             if (hasWrittenClass) {
-                getRegistrar().addPlace(null, "\n}\n}", host, new TextRange(host.getTextLength(), host.getTextLength()));
+                getRegistrar().addPlace(null, "\n}", host, new TextRange(host.getTextLength(), host.getTextLength()));
             }
 
             if (hasStartedInjection) {
@@ -187,7 +180,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
 
         public MultiHostRegistrar getRegistrar() {
             if (!hasStartedInjection) {
-                registrar.startInjecting(KotlinLanguage.INSTANCE, KotlinFileType.EXTENSION);
+                registrar.startInjecting(KotlinLanguage.INSTANCE);
                 hasStartedInjection = true;
             }
             return registrar;
