@@ -32,7 +32,6 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
-        private boolean hasWrittenPackage;
         private boolean hasStartedInjection;
 
         public Injector(JtePsiJavaContent host, MultiHostRegistrar registrar) {
@@ -45,12 +44,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 if (child instanceof JtePsiImport) {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
-                        if (!hasWrittenPackage) {
-                            injectJavaPart("package template.support;\nimport ", ";\n", part);
-                            hasWrittenPackage = true;
-                        } else {
-                            injectJavaPart("import ", ";\n", part);
-                        }
+                        injectJavaPart("import ", ";\n", part);
                     }
                 } else if (child instanceof JtePsiParam) {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
