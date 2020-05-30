@@ -19,7 +19,6 @@ public class ForConditionTokenParser extends AbstractTokenParser {
             }
         } else if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_FOR_CONDITION && lexer.getCurrentCount() <= 0) {
             if (hasToken(position, ")", JteTokenTypes.CONDITION_END)) {
-                lexer.setCurrentCount(0);
                 lexer.setCurrentState(JteLexer.CONTENT_STATE_FOR_END);
                 return true;
             }

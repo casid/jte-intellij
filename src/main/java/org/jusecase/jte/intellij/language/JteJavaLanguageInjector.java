@@ -92,10 +92,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("if (", ") {\n", part);
 
-                JtePsiConditionEnd conditionEnd = PsiTreeUtil.getNextSiblingOfType(part, JtePsiConditionEnd.class);
-                if (conditionEnd != null) {
-                    for (PsiElement conditionSibling = conditionEnd.getNextSibling(); conditionSibling != null; conditionSibling = conditionSibling.getNextSibling()) {
-                        processTemplateBody(conditionSibling);
+                if (part != null) {
+                    for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                        processTemplateBody(sibling);
                     }
                 }
             } else if (child instanceof JtePsiElseIf) {
@@ -109,10 +108,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("for (", ") {\n", part);
 
-                JtePsiConditionEnd conditionEnd = PsiTreeUtil.getNextSiblingOfType(part, JtePsiConditionEnd.class);
-                if (conditionEnd != null) {
-                    for (PsiElement conditionSibling = conditionEnd.getNextSibling(); conditionSibling != null; conditionSibling = conditionSibling.getNextSibling()) {
-                        processTemplateBody(conditionSibling);
+                if (part != null) {
+                    for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                        processTemplateBody(sibling);
                     }
                 }
             } else if (child instanceof JtePsiEndFor) {
@@ -126,21 +124,16 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("System.out.print(", ")\n", part);
 
-                JtePsiParamsEnd paramsEnd = PsiTreeUtil.getNextSiblingOfType(part, JtePsiParamsEnd.class);
-                if (paramsEnd == null) {
-                    paramsEnd = PsiTreeUtil.getChildOfType(child, JtePsiParamsEnd.class);
-                }
-
-                if (paramsEnd != null) {
-                    for (PsiElement sibling = paramsEnd.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                if (part != null) {
+                    for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
                         processTemplateBody(sibling);
                     }
                 }
             } else if (child instanceof JtePsiDefine) {
-                JtePsiParamsEnd paramsEnd = PsiTreeUtil.getChildOfType(child, JtePsiParamsEnd.class);
+                JtePsiDefineName name = PsiTreeUtil.getChildOfType(child, JtePsiDefineName.class);
 
-                if (paramsEnd != null) {
-                    for (PsiElement sibling = paramsEnd.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                if (name != null) {
+                    for (PsiElement sibling = name.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
                         processTemplateBody(sibling);
                     }
                 }

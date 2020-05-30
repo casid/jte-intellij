@@ -37,12 +37,12 @@ public class ContentTokenParser extends AbstractTokenParser {
             return skipWhitespaces(position);
         }
 
-        if (isBeginOfJteKeyword(position)) {
-            return false;
-        }
-
         if (lexer.isInJavaEndState()) {
             lexer.setCurrentState(JteLexer.CONTENT_STATE_HTML);
+        }
+
+        if (isBeginOfJteKeyword(position)) {
+            return false;
         }
 
         int currentState = lexer.getCurrentState();

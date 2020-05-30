@@ -219,6 +219,22 @@ public class JteLexerTest {
         );
     }
 
+    @Test
+    public void testFor() {
+        givenInput("@for(int z = 0; z < 10; ++z)${z}@endfor");
+
+        thenTokensAre(
+                FOR, "@for",
+                CONDITION_BEGIN, "(",
+                JAVA_INJECTION, "int z = 0; z < 10; ++z",
+                CONDITION_END, ")",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "z",
+                OUTPUT_END, "}",
+                ENDFOR, "@endfor"
+        );
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }

@@ -103,6 +103,16 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiRenderName(node);
         } else if (elementType == JteTokenTypes.NAME_SEPARATOR) {
             return new JtePsiNameSeparator(node);
+        } else if (elementType == JteTokenTypes.OUTPUT_BEGIN) {
+            return new JtePsiOutputBegin(node);
+        } else if (elementType == JteTokenTypes.OUTPUT_END) {
+            return new JtePsiOutputEnd(node);
+        } else if (elementType == JteTokenTypes.STATEMENT_BEGIN) {
+            return new JtePsiStatementBegin(node);
+        } else if (elementType == JteTokenTypes.STATEMENT_END) {
+            return new JtePsiStatementEnd(node);
+        } else if (elementType == JteTokenTypes.COMMENT) {
+            return new JtePsiComment(node);
         }
 
         return new JtePsiElement(node);
