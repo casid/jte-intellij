@@ -47,6 +47,9 @@ public abstract class JtePsiTagOrLayoutName extends JtePsiElement implements Psi
     @Nullable
     private PsiReference resolveDirectoryReference() {
         PsiDirectory rootDirectory = findRootDirectory();
+        if (rootDirectory == null) {
+            return null;
+        }
 
         JtePsiTagOrLayoutName nextSibling = JtePsiUtil.getFirstSiblingOfType(this, JtePsiTagOrLayoutName.class);
         if (nextSibling.getName() == null) {
