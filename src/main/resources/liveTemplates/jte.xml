@@ -14,9 +14,6 @@
     <template name="@else" value="@else$END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@let" value="@let($END$)&#10;@endlet" description="jte let statement" toReformat="false" toShortenFQNames="false">
-        <context><option name="jte" value="true"/></context>
-    </template>
     <template name="@for" value="@for($END$)&#10;@endfor" description="jte for statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>

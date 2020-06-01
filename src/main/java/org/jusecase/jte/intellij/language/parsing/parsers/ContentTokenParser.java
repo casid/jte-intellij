@@ -13,8 +13,6 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@else",
             "@elseif",
             "@endif",
-            "@let",
-            "@endlet",
             "@for",
             "@endfor",
             "@import",

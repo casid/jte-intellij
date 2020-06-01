@@ -269,22 +269,6 @@ public class JteLexerTest {
         );
     }
 
-    @Test
-    public void testLet() {
-        givenInput("@let(x = model.coords.x)We have ${x}@endlet");
-        thenTokensAre(
-                LET, "@let",
-                CONDITION_BEGIN, "(",
-                JAVA_INJECTION, "x = model.coords.x",
-                CONDITION_END, ")",
-                HTML_CONTENT, "We have ",
-                OUTPUT_BEGIN, "${",
-                JAVA_INJECTION, "x",
-                OUTPUT_END, "}",
-                ENDLET, "@endlet"
-        );
-    }
-
     private void givenInput(String input) {
         lexer.start(input);
     }
