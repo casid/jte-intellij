@@ -116,6 +116,17 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 injectEmptyJavaPart("\n} else {\n", null, child);
             } else if (child instanceof JtePsiEndIf) {
                 injectEmptyJavaPart(null, "}\n", child);
+            } else if (child instanceof JtePsiLet) {
+                JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
+                injectJavaPart("{var ", ";\n", part);
+
+                if (part != null) {
+                    for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+                        processTemplateBody(sibling);
+                    }
+                }
+            } else if (child instanceof JtePsiEndLet) {
+                injectEmptyJavaPart(null, "}\n", child);
             } else if (child instanceof JtePsiFor) {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("for (", ") {\n", part);

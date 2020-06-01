@@ -67,6 +67,8 @@ public class JteLexer extends LexerBase {
                 new ElseIfConditionTokenParser(this),
                 new ElseTokenParser(this),
                 new EndIfTokenParser(),
+                new LetTokenParser(this),
+                new EndLetTokenParser(),
                 new ForTokenParser(this),
                 new ForConditionTokenParser(this),
                 new EndForTokenParser(),

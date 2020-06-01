@@ -44,6 +44,10 @@ public class JteParsing {
             processElse();
         } else if (tokenType == JteTokenTypes.ENDIF) {
             processEndIf();
+        } else if (tokenType == JteTokenTypes.LET) {
+            processLet();
+        } else if (tokenType == JteTokenTypes.ENDLET) {
+            processEndLet();
         } else if (tokenType == JteTokenTypes.FOR) {
             processFor();
         } else if (tokenType == JteTokenTypes.ENDFOR) {
@@ -227,6 +231,39 @@ public class JteParsing {
         Marker marker = builder.mark();
         builder.advanceLexer();
         marker.done(JteTokenTypes.ENDIF);
+    }
+
+    private void processLet() {
+        Marker letMarker = builder.mark();
+        builder.advanceLexer();
+
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_BEGIN) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+            Marker kotlinBeginMarker = builder.mark();
+            builder.advanceLexer();
+            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.CONDITION_END) {
+            builder.advanceLexer();
+        }
+
+        processEnd(JteTokenTypes.ENDLET);
+
+        letMarker.done(JteTokenTypes.LET);
+    }
+
+    private void processEndLet() {
+        Marker marker = builder.mark();
+        builder.advanceLexer();
+        marker.done(JteTokenTypes.ENDLET);
     }
 
     private void processFor() {
