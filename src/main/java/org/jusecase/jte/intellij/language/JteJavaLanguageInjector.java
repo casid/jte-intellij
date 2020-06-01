@@ -9,22 +9,34 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.*;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
+    private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Arrays.asList(
+            JtePsiJavaContent.class,
+            JtePsiExtraJavaInjection.class
+    );
+
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
         if (context instanceof JtePsiJavaContent) {
             JtePsiJavaContent host = (JtePsiJavaContent) context;
             new Injector(host, registrar).inject();
+        } else if (context instanceof JtePsiExtraJavaInjection) {
+            JtePsiJavaInjection param = PsiTreeUtil.getPrevSiblingOfType(context, JtePsiJavaInjection.class);
+            if (param != null) {
+                registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", (JtePsiExtraJavaInjection) context, new TextRange(0, context.getTextLength()));
+                registrar.doneInjecting();
+            }
         }
     }
 
     @NotNull
     @Override
     public List<? extends Class<? extends PsiElement>> elementsToInjectIn() {
-        return Collections.singletonList(JtePsiJavaContent.class);
+        return ELEMENTS;
     }
 
     private static class Injector {
