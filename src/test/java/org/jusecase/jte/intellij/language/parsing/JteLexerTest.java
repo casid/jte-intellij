@@ -235,6 +235,21 @@ public class JteLexerTest {
         );
     }
 
+    @Test
+    public void testParam() {
+        givenInput("@param");
+        thenTokensAre(PARAM, "@param");
+    }
+
+    @Test
+    public void testParam_typing() {
+        givenInput("@param Pa");
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "Pa");
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }
