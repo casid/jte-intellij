@@ -63,6 +63,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             myTokenInfo.updateData(start, position, JteTokenTypes.RENDER_NAME);
         } else if (currentState == JteLexer.CONTENT_STATE_HTML) {
             myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
+        } else if (currentState == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE) {
+            myTokenInfo.updateData(start, position, JteTokenTypes.EXTRA_JAVA_INJECTION);
         } else {
             myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_INJECTION);
         }
@@ -78,7 +80,8 @@ public class ContentTokenParser extends AbstractTokenParser {
                         state == JteLexer.CONTENT_STATE_ELSEIF_BEGIN ||
                         state == JteLexer.CONTENT_STATE_IF_BEGIN ||
                         state == JteLexer.CONTENT_STATE_DEFINE_NAME ||
-                        state == JteLexer.CONTENT_STATE_RENDER_NAME;
+                        state == JteLexer.CONTENT_STATE_RENDER_NAME ||
+                        state == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE;
     }
 
     private boolean isBeginOfJteKeyword(int position) {
@@ -90,22 +93,33 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (isBeginOf(position, '=')) {
-            if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_BEGIN) {
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_END);
-                return true;
-            }
-        }
-
         if (isBeginOf(position, '\n')) {
             switch (lexer.getCurrentState()) {
                 case JteLexer.CONTENT_STATE_IMPORT_BEGIN:
                     lexer.setCurrentState(JteLexer.CONTENT_STATE_IMPORT_END);
                     return true;
                 case JteLexer.CONTENT_STATE_PARAM_BEGIN:
+                case JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE:
                     lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_END);
                     return true;
             }
+        }
+
+        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_BEGIN) {
+            for (int index = position; index < myEndOffset; ++index) {
+                if (myBuffer.charAt(index) == '=') {
+                    lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE);
+                    return true;
+                }
+
+                if (!isWhitespace(index)) {
+                    return false;
+                }
+            }
+        }
+
+        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '=')) {
+            return true;
         }
 
         if (isBeginOf(position, '{')) {

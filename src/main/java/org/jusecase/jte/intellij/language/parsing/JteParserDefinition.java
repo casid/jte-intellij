@@ -113,6 +113,10 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiStatementEnd(node);
         } else if (elementType == JteTokenTypes.COMMENT) {
             return new JtePsiComment(node);
+        } else if (elementType == JteTokenTypes.EQUALS) {
+            return new JtePsiEquals(node);
+        } else if (elementType == JteTokenTypes.EXTRA_JAVA_INJECTION) {
+            return new JtePsiExtraJavaInjection(node);
         }
 
         return new JtePsiElement(node);

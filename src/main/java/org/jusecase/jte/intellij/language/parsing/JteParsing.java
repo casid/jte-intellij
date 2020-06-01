@@ -118,9 +118,23 @@ public class JteParsing {
         }
 
         if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker kotlinBeginMarker = builder.mark();
+            Marker javaBeginMarker = builder.mark();
             builder.advanceLexer();
-            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+            javaBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        }
+
+        while (builder.getTokenType() == JteTokenTypes.WHITESPACE && !builder.eof()) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == JteTokenTypes.EQUALS) {
+            builder.advanceLexer();
+
+            if (builder.getTokenType() == JteTokenTypes.EXTRA_JAVA_INJECTION) {
+                Marker javaBeginMarker = builder.mark();
+                builder.advanceLexer();
+                javaBeginMarker.done(JteTokenTypes.EXTRA_JAVA_INJECTION);
+            }
         }
 
         paramMarker.done(JteTokenTypes.PARAM);

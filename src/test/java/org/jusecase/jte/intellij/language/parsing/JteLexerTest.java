@@ -250,6 +250,25 @@ public class JteLexerTest {
                 JAVA_INJECTION, "Pa");
     }
 
+    @Test
+    public void testParam_defaultValue() {
+        givenInput("@param String value = \"something\"\n" +
+                "Hello ${value}");
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "String value",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"something\"",
+                HTML_CONTENT, "\nHello ",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "value",
+                OUTPUT_END, "}"
+        );
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }

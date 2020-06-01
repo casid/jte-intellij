@@ -11,6 +11,7 @@ public interface JteTokenTypes {
     IElementType JAVA_CONTENT = new JteElementType("JAVA_CONTENT");
 
     IElementType JAVA_INJECTION = new JteElementType("JAVA_INJECTION");
+    IElementType EXTRA_JAVA_INJECTION = new JteElementType("EXTRA_JAVA_INJECTION");
 
     IElementType OUTER_ELEMENT_TYPE = new JteElementType("OUTER_ELEMENT_TYPE");
 
@@ -50,6 +51,7 @@ public interface JteTokenTypes {
     IElementType COMMENT_CONTENT = new JteElementType("COMMENT_CONTENT");
 
     IElementType WHITESPACE = new JteElementType("WHITESPACE");
+    IElementType EQUALS = new JteElementType("EQUALS");
 
     IElementType STRING = new JteElementType("STRING");
 
