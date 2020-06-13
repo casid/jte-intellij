@@ -15,6 +15,20 @@ public class EqualsTokenParser extends AbstractTokenParser {
         if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE) {
             return hasToken(position, "=", JteTokenTypes.EQUALS);
         }
+
+        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_NAME) {
+            if (hasToken(position, "=", JteTokenTypes.EQUALS)) {
+                switch (lexer.getCurrentCount()) {
+                    case JteLexer.CONTENT_COUNT_PARAM_NAME_TAG:
+                        lexer.setCurrentCount(JteLexer.CONTENT_COUNT_PARAM_NAME_TAG_DONE);
+                        return true;
+                    case JteLexer.CONTENT_COUNT_PARAM_NAME_LAYOUT:
+                        lexer.setCurrentCount(JteLexer.CONTENT_COUNT_PARAM_NAME_LAYOUT_DONE);
+                        return true;
+                }
+            }
+        }
+
         return false;
     }
 }

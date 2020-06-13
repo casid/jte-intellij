@@ -37,6 +37,7 @@ public interface JteTokenTypes {
     IElementType TAG_NAME = new JteElementType("TAG_NAME");
     IElementType NAME_SEPARATOR = new JteElementType("NAME_SEPARATOR");
     IElementType PARAMS_BEGIN = new JteElementType("PARAMS_BEGIN");
+    IElementType PARAM_NAME = new JteElementType("PARAM_NAME");
     IElementType PARAMS_END = new JteElementType("PARAMS_END");
     IElementType LAYOUT = new JteElementType("LAYOUT");
     IElementType LAYOUT_NAME = new JteElementType("LAYOUT_NAME");
@@ -52,6 +53,7 @@ public interface JteTokenTypes {
 
     IElementType WHITESPACE = new JteElementType("WHITESPACE");
     IElementType EQUALS = new JteElementType("EQUALS");
+    IElementType COMMA = new JteElementType("COMMA");
 
     IElementType STRING = new JteElementType("STRING");
 

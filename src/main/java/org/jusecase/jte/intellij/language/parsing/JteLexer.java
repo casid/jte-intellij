@@ -45,6 +45,12 @@ public class JteLexer extends LexerBase {
     public static final int CONTENT_STATE_RENDER_NAME = 30;
     public static final int CONTENT_STATE_RENDER_END = 31;
     public static final int CONTENT_STATE_PARAM_DEFAULT_VALUE = 32;
+    public static final int CONTENT_STATE_PARAM_NAME = 33;
+
+    public static final int CONTENT_COUNT_PARAM_NAME_TAG = 1;
+    public static final int CONTENT_COUNT_PARAM_NAME_TAG_DONE = 2;
+    public static final int CONTENT_COUNT_PARAM_NAME_LAYOUT = 3;
+    public static final int CONTENT_COUNT_PARAM_NAME_LAYOUT_DONE = 4;
 
     private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
@@ -83,7 +89,8 @@ public class JteLexer extends LexerBase {
                 new RenderTokenParser(this),
                 new RenderNameTokenParser(this),
                 new WhitespaceParser(),
-                new EqualsTokenParser(this)
+                new EqualsTokenParser(this),
+                new CommaTokenParser(this)
         };
     }
 

@@ -118,8 +118,77 @@ public class JteLexerTest {
     }
 
     @Test
+    public void testTag_withNamedParams1() {
+        givenInput("@tag.named(one=\"Hello\")");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTag_withNamedParams2() {
+        givenInput("@tag.named(two = 1 == 2 ? 1 : 0, one = 1)");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "two",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "1 == 2 ? 1 : 0",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "one",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "1",
+                PARAMS_END, ")"
+                );
+    }
+
+    @Test
+    public void testTag_withNamedParams3() {
+        givenInput("@tag.named(one=\"Hello, my name = two\")");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello, my name = two\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTag_withNamedParams4() {
+        givenInput("@tag.named(one=\"Hello, my name = \\\"two\")");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello, my name = \\\"two\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
     public void testLayout_withParamsCallingMethods() {
-        givenInput("@layout.simple(a.getDuration(x.getOffset()), b, c)\n" +
+        givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c)\n" +
                 "@define(content)\n" +
                 "<p>Hello, ${x}</p>\n" +
                 "@enddefine\n" +
@@ -130,7 +199,56 @@ public class JteLexerTest {
                 NAME_SEPARATOR, ".",
                 LAYOUT_NAME, "simple",
                 PARAMS_BEGIN, "(",
-                JAVA_INJECTION, "a.getDuration(x.getOffset()), b, c",
+                JAVA_INJECTION, "a.getDuration(x.getOffset(), 5), b, c",
+                PARAMS_END, ")",
+                HTML_CONTENT, "\n",
+                DEFINE, "@define",
+                PARAMS_BEGIN, "(",
+                DEFINE_NAME, "content",
+                PARAMS_END, ")",
+                HTML_CONTENT, "\n<p>Hello, ",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "x",
+                OUTPUT_END, "}",
+                HTML_CONTENT, "</p>\n",
+                ENDDEFINE, "@enddefine",
+                HTML_CONTENT, "\n",
+                ENDLAYOUT, "@endlayout"
+        );
+    }
+
+    @Test
+    public void testLayout_withNamedParamsCallingMethods() {
+        givenInput("@layout.simple(one = a.getDuration(x.getOffset(), 5), two = b, three = c)\n" +
+                "@define(content)\n" +
+                "<p>Hello, ${x}</p>\n" +
+                "@enddefine\n" +
+                "@endlayout");
+
+        thenTokensAre(
+                LAYOUT, "@layout",
+                NAME_SEPARATOR, ".",
+                LAYOUT_NAME, "simple",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "a.getDuration(x.getOffset(), 5)",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "two",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "b",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "three",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "c",
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n",
                 DEFINE, "@define",
