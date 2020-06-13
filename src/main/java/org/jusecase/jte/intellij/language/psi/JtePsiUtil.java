@@ -25,4 +25,20 @@ public class JtePsiUtil {
             return getFirstSiblingOfType(sibling, clazz);
         }
     }
+
+    @SuppressWarnings("unused")
+    public static <T extends PsiElement> T getLastChildOfType(PsiElement element, Class<T> clazz) {
+        T result = PsiTreeUtil.getChildOfType(element, clazz);
+        if (result == null) {
+            return null;
+        }
+
+        T sibling = result;
+        while (sibling != null) {
+            result = sibling;
+            sibling = PsiTreeUtil.getNextSiblingOfType(result, clazz);
+        }
+
+        return result;
+    }
 }

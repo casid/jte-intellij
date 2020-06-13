@@ -3,16 +3,22 @@ package org.jusecase.jte.intellij.language;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.fileTypes.StdFileTypes;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.*;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
+    public static final Key<PsiJavaFile> JAVA_FILE_KEY = Key.create("JteJavaLanguageInjector.PsiJavaFile");
+
     private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Arrays.asList(
             JtePsiJavaContent.class,
             JtePsiExtraJavaInjection.class
@@ -62,10 +68,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "class DummyTemplate { public void render( ";
+                            String classPrefix = "class DummyTemplate { public void render(";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
-                                injectJavaPart(classPrefix, null, part);
+                                injectJavaPart(classPrefix, " ", part);
                             } else {
                                 injectJavaPart(classPrefix, ") {\n", part);
                             }
@@ -73,7 +79,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                         } else {
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
-                                injectJavaPart(", ", null, part);
+                                injectJavaPart(", ", " ", part);
                             } else {
                                 injectJavaPart(", ", ") {\n", part);
                             }
@@ -90,6 +96,18 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
             if (hasStartedInjection) {
                 getRegistrar().doneInjecting();
+
+                try {
+                    Field resultFiles = getRegistrar().getClass().getDeclaredField("resultFiles");
+                    resultFiles.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    List<PsiFile> files = (List<PsiFile>) resultFiles.get(getRegistrar());
+                    PsiJavaFile injectedFile = (PsiJavaFile) files.get(0);
+
+                    host.getContainingFile().putUserData(JAVA_FILE_KEY, injectedFile);
+                } catch (Exception e) {
+                    // noop
+                }
             }
         }
 
@@ -152,7 +170,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
             for (PsiElement element : child.getChildren()) {
                 if (element instanceof JtePsiJavaInjection) {
-                    injectJavaPart("System.out.print(", ")\n", result = (JtePsiJavaInjection)element);
+                    injectJavaPart("System.out.print(", ")\n", result = (JtePsiJavaInjection) element);
                 }
             }
 
