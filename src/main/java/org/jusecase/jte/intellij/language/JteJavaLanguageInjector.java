@@ -128,14 +128,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             } else if (child instanceof JtePsiEndFor) {
                 injectEmptyJavaPart(null, "}\n", child);
             } else if (child instanceof JtePsiTag) {
-                // TODO check parameter references
-                JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("System.out.print(", ")\n", part);
+                injectTagOrLayoutParams(child);
             } else if (child instanceof JtePsiLayout) {
-                // TODO check parameter references
-                JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("System.out.print(", ")\n", part);
-
+                JtePsiJavaInjection part = injectTagOrLayoutParams(child);
                 if (part != null) {
                     for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
                         processTemplateBody(sibling);
@@ -150,6 +145,18 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     }
                 }
             }
+        }
+
+        private JtePsiJavaInjection injectTagOrLayoutParams(PsiElement child) {
+            JtePsiJavaInjection result = null;
+
+            for (PsiElement element : child.getChildren()) {
+                if (element instanceof JtePsiJavaInjection) {
+                    injectJavaPart("System.out.print(", ")\n", result = (JtePsiJavaInjection)element);
+                }
+            }
+
+            return result;
         }
 
         private void injectEmptyJavaPart(String prefix, String suffix, @NotNull PsiElement child) {

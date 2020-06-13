@@ -267,20 +267,7 @@ public class JteParsing {
         builder.advanceLexer();
 
         processTagOrLayoutName(JteTokenTypes.TAG_NAME);
-
-        if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
-            builder.advanceLexer();
-        }
-
-        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker kotlinBeginMarker = builder.mark();
-            builder.advanceLexer();
-            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
-        }
-
-        if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
-            builder.advanceLexer();
-        }
+        processTagOrLayoutParams();
 
         tagMarker.done(JteTokenTypes.TAG);
     }
@@ -294,25 +281,38 @@ public class JteParsing {
         }
     }
 
-    private void processLayout() {
-        Marker layoutMarker = builder.mark();
-        builder.advanceLexer();
-
-        processTagOrLayoutName(JteTokenTypes.LAYOUT_NAME);
-
+    private void processTagOrLayoutParams() {
         if (builder.getTokenType() == JteTokenTypes.PARAMS_BEGIN) {
             builder.advanceLexer();
+        } else {
+            return;
         }
 
-        if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
-            Marker kotlinBeginMarker = builder.mark();
-            builder.advanceLexer();
-            kotlinBeginMarker.done(JteTokenTypes.JAVA_INJECTION);
+        while (builder.getTokenType() != JteTokenTypes.PARAMS_END && !builder.eof()) {
+            if (builder.getTokenType() == JteTokenTypes.JAVA_INJECTION) {
+                Marker marker = builder.mark();
+                builder.advanceLexer();
+                marker.done(JteTokenTypes.JAVA_INJECTION);
+            } else if (builder.getTokenType() == JteTokenTypes.PARAM_NAME) {
+                Marker marker = builder.mark();
+                builder.advanceLexer();
+                marker.done(JteTokenTypes.PARAM_NAME);
+            } else {
+                builder.advanceLexer();
+            }
         }
 
         if (builder.getTokenType() == JteTokenTypes.PARAMS_END) {
             builder.advanceLexer();
         }
+    }
+
+    private void processLayout() {
+        Marker layoutMarker = builder.mark();
+        builder.advanceLexer();
+
+        processTagOrLayoutName(JteTokenTypes.LAYOUT_NAME);
+        processTagOrLayoutParams();
 
         processEnd(JteTokenTypes.ENDLAYOUT);
 
