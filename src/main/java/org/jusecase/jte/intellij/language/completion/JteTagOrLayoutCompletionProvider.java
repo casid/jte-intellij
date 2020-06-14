@@ -26,7 +26,7 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
         if (!(position.getParent() instanceof JtePsiTagOrLayoutName)) {
             return;
         }
-        JtePsiTagOrLayoutName nameElement = (JtePsiTagOrLayoutName)position.getParent();
+        JtePsiTagOrLayoutName nameElement = (JtePsiTagOrLayoutName) position.getParent();
 
         JtePsiTagOrLayoutName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTagOrLayoutName.class);
         if (prevNameElement == null) {
@@ -42,7 +42,7 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
 
             PsiElement prevReferenceElement = reference.resolve();
             if (prevReferenceElement instanceof PsiDirectory) {
-                addSuggestionsForDirectory((PsiDirectory)prevReferenceElement, result);
+                addSuggestionsForDirectory((PsiDirectory) prevReferenceElement, result);
             }
         }
     }
@@ -65,10 +65,10 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
     }
 
     private static class AfterCompletionInsertHandler implements InsertHandler<LookupElement> {
-        private final PsiFile file;
+        private final PsiFile tagOrLayoutFile;
 
-        private AfterCompletionInsertHandler(PsiFile file) {
-            this.file = file;
+        private AfterCompletionInsertHandler(PsiFile tagOrLayoutFile) {
+            this.tagOrLayoutFile = tagOrLayoutFile;
         }
 
         @Override
@@ -90,7 +90,7 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
                     template.addTextSegment("(");
                 }
 
-                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(file);
+                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
                 if (parameterList != null) {
                     int i = 0;
                     PsiParameter[] parameters = parameterList.getParameters();
