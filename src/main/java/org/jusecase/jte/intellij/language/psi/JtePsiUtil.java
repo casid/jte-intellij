@@ -3,9 +3,11 @@ package org.jusecase.jte.intellij.language.psi;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.JteJavaLanguageInjector;
 
 public class JtePsiUtil {
@@ -19,13 +21,35 @@ public class JtePsiUtil {
     }
 
     @NotNull
-    public static <T extends PsiElement> T getFirstSiblingOfType(T element, Class<T> clazz) {
+    public static <T extends PsiElement> T getFirstSiblingOfSameType(T element, Class<T> clazz) {
         T sibling = PsiTreeUtil.getPrevSiblingOfType(element, clazz);
         if (sibling == null) {
             return element;
         } else {
-            return getFirstSiblingOfType(sibling, clazz);
+            return getFirstSiblingOfSameType(sibling, clazz);
         }
+    }
+
+    @Nullable
+    public static <T extends PsiElement> T getFirstSiblingOfType(PsiElement element, Class<T> clazz) {
+        T result = null;
+        T sibling = PsiTreeUtil.getPrevSiblingOfType(element, clazz);
+        while (sibling != null) {
+            result = sibling;
+            sibling = PsiTreeUtil.getPrevSiblingOfType(sibling, clazz);
+        }
+
+        return result;
+    }
+
+    @Nullable
+    public static PsiElement getPrevSiblingIgnoring(PsiElement element, IElementType elementType) {
+        for (PsiElement child = element.getPrevSibling(); child != null; child = child.getPrevSibling()) {
+            if (child.getNode().getElementType() != elementType) {
+                return child;
+            }
+        }
+        return null;
     }
 
     public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {

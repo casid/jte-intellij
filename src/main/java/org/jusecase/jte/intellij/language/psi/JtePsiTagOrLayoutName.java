@@ -51,7 +51,7 @@ public abstract class JtePsiTagOrLayoutName extends JtePsiElement implements Psi
             return null;
         }
 
-        JtePsiTagOrLayoutName nextSibling = JtePsiUtil.getFirstSiblingOfType(this, JtePsiTagOrLayoutName.class);
+        JtePsiTagOrLayoutName nextSibling = JtePsiUtil.getFirstSiblingOfSameType(this, JtePsiTagOrLayoutName.class);
         if (nextSibling.getName() == null) {
             return null;
         }

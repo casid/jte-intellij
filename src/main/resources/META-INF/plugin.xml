@@ -34,6 +34,8 @@
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.JteFindUsagesProvider"/>
         <completion.contributor language="JavaTemplateEngine"
                                 implementationClass="org.jusecase.jte.intellij.language.completion.JteCompletionContributor"/>
+        <completion.contributor language="JAVA"
+                                implementationClass="org.jusecase.jte.intellij.language.completion.JteCompletionContributorForJava"/>
 
         <defaultLiveTemplates file="liveTemplates/jte.xml"/>
         <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext"/>
