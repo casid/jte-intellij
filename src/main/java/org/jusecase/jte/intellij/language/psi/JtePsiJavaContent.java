@@ -1,10 +1,10 @@
 package org.jusecase.jte.intellij.language.psi;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.ElementManipulators;
+import com.intellij.psi.LiteralTextEscaper;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 
 public class JtePsiJavaContent extends JtePsiElement implements PsiLanguageInjectionHost {
