@@ -87,7 +87,9 @@ public class ContentTokenParser extends AbstractTokenParser {
                         state == JteLexer.CONTENT_STATE_DEFINE_NAME ||
                         state == JteLexer.CONTENT_STATE_RENDER_NAME ||
                         state == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE ||
-                        state == JteLexer.CONTENT_STATE_PARAM_NAME;
+                        state == JteLexer.CONTENT_STATE_PARAM_NAME ||
+                        state == JteLexer.CONTENT_STATE_TAG_PARAMS ||
+                        state == JteLexer.CONTENT_STATE_LAYOUT_PARAMS;
     }
 
     private boolean isBeginOfJteKeyword(int position) {
@@ -138,7 +140,11 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_TAG_PARAMS || lexer.getCurrentState() == JteLexer.CONTENT_STATE_LAYOUT_PARAMS) {
             for (int index = position; index < myEndOffset; ++index) {
                 char currentChar = myBuffer.charAt(index);
-                if ((currentChar == ',' && index > position) || currentChar == ')' || currentChar == '\n' || currentChar == '\"') {
+                if (currentChar == ')' && (isBeginOf(position, '\n') || isBeginOf(position, '\r'))) {
+                    return true;
+                }
+
+                if ((currentChar == ',' && index > position) || currentChar == ')' || currentChar == '\"') {
                     break;
                 }
 

@@ -187,6 +187,40 @@ public class JteLexerTest {
     }
 
     @Test
+    public void testTag_withNamedParams5() {
+        givenInput("@tag.named(\none=\"Hello\"\n)");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                WHITESPACE, "\n",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                WHITESPACE, "\n",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTag_withNamedParams6() {
+        givenInput("@tag.named(\r\none=\"Hello\"\r\n)");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "named",
+                PARAMS_BEGIN, "(",
+                WHITESPACE, "\r\n",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                WHITESPACE, "\r\n",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
     public void testLayout_withParamsCallingMethods() {
         givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c)\n" +
                 "@define(content)\n" +
