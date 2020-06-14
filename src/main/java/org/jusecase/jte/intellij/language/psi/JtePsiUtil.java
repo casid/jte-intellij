@@ -1,10 +1,12 @@
 package org.jusecase.jte.intellij.language.psi;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.lang.injection.InjectedLanguageManager;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.JteJavaLanguageInjector;
 
 public class JtePsiUtil {
     public static void rename(JtePsiElement element, String name) throws IncorrectOperationException {
@@ -24,6 +26,30 @@ public class JtePsiUtil {
         } else {
             return getFirstSiblingOfType(sibling, clazz);
         }
+    }
+
+    public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
+        PsiJavaFile javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
+        if (javaFile == null) {
+            // Try to trigger injection and check if java file is there afterwards
+            InjectedLanguageManager.getInstance(tagOrLayoutFile.getProject()).findInjectedElementAt(tagOrLayoutFile, 0);
+            javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
+            if (javaFile == null) {
+                return null;
+            }
+        }
+
+        PsiClass javaClass = PsiTreeUtil.getChildOfType(javaFile, PsiClass.class);
+        if (javaClass == null) {
+            return null;
+        }
+
+        PsiMethod javaMethod = PsiTreeUtil.getChildOfType(javaClass, PsiMethod.class);
+        if (javaMethod == null) {
+            return null;
+        }
+
+        return PsiTreeUtil.getChildOfType(javaMethod, PsiParameterList.class);
     }
 
     @SuppressWarnings("unused")

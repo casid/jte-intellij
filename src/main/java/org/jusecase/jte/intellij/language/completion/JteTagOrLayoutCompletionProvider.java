@@ -1,17 +1,19 @@
 package org.jusecase.jte.intellij.language.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.TemplateManager;
+import com.intellij.codeInsight.template.impl.MacroCallNode;
+import com.intellij.codeInsight.template.macro.CompleteMacro;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.JtePsiTagOrLayoutName;
+import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
 public class JteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
@@ -52,13 +54,63 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
 
         for (PsiFile file : directory.getFiles()) {
             String name = file.getName();
-            int index = name.indexOf(".jte");
-            if (index == -1) {
+            int index = name.lastIndexOf(".jte");
+            if (index == -1 || !name.endsWith(".jte")) {
                 continue;
             }
 
             String referenceName = name.substring(0, index);
-            result.addElement(LookupElementBuilder.create(referenceName));
+            result.addElement(LookupElementBuilder.create(referenceName).withInsertHandler(new AfterCompletionInsertHandler(file)));
+        }
+    }
+
+    private static class AfterCompletionInsertHandler implements InsertHandler<LookupElement> {
+        private final PsiFile file;
+
+        private AfterCompletionInsertHandler(PsiFile file) {
+            this.file = file;
+        }
+
+        @Override
+        public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
+            context.setLaterRunnable(() -> {
+                Editor editor = context.getEditor();
+                int offset = context.getTailOffset();
+                boolean needsParenthesis = true;
+                if (editor.getDocument().getCharsSequence().charAt(offset) == '(') {
+                    offset += 1;
+                    needsParenthesis = false;
+                }
+
+                editor.getCaretModel().moveToOffset(offset);
+
+                TemplateManager manager = TemplateManager.getInstance(context.getProject());
+                Template template = manager.createTemplate("", "");
+                if (needsParenthesis) {
+                    template.addTextSegment("(");
+                }
+
+                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(file);
+                if (parameterList != null) {
+                    int i = 0;
+                    PsiParameter[] parameters = parameterList.getParameters();
+                    for (PsiParameter parameter : parameters) {
+                        template.addTextSegment(parameter.getName() + " = ");
+                        MacroCallNode param = new MacroCallNode(new CompleteMacro());
+                        template.addVariable("param" + i, param, param, true);
+
+                        if (++i < parameters.length) {
+                            template.addTextSegment(", ");
+                        }
+                    }
+                }
+
+                if (needsParenthesis) {
+                    template.addTextSegment(")");
+                }
+
+                manager.startTemplate(editor, template);
+            });
         }
     }
 }
