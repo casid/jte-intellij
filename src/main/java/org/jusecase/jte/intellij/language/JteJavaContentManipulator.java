@@ -16,8 +16,12 @@ public class JteJavaContentManipulator extends AbstractElementManipulator<JtePsi
     public JtePsiJavaContent handleContentChange(@NotNull JtePsiJavaContent element, @NotNull TextRange range, String newContent) throws IncorrectOperationException {
         Document document = FileDocumentManager.getInstance().getDocument(element.getContainingFile().getVirtualFile());
         if (document != null) {
+            PsiDocumentManager documentManager = PsiDocumentManager.getInstance(element.getProject());
+            if (documentManager.isDocumentBlockedByPsi(document)) {
+                documentManager.doPostponedOperationsAndUnblockDocument(document);
+            }
             document.replaceString(range.getStartOffset(), range.getEndOffset(), newContent);
-            PsiDocumentManager.getInstance(element.getProject()).commitDocument(document);
+            documentManager.commitDocument(document);
         }
 
         return element;
