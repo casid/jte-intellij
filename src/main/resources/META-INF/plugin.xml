@@ -1,10 +1,24 @@
 <idea-plugin>
     <id>org.jusecase.jte-intellij</id>
     <name>jte</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="andy@mazebert.com" url="https://github.com/casid/jte">Andreas Hager</vendor>
 
     <description><![CDATA[
-    Java Template Engine support.
+Support for <a href="https://github.com/casid/jte">jte</a> templates.
+
+<h3>Getting started</h3>
+<ul>
+    <li>Install plugin.</li>
+    <li>You will get jte-specific code completion, navigation, and many other features in .jte files.</li>
+</ul>
+
+<h3>Features</h3>
+<ul>
+    <li>Completion for all jte keywords in templates.</li>
+    <li>Navigation from tags and layouts to their definition.</li>
+    <li>Coding assistance for Java parts in jte files.</li>
+    <li>Refactoring support for tag and layout names and parameters.</li>
+</ul>
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
