@@ -21,11 +21,6 @@ intellij {
     version '2020.1'
     plugins = ['java']
 }
-patchPluginXml {
-    changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
-}
 
 apply plugin: 'idea'
 idea {
