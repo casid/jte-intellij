@@ -22,6 +22,10 @@ intellij {
     plugins = ['java']
 }
 
+publishPlugin {
+    token project.findProperty('publishToken')
+}
+
 apply plugin: 'idea'
 idea {
     module {
