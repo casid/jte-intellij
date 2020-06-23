@@ -4,6 +4,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.impl.source.tree.ChangeUtil;
+import com.intellij.psi.impl.source.tree.LeafElement;
 import org.jetbrains.annotations.NotNull;
 
 public class JtePsiExtraJavaInjection extends JtePsiElement implements PsiLanguageInjectionHost {
@@ -18,6 +20,20 @@ public class JtePsiExtraJavaInjection extends JtePsiElement implements PsiLangua
 
     @Override
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
+        ASTNode firstChildNode = getNode().getFirstChildNode();
+        if (firstChildNode == null) {
+            return this;
+        }
+
+        if (!(firstChildNode instanceof LeafElement)) {
+            return this;
+        }
+
+        LeafElement oldLeaf = (LeafElement) firstChildNode;
+        LeafElement newLeaf = ChangeUtil.copyLeafWithText(oldLeaf, text);
+
+        oldLeaf.getTreeParent().replaceChild(oldLeaf, newLeaf);
+
         return this;
     }
 
