@@ -12,8 +12,15 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.psi.JtePsiExtraJavaInjection;
+import org.jusecase.jte.intellij.language.psi.JtePsiParam;
 import org.jusecase.jte.intellij.language.psi.JtePsiTagOrLayoutName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
@@ -93,13 +100,13 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
                 PsiParameterList parameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
                 if (parameterList != null) {
                     int i = 0;
-                    PsiParameter[] parameters = parameterList.getParameters();
+                    List<PsiParameter> parameters = resolveRequiredParams(parameterList);
                     for (PsiParameter parameter : parameters) {
                         template.addTextSegment(parameter.getName() + " = ");
                         MacroCallNode param = new MacroCallNode(new CompleteMacro());
                         template.addVariable("param" + i, param, param, true);
 
-                        if (++i < parameters.length) {
+                        if (++i < parameters.size()) {
                             template.addTextSegment(", ");
                         }
                     }
@@ -111,6 +118,39 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
 
                 manager.startTemplate(editor, template);
             });
+        }
+
+        private List<PsiParameter> resolveRequiredParams(PsiParameterList parameterList) {
+            PsiParameter[] parameters = parameterList.getParameters();
+            if (parameters.length == 0) {
+                return Collections.emptyList();
+            }
+
+            List<PsiParameter> result = new ArrayList<>();
+
+            boolean[] defaultParams = resolveDefaultParams(parameters.length);
+            for (int i = 0; i < parameters.length; i++) {
+                if (!defaultParams[i]) {
+                    result.add(parameters[i]);
+                }
+            }
+
+            return result;
+        }
+
+        private boolean[] resolveDefaultParams(int paramLength) {
+            boolean[] defaultParams = new boolean[paramLength];
+            AtomicInteger index = new AtomicInteger();
+
+            SyntaxTraverser.psiTraverser(tagOrLayoutFile).filter(JtePsiParam.class).forEach(param -> {
+                if (index.get() >= defaultParams.length) {
+                    return;
+                }
+
+                defaultParams[index.getAndIncrement()] = param.getLastChild() instanceof JtePsiExtraJavaInjection;
+            });
+
+            return defaultParams;
         }
     }
 }
