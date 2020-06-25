@@ -11,6 +11,7 @@ import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
@@ -133,7 +134,12 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 }
             }
 
-            FileEditor[] editors = FileEditorManager.getInstance(host.getProject()).getAllEditors(host.getContainingFile().getVirtualFile());
+            VirtualFile virtualFile = host.getContainingFile().getVirtualFile();
+            if (virtualFile == null) {
+                return;
+            }
+
+            FileEditor[] editors = FileEditorManager.getInstance(host.getProject()).getAllEditors(virtualFile);
             for (FileEditor fileEditor : editors) {
                 if (fileEditor.getFile() == null || !fileEditor.getFile().getName().endsWith(".jte")) {
                     continue;
