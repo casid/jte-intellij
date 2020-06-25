@@ -1,7 +1,13 @@
 package org.jusecase.jte.intellij.language;
 
+import com.intellij.codeInsight.folding.impl.FoldingUpdate;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
@@ -18,11 +24,11 @@ import java.util.List;
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
     public static final Key<PsiJavaFile> JAVA_FILE_KEY = Key.create("JteJavaLanguageInjector.PsiJavaFile");
-
     private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Arrays.asList(
             JtePsiJavaContent.class,
             JtePsiExtraJavaInjection.class
     );
+    private static Key<Object> LAST_UPDATE_INJECTED_STAMP_KEY;
 
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
@@ -95,6 +101,8 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
 
             if (hasStartedInjection) {
+                preventJavaFolding();
+
                 getRegistrar().doneInjecting();
 
                 try {
@@ -107,6 +115,35 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     host.getContainingFile().putUserData(JAVA_FILE_KEY, injectedFile);
                 } catch (Exception e) {
                     // noop
+                }
+            }
+        }
+
+        private void preventJavaFolding() {
+            // Super ugly hack to prevent folding for injected java code - we set the current document timestamp, so that folding thinks it was already done.
+            if (LAST_UPDATE_INJECTED_STAMP_KEY == null) {
+                try {
+                    Field keyField = FoldingUpdate.class.getDeclaredField("LAST_UPDATE_INJECTED_STAMP_KEY");
+                    keyField.setAccessible(true);
+
+                    //noinspection unchecked
+                    LAST_UPDATE_INJECTED_STAMP_KEY = (Key<Object>) keyField.get(null);
+                } catch (Exception e) {
+                    // noop
+                }
+            }
+
+            FileEditor[] editors = FileEditorManager.getInstance(host.getProject()).getAllEditors(host.getContainingFile().getVirtualFile());
+            for (FileEditor fileEditor : editors) {
+                if (fileEditor.getFile() == null || !fileEditor.getFile().getName().endsWith(".jte")) {
+                    continue;
+                }
+
+                if (fileEditor instanceof TextEditor) {
+                    TextEditor textEditor = (TextEditor) fileEditor;
+                    Editor editor = textEditor.getEditor();
+                    Document document = editor.getDocument();
+                    editor.putUserData(LAST_UPDATE_INJECTED_STAMP_KEY, document.getModificationStamp());
                 }
             }
         }
