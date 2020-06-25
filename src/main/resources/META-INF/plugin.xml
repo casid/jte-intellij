@@ -21,6 +21,14 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 </ul>
     ]]></description>
 
+    <change-notes><![CDATA[
+<h3>0.2</h3>
+<ul>
+    <li>Full highlighting for Java parts, including errors.</li>
+    <li>Only required params are initially suggested for tag/layout calls.</li>
+</ul>
+    ]]></change-notes>
+
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
