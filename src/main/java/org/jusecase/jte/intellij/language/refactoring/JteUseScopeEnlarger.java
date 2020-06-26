@@ -2,7 +2,6 @@ package org.jusecase.jte.intellij.language.refactoring;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParameter;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.UseScopeEnlarger;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +19,6 @@ public class JteUseScopeEnlarger extends UseScopeEnlarger {
             return null;
         }
 
-        return GlobalSearchScope.projectScope(element.getProject());
+        return new JteSearchScope(element.getProject());
     }
 }
