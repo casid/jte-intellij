@@ -77,6 +77,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <useScopeEnlarger implementation="org.jusecase.jte.intellij.language.refactoring.JteUseScopeEnlarger"/>
 
         <lang.foldingBuilder language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFoldingBuilder"/>
+        <lang.braceMatcher language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteBraceMatcher"/>
     </extensions>
 
     <actions>
