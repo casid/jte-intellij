@@ -19,7 +19,7 @@ public class OutputTokenParser extends AbstractTokenParser {
             return true;
         }
 
-        if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "$safe{", JteTokenTypes.OUTPUT_BEGIN)) {
+        if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "$unsafe{", JteTokenTypes.OUTPUT_BEGIN)) {
             lexer.setCurrentState(JteLexer.CONTENT_STATE_OUTPUT_BEGIN);
             return true;
         }

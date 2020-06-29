@@ -35,7 +35,7 @@
     <template name="${" value="${$END$}" description="jte output" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="$safe{" value="$safe{$END$}" description="jte safe output" toReformat="false" toShortenFQNames="false">
+    <template name="$unsafe{" value="$unsafe{$END$}" description="jte unsafe output" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
 </templateSet>
