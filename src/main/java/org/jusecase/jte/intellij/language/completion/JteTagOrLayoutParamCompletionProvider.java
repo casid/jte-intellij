@@ -69,6 +69,9 @@ public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
 
         Set<String> usedNames = PsiTreeUtil.findChildrenOfType(tagOrLayoutName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
         for (PsiParameter parameter : parameterList.getParameters()) {
+            if (parameter.isVarArgs()) {
+                continue;
+            }
             if (!usedNames.contains(parameter.getName())) {
                 result.addElement(LookupElementBuilder.create(parameter.getName() + " = "));
             }

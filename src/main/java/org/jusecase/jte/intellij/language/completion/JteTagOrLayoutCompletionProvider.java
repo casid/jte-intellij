@@ -131,7 +131,10 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
             boolean[] defaultParams = resolveDefaultParams(parameters.length);
             for (int i = 0; i < parameters.length; i++) {
                 if (!defaultParams[i]) {
-                    result.add(parameters[i]);
+                    PsiParameter parameter = parameters[i];
+                    if (!parameter.isVarArgs()) {
+                        result.add(parameter);
+                    }
                 }
             }
 
