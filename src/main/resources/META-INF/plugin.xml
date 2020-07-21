@@ -22,6 +22,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>0.4</h3>
+<ul>
+    <li>Add support for varargs in tags/layouts.</li>
+    <li>Completion for $unsafe{} template output.</li>
+    <li>Stability improvements.</li>
+</ul>
 <h3>0.3</h3>
 <ul>
     <li>Add folding for jte elements.</li>
