@@ -421,6 +421,28 @@ public class JteLexerTest {
         );
     }
 
+    @Test
+    public void testCommentBeforeParam() {
+        givenInput("<%-- Comment --%>\n" +
+                "@param String value = \"something\"\n" +
+                "Hello ${value}");
+        thenTokensAre(
+                COMMENT, "<%-- Comment --%>",
+                HTML_CONTENT, "\n",
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "String value",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"something\"",
+                HTML_CONTENT, "\nHello ",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "value",
+                OUTPUT_END, "}"
+        );
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }

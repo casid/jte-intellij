@@ -248,7 +248,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 node = node.getParent();
                 result += node.getStartOffsetInParent();
             }
-            return result;
+            return result - node.getTextOffset();
         }
     }
 }
