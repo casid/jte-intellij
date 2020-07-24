@@ -149,8 +149,9 @@ public class ContentTokenParser extends AbstractTokenParser {
                 }
 
                 if (currentChar == '=' && index + 1 < myEndOffset && myBuffer.charAt(index + 1) != '=' && myBuffer.charAt(index - 1) != '=') {
+                    int state = lexer.getCurrentState();
                     lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_NAME);
-                    if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_TAG_PARAMS) {
+                    if (state == JteLexer.CONTENT_STATE_TAG_PARAMS) {
                         lexer.setCurrentCount(JteLexer.CONTENT_COUNT_PARAM_NAME_TAG);
                     } else {
                         lexer.setCurrentCount(JteLexer.CONTENT_COUNT_PARAM_NAME_LAYOUT);
