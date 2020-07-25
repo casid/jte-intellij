@@ -22,6 +22,7 @@ import org.jusecase.jte.intellij.language.psi.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
     public static final Key<PsiJavaFile> JAVA_FILE_KEY = Key.create("JteJavaLanguageInjector.PsiJavaFile");
@@ -75,7 +76,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "class DummyTemplate { void render(";
+                            String classPrefix = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { void render(org.jusecase.jte.TemplateOutput jteOutput, ";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, " ", part);
@@ -156,11 +157,9 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
         private void processTemplateBody(PsiElement child) {
             if (child instanceof JtePsiOutput) {
-                JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("System.out.print(", ");\n", part);
+                injectContentAwareJavaPart("jteOutput.writeUserContent(", ");\n", child);
             } else if (child instanceof JtePsiStatement) {
-                JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart(null, "\n", part);
+                injectContentAwareJavaPart(null, "\n", child);
             } else if (child instanceof JtePsiIf) {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                 injectJavaPart("if (", ") {\n", part);
@@ -209,15 +208,52 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
 
         private JtePsiJavaInjection injectTagOrLayoutParams(PsiElement child) {
+            return injectContentAwareJavaPart("dummyCall(", ");\n", child);
+        }
+
+        private JtePsiJavaInjection injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {
             JtePsiJavaInjection result = null;
 
-            for (PsiElement element : child.getChildren()) {
+            List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).collect(Collectors.toList());
+
+            boolean prefixWritten = false;
+            PsiElement last = children.isEmpty() ? null : children.get(children.size() - 1);
+            for (PsiElement element : children) {
+                String currentPrefix = null;
+                if (!prefixWritten) {
+                    currentPrefix = prefix;
+                    prefixWritten = true;
+                }
+
+                String currentSuffix = null;
+                if (element == last) {
+                    currentSuffix = suffix;
+                } else if (element.getNextSibling() instanceof JtePsiComma) {
+                    currentSuffix = ",";
+                }
+
                 if (element instanceof JtePsiJavaInjection) {
-                    injectJavaPart("dummyCall(", ");\n", result = (JtePsiJavaInjection) element);
+                    injectJavaPart(currentPrefix, currentSuffix, result = (JtePsiJavaInjection) element);
+                } else if (element instanceof JtePsiContent) {
+                    injectContent(currentPrefix, currentSuffix, element);
                 }
             }
 
             return result;
+        }
+
+        private void injectContent(String prefix, String suffix, PsiElement element) {
+            // Super ugly hack: We do not override writeTo(TemplateOutput), otherwise line markers for override will be generated and cause an assertion error!
+            injectEmptyJavaPart((prefix == null ? "" : prefix) + "new org.jusecase.jte.Content() { void writeTo() {", null, element);
+
+            for (PsiElement part : element.getChildren()) {
+                processTemplateBody(part);
+            }
+
+            JtePsiEndContent endContent = PsiTreeUtil.findChildOfType(element, JtePsiEndContent.class);
+            if (endContent != null) {
+                injectEmptyJavaPart(null, "}}" + (suffix == null ? "" : suffix), endContent);
+            }
         }
 
         private void injectEmptyJavaPart(String prefix, String suffix, @NotNull PsiElement child) {

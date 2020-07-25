@@ -443,6 +443,94 @@ public class JteLexerTest {
         );
     }
 
+    @Test
+    public void testContentWithinTagParam() {
+        givenInput("@tag.test(foo = @content<b>static</b>@endcontent)");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "test",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "foo",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                CONTENT, "@content",
+                HTML_CONTENT, "<b>static</b>",
+                ENDCONTENT, "@endcontent",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testContentWithinTagParam_output() {
+        givenInput("@tag.test(foo = @content<b>${data}</b>@endcontent)");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "test",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "foo",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                CONTENT, "@content",
+                HTML_CONTENT, "<b>",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "data",
+                OUTPUT_END, "}",
+                HTML_CONTENT, "</b>",
+                ENDCONTENT, "@endcontent",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testContentWithinJava() {
+        givenInput("@tag.test(foo = localize(key, @content<b>static</b>!{var x = \"Hello\";}${x}@endcontent, 3))");
+        thenTokensAre(
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "test",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "foo",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "localize(key, ",
+                CONTENT, "@content",
+                HTML_CONTENT, "<b>static</b>",
+                ENDCONTENT, "@endcontent",
+                JAVA_INJECTION, ", 3)",
+                PARAMS_END, ")"
+        );
+        // TODO Fix
+        // Jte STATEMENT_BEGIN: !{
+        //Jte JAVA_INJECTION: var x = "Hello";
+        //Jte STATEMENT_END: }
+        //Jte OUTPUT_BEGIN: ${
+        //Jte JAVA_INJECTION: x
+        //Jte OUTPUT_END: }
+    }
+
+    @Test
+    public void nestedContent() {
+        // TODO
+    }
+
+    @Test
+    public void contentVariable() {
+        givenInput("!{var x = @content<b>${foo}</b>@endcontent;}");
+        thenTokensAre(
+                // TODO
+        );
+    }
+
+    @Test
+    public void defaultParamValue() {
+
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }

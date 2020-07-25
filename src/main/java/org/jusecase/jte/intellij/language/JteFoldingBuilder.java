@@ -8,10 +8,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import org.jusecase.jte.intellij.language.psi.JtePsiDefine;
-import org.jusecase.jte.intellij.language.psi.JtePsiFor;
-import org.jusecase.jte.intellij.language.psi.JtePsiIf;
-import org.jusecase.jte.intellij.language.psi.JtePsiLayout;
+import org.jusecase.jte.intellij.language.psi.*;
 
 import java.util.List;
 
@@ -36,6 +33,8 @@ public class JteFoldingBuilder extends CustomFoldingBuilder {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@layout(...)"));
             } else if (child instanceof JtePsiDefine) {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@define(...)"));
+            } else if (child instanceof JtePsiContent) {
+                descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@content..."));
             }
 
             addFoldRegions(descriptors, child);

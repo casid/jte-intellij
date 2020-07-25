@@ -123,6 +123,10 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiWhitespace(node);
         } else if (elementType == JteTokenTypes.PARAM_NAME) {
             return new JtePsiParamName(node);
+        } else if (elementType == JteTokenTypes.CONTENT) {
+            return new JtePsiContent(node);
+        } else if (elementType == JteTokenTypes.ENDCONTENT) {
+            return new JtePsiEndContent(node);
         }
 
         return new JtePsiElement(node);

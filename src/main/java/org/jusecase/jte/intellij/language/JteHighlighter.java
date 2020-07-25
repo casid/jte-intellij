@@ -24,6 +24,11 @@ public class JteHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.BLOCK_COMMENT
     )};
 
+    private static final TextAttributesKey[] STRING = {TextAttributesKey.createTextAttributesKey(
+            "JAVA_TEMPLATE_ENGINE.STRING",
+            DefaultLanguageHighlighterColors.STRING
+    )};
+
     private static final Map<IElementType, TextAttributesKey[]> MAPPING = new HashMap<>();
     static {
         MAPPING.put(JteTokenTypes.IMPORT, KEYWORD);
@@ -40,6 +45,8 @@ public class JteHighlighter extends SyntaxHighlighterBase {
         MAPPING.put(JteTokenTypes.DEFINE, KEYWORD);
         MAPPING.put(JteTokenTypes.ENDDEFINE, KEYWORD);
         MAPPING.put(JteTokenTypes.RENDER, KEYWORD);
+        MAPPING.put(JteTokenTypes.CONTENT, STRING);
+        MAPPING.put(JteTokenTypes.ENDCONTENT, STRING);
 
         MAPPING.put(JteTokenTypes.COMMENT, COMMENT);
 

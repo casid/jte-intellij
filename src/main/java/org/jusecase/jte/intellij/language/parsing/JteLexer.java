@@ -58,6 +58,7 @@ public class JteLexer extends LexerBase {
     private TokenInfo myCurrentToken;
     private int myPosition;
     private int myState;
+    private int myPreviousState;
 
     public JteLexer() {
         myTokenParsers = new TokenParser[]{
@@ -90,7 +91,9 @@ public class JteLexer extends LexerBase {
                 new RenderNameTokenParser(this),
                 new WhitespaceParser(),
                 new EqualsTokenParser(this),
-                new CommaTokenParser(this)
+                new CommaTokenParser(this),
+                new ContentBlockTokenParser(this),
+                new EndContentTokenParser(this)
         };
     }
 
@@ -101,6 +104,7 @@ public class JteLexer extends LexerBase {
         myPosition = startOffset;
         myCurrentToken = new TokenInfo();
         myState = initialState;
+
         for (TokenParser tokenParser : myTokenParsers) {
             tokenParser.setBuffer(myBuffer, startOffset, myEndOffset);
         }
@@ -150,6 +154,14 @@ public class JteLexer extends LexerBase {
             handleTokenNotFound();
         }
         myPosition = myCurrentToken.getEnd();
+    }
+
+    public void pushPreviousState() {
+        myPreviousState = myState; // TODO real push
+    }
+
+    public void popPreviousState() {
+        myState = myPreviousState; // TODO real pop
     }
 
     protected void handleTokenNotFound() {

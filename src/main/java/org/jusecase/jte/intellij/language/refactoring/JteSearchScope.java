@@ -30,7 +30,6 @@ public class JteSearchScope extends GlobalSearchScope {
             return projectScope.contains(file);
         }
 
-        System.out.println(file.getName());
         return false;
     }
 }
