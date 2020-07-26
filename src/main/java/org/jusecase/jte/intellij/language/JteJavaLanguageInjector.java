@@ -76,7 +76,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { void render(org.jusecase.jte.TemplateOutput jteOutput, ";
+                            String classPrefix = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { org.jusecase.jte.TemplateOutput jteOutput; void render(";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
                                 injectJavaPart(classPrefix, " ", part);

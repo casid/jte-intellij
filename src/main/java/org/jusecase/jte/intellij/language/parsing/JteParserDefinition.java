@@ -123,9 +123,9 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiWhitespace(node);
         } else if (elementType == JteTokenTypes.PARAM_NAME) {
             return new JtePsiParamName(node);
-        } else if (elementType == JteTokenTypes.CONTENT) {
+        } else if (elementType == JteTokenTypes.CONTENT_BEGIN) {
             return new JtePsiContent(node);
-        } else if (elementType == JteTokenTypes.ENDCONTENT) {
+        } else if (elementType == JteTokenTypes.CONTENT_END) {
             return new JtePsiEndContent(node);
         }
 

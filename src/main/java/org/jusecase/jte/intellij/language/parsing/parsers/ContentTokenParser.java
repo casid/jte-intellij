@@ -22,9 +22,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@define",
             "@enddefine",
             "@render",
-            "@endlayout",
-            //"@content", TODO check!
-            "@endcontent"
+            "@endlayout"
     };
 
     private final JteLexer lexer;
@@ -139,13 +137,17 @@ public class ContentTokenParser extends AbstractTokenParser {
             return true;
         }
 
-        if (isBeginOf(position, "@content")) { // TODO only allow from java content!
+        if (isBeginOf(position, "@`")) { // TODO only allow from java content!
+            return true;
+        }
+
+        if (isBeginOf(position, "`")) { // TODO only if current state is okay
             return true;
         }
 
         if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_TAG_PARAMS || lexer.getCurrentState() == JteLexer.CONTENT_STATE_LAYOUT_PARAMS) {
             for (int index = position; index < myEndOffset; ++index) {
-                if (isBeginOf(index, "@content")) { // TODO only allow from java content!
+                if (isBeginOf(index, "@`")) { // TODO only allow from java content!
                     break;
                 }
 

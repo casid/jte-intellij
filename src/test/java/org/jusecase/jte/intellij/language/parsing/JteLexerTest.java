@@ -445,7 +445,7 @@ public class JteLexerTest {
 
     @Test
     public void testContentWithinTagParam() {
-        givenInput("@tag.test(foo = @content<b>static</b>@endcontent)");
+        givenInput("@tag.test(foo = @`<b>static</b>`)");
         thenTokensAre(
                 TAG, "@tag",
                 NAME_SEPARATOR, ".",
@@ -455,16 +455,16 @@ public class JteLexerTest {
                 WHITESPACE, " ",
                 EQUALS, "=",
                 WHITESPACE, " ",
-                CONTENT, "@content",
+                CONTENT_BEGIN, "@`",
                 HTML_CONTENT, "<b>static</b>",
-                ENDCONTENT, "@endcontent",
+                CONTENT_END, "`",
                 PARAMS_END, ")"
         );
     }
 
     @Test
     public void testContentWithinTagParam_output() {
-        givenInput("@tag.test(foo = @content<b>${data}</b>@endcontent)");
+        givenInput("@tag.test(foo = @`<b>${data}</b>`)");
         thenTokensAre(
                 TAG, "@tag",
                 NAME_SEPARATOR, ".",
@@ -474,20 +474,20 @@ public class JteLexerTest {
                 WHITESPACE, " ",
                 EQUALS, "=",
                 WHITESPACE, " ",
-                CONTENT, "@content",
+                CONTENT_BEGIN, "@`",
                 HTML_CONTENT, "<b>",
                 OUTPUT_BEGIN, "${",
                 JAVA_INJECTION, "data",
                 OUTPUT_END, "}",
                 HTML_CONTENT, "</b>",
-                ENDCONTENT, "@endcontent",
+                CONTENT_END, "`",
                 PARAMS_END, ")"
         );
     }
 
     @Test
     public void testContentWithinJava() {
-        givenInput("@tag.test(foo = localize(key, @content<b>static</b>!{var x = \"Hello\";}${x}@endcontent, 3))");
+        givenInput("@tag.test(foo = localize(key, @`<b>static</b>!{var x = \"Hello\";}${x}`, 3))");
         thenTokensAre(
                 TAG, "@tag",
                 NAME_SEPARATOR, ".",
@@ -498,37 +498,110 @@ public class JteLexerTest {
                 EQUALS, "=",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "localize(key, ",
-                CONTENT, "@content",
+                CONTENT_BEGIN, "@`",
                 HTML_CONTENT, "<b>static</b>",
-                ENDCONTENT, "@endcontent",
+                STATEMENT_BEGIN, "!{",
+                JAVA_INJECTION, "var x = \"Hello\";",
+                STATEMENT_END, "}",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "x",
+                OUTPUT_END, "}",
+                CONTENT_END, "`",
                 JAVA_INJECTION, ", 3)",
                 PARAMS_END, ")"
         );
-        // TODO Fix
-        // Jte STATEMENT_BEGIN: !{
-        //Jte JAVA_INJECTION: var x = "Hello";
-        //Jte STATEMENT_END: }
-        //Jte OUTPUT_BEGIN: ${
-        //Jte JAVA_INJECTION: x
-        //Jte OUTPUT_END: }
     }
 
     @Test
     public void nestedContent() {
-        // TODO
+        givenInput("@param String value\n" +
+                "@param test.Localizer localizer\n" +
+                "@tag.simple(text = localizer.localize(\"key\", @`\n" +
+                "        @tag.verySimple(value = @`<b>${value}</b>`, localizer = localizer)\n" +
+                "    `,\n" +
+                "    @`<b>${value}</b>`, \"bar\")\n" +
+                ")");
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "String value",
+                HTML_CONTENT, "\n",
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "test.Localizer localizer",
+                HTML_CONTENT, "\n",
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "simple",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "text",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "localizer.localize(\"key\", ",
+                CONTENT_BEGIN, "@`",
+                HTML_CONTENT, "\n        ",
+                TAG, "@tag",
+                NAME_SEPARATOR, ".",
+                TAG_NAME, "verySimple",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "value",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                CONTENT_BEGIN, "@`",
+                HTML_CONTENT, "<b>",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "value",
+                OUTPUT_END, "}",
+                HTML_CONTENT, "</b>",
+                CONTENT_END, "`",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "localizer",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "localizer",
+                PARAMS_END, ")",
+                HTML_CONTENT, "\n    ",
+                CONTENT_END, "`",
+                JAVA_INJECTION, ",\n    ",
+                CONTENT_BEGIN, "@`",
+                HTML_CONTENT, "<b>",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "value",
+                OUTPUT_END, "}",
+                HTML_CONTENT, "</b>",
+                CONTENT_END, "`",
+                JAVA_INJECTION, ", \"bar\")",
+                WHITESPACE, "\n",
+                PARAMS_END, ")"
+        );
     }
 
     @Test
-    public void contentVariable() {
-        givenInput("!{var x = @content<b>${foo}</b>@endcontent;}");
+    public void contentOutput() {
+        givenInput("${display(@`<b>${foo}</b>`)}");
         thenTokensAre(
-                // TODO
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "display(",
+                CONTENT_BEGIN, "@`",
+                HTML_CONTENT, "<b>",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "foo",
+                OUTPUT_END, "}",
+                HTML_CONTENT, "</b>",
+                CONTENT_END, "`",
+                JAVA_INJECTION, ")",
+                OUTPUT_END, "}"
         );
     }
 
     @Test
     public void defaultParamValue() {
-
+        givenInput("@param Content content = @``");
+        thenTokensAre(); // TODO
     }
 
     private void givenInput(String input) {

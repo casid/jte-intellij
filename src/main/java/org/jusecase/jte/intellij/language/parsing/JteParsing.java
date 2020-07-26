@@ -60,9 +60,9 @@ public class JteParsing {
             processEndDefine();
         } else if (tokenType == JteTokenTypes.RENDER) {
             processRender();
-        } else if (tokenType == JteTokenTypes.CONTENT) {
+        } else if (tokenType == JteTokenTypes.CONTENT_BEGIN) {
             processContent();
-        } else if (tokenType == JteTokenTypes.ENDCONTENT) {
+        } else if (tokenType == JteTokenTypes.CONTENT_END) {
             processEndContent();
         } else {
             builder.advanceLexer();
@@ -81,7 +81,7 @@ public class JteParsing {
                 Marker marker = builder.mark();
                 builder.advanceLexer();
                 marker.done(JteTokenTypes.JAVA_INJECTION);
-            } else if (builder.getTokenType() == JteTokenTypes.CONTENT) {
+            } else if (builder.getTokenType() == JteTokenTypes.CONTENT_BEGIN) {
                 processContent();
             } else {
                 builder.advanceLexer();
@@ -109,7 +109,7 @@ public class JteParsing {
                 Marker marker = builder.mark();
                 builder.advanceLexer();
                 marker.done(JteTokenTypes.JAVA_INJECTION);
-            } else if (builder.getTokenType() == JteTokenTypes.CONTENT) {
+            } else if (builder.getTokenType() == JteTokenTypes.CONTENT_BEGIN) {
                 processContent();
             } else {
                 builder.advanceLexer();
@@ -317,7 +317,7 @@ public class JteParsing {
                 Marker marker = builder.mark();
                 builder.advanceLexer();
                 marker.done(JteTokenTypes.COMMA);
-            } else if (builder.getTokenType() == JteTokenTypes.CONTENT) {
+            } else if (builder.getTokenType() == JteTokenTypes.CONTENT_BEGIN) {
                 processContent();
             } else {
                 builder.advanceLexer();
@@ -401,15 +401,15 @@ public class JteParsing {
         Marker contentMarker = builder.mark();
         builder.advanceLexer();
 
-        processEnd(JteTokenTypes.ENDCONTENT);
+        processEnd(JteTokenTypes.CONTENT_END);
 
-        contentMarker.done(JteTokenTypes.CONTENT);
+        contentMarker.done(JteTokenTypes.CONTENT_BEGIN);
     }
 
     private void processEndContent() {
         Marker marker = builder.mark();
         builder.advanceLexer();
-        marker.done(JteTokenTypes.ENDCONTENT);
+        marker.done(JteTokenTypes.CONTENT_END);
     }
 
     private void processEnd(IElementType tokenType) {

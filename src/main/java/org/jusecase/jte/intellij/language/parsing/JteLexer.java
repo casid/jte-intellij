@@ -10,6 +10,9 @@ import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.parsing.parsers.*;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class JteLexer extends LexerBase {
 
     public static final int CONTENT_STATE_HTML = 0;
@@ -58,7 +61,7 @@ public class JteLexer extends LexerBase {
     private TokenInfo myCurrentToken;
     private int myPosition;
     private int myState;
-    private int myPreviousState;
+    private Deque<Integer> myPreviousStates = new ArrayDeque<>();
 
     public JteLexer() {
         myTokenParsers = new TokenParser[]{
@@ -157,11 +160,13 @@ public class JteLexer extends LexerBase {
     }
 
     public void pushPreviousState() {
-        myPreviousState = myState; // TODO real push
+        myPreviousStates.push(myState);
     }
 
     public void popPreviousState() {
-        myState = myPreviousState; // TODO real pop
+        if (!myPreviousStates.isEmpty()) {
+            myState = myPreviousStates.pop();
+        }
     }
 
     protected void handleTokenNotFound() {

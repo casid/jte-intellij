@@ -12,7 +12,10 @@ public class ContentBlockTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "@content", JteTokenTypes.CONTENT)) {
+        if (hasToken(position, "@`", JteTokenTypes.CONTENT_BEGIN)) {
+            if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_NAME) {
+                lexer.setCurrentState(JteLexer.CONTENT_STATE_TAG_PARAMS);
+            }
             lexer.pushPreviousState();
             lexer.setCurrentState(JteLexer.CONTENT_STATE_HTML);
             return true;

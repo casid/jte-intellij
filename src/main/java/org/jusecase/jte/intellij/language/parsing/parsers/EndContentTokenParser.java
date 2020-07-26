@@ -12,7 +12,7 @@ public class EndContentTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "@endcontent", JteTokenTypes.ENDCONTENT)) {
+        if (hasToken(position, "`", JteTokenTypes.CONTENT_END)) {
             lexer.popPreviousState();
             return true;
         }

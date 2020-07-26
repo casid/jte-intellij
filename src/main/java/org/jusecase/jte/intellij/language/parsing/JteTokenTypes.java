@@ -47,8 +47,8 @@ public interface JteTokenTypes {
     IElementType RENDER = new JteElementType("RENDER");
     IElementType RENDER_NAME = new JteElementType("RENDER_NAME");
     IElementType ENDLAYOUT = new JteElementType("ENDLAYOUT");
-    IElementType CONTENT = new JteElementType("CONTENT");
-    IElementType ENDCONTENT = new JteElementType("ENDCONTENT");
+    IElementType CONTENT_BEGIN = new JteElementType("CONTENT_BEGIN");
+    IElementType CONTENT_END = new JteElementType("CONTENT_END");
 
     IElementType COMMENT = new JteElementType("COMMENT");
     IElementType COMMENT_CONTENT = new JteElementType("COMMENT_CONTENT");
