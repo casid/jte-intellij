@@ -61,7 +61,7 @@ public class JteLexer extends LexerBase {
     private TokenInfo myCurrentToken;
     private int myPosition;
     private int myState;
-    private Deque<Integer> myPreviousStates = new ArrayDeque<>();
+    private final Deque<Integer> myPreviousStates = new ArrayDeque<>();
 
     public JteLexer() {
         myTokenParsers = new TokenParser[]{

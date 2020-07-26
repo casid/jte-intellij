@@ -137,17 +137,17 @@ public class ContentTokenParser extends AbstractTokenParser {
             return true;
         }
 
-        if (isBeginOf(position, "@`")) { // TODO only allow from java content!
+        if (isBeginOf(position, "@`") && lexer.getCurrentState() != JteLexer.CONTENT_STATE_HTML) {
             return true;
         }
 
-        if (isBeginOf(position, "`")) { // TODO only if current state is okay
+        if (isBeginOf(position, "`") && lexer.getCurrentState() == JteLexer.CONTENT_STATE_HTML) {
             return true;
         }
 
         if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_TAG_PARAMS || lexer.getCurrentState() == JteLexer.CONTENT_STATE_LAYOUT_PARAMS) {
             for (int index = position; index < myEndOffset; ++index) {
-                if (isBeginOf(index, "@`")) { // TODO only allow from java content!
+                if (isBeginOf(index, "@`")) {
                     break;
                 }
 
