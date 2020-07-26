@@ -10,12 +10,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.impl.source.resolve.FileContextUtil;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.psi.JtePsiJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParamName;
 import org.jusecase.jte.intellij.language.psi.JtePsiTagOrLayoutName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
@@ -99,12 +101,14 @@ public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
             return null;
         }
 
-        PsiElement originalPosition = parameters.getOriginalPosition();
-        if (originalPosition == null) {
-            return null;
-        }
+        PsiElement originalPosition = parameters.getPosition();
 
-        int injectionOffsetInMasterFile = InjectedLanguageManager.getInstance(fileContext.getProject()).injectedToHost(originalPosition, parameters.getOffset());
-        return fileContext.getContainingFile().findElementAt(injectionOffsetInMasterFile);
+        int injectionOffsetInMasterFile = InjectedLanguageManager.getInstance(fileContext.getProject()).injectedToHost(originalPosition, parameters.getOffset(), false);
+        PsiElement result = fileContext.getContainingFile().findElementAt(injectionOffsetInMasterFile);
+
+        if (result instanceof LeafPsiElement && result.getParent() instanceof JtePsiJavaInjection) {
+            return result.getParent();
+        }
+        return result;
     }
 }
