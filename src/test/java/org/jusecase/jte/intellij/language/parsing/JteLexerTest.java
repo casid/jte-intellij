@@ -223,32 +223,29 @@ public class JteLexerTest {
 
     @Test
     public void testLayout_withParamsCallingMethods() {
-        givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c)\n" +
-                "@define(content)\n" +
+        givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`\n" +
                 "<p>Hello, ${x}</p>\n" +
-                "@enddefine\n" +
-                "@endlayout");
+                "`");
 
         thenTokensAre(
                 LAYOUT, "@layout",
                 NAME_SEPARATOR, ".",
-                LAYOUT_NAME, "simple",
+                TAG_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 JAVA_INJECTION, "a.getDuration(x.getOffset(), 5), b, c",
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n",
-                DEFINE, "@define",
+
                 PARAMS_BEGIN, "(",
-                DEFINE_NAME, "content",
+
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n<p>Hello, ",
                 OUTPUT_BEGIN, "${",
                 JAVA_INJECTION, "x",
                 OUTPUT_END, "}",
                 HTML_CONTENT, "</p>\n",
-                ENDDEFINE, "@enddefine",
-                HTML_CONTENT, "\n",
-                ENDLAYOUT, "@endlayout"
+
+                HTML_CONTENT, "\n"
         );
     }
 
@@ -263,7 +260,7 @@ public class JteLexerTest {
         thenTokensAre(
                 LAYOUT, "@layout",
                 NAME_SEPARATOR, ".",
-                LAYOUT_NAME, "simple",
+                TAG_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "one",
                 WHITESPACE, " ",
@@ -286,18 +283,17 @@ public class JteLexerTest {
                 JAVA_INJECTION, "c",
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n",
-                DEFINE, "@define",
+
                 PARAMS_BEGIN, "(",
-                DEFINE_NAME, "content",
+
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n<p>Hello, ",
                 OUTPUT_BEGIN, "${",
                 JAVA_INJECTION, "x",
                 OUTPUT_END, "}",
                 HTML_CONTENT, "</p>\n",
-                ENDDEFINE, "@enddefine",
-                HTML_CONTENT, "\n",
-                ENDLAYOUT, "@endlayout"
+
+                HTML_CONTENT, "\n"
         );
     }
 
@@ -313,19 +309,19 @@ public class JteLexerTest {
                 WHITESPACE, " ",
                 JAVA_INJECTION, "String name",
                 HTML_CONTENT, "\n",
-                RENDER, "@render",
+
                 PARAMS_BEGIN, "(",
-                RENDER_NAME, "header",
+
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n",
-                RENDER, "@render",
+
                 PARAMS_BEGIN, "(",
-                RENDER_NAME, "content",
+
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n",
-                RENDER, "@render",
+
                 PARAMS_BEGIN, "(",
-                RENDER_NAME, "footer",
+
                 PARAMS_END, ")",
                 HTML_CONTENT, "\n"
         );
@@ -333,20 +329,19 @@ public class JteLexerTest {
 
     @Test
     public void testLayout_simple_withPackage() {
-        givenInput("@layout.my.test.simple()\n@endlayout");
+        givenInput("@layout.my.test.simple()\n");
 
         thenTokensAre(
                 LAYOUT, "@layout",
                 NAME_SEPARATOR, ".",
-                LAYOUT_NAME, "my",
+                TAG_NAME, "my",
                 NAME_SEPARATOR, ".",
-                LAYOUT_NAME, "test",
+                TAG_NAME, "test",
                 NAME_SEPARATOR, ".",
-                LAYOUT_NAME, "simple",
+                TAG_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAMS_END, ")",
-                HTML_CONTENT, "\n",
-                ENDLAYOUT, "@endlayout"
+                HTML_CONTENT, "\n"
         );
     }
 

@@ -21,7 +21,7 @@ public class JtePsiParamName extends JtePsiElement {
             return null;
         }
 
-        JtePsiTagOrLayoutName tagOrLayoutName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTagOrLayoutName.class);
+        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTagName.class);
         if (tagOrLayoutName == null) {
             return null;
         }

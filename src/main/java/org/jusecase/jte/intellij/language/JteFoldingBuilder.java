@@ -31,8 +31,6 @@ public class JteFoldingBuilder extends CustomFoldingBuilder {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@for(...)"));
             } else if (child instanceof JtePsiLayout) {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@layout(...)"));
-            } else if (child instanceof JtePsiDefine) {
-                descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@define(...)"));
             } else if (child instanceof JtePsiContent) {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@`...`"));
             }

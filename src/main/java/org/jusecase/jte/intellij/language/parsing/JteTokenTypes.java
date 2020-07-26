@@ -40,13 +40,6 @@ public interface JteTokenTypes {
     IElementType PARAM_NAME = new JteElementType("PARAM_NAME");
     IElementType PARAMS_END = new JteElementType("PARAMS_END");
     IElementType LAYOUT = new JteElementType("LAYOUT");
-    IElementType LAYOUT_NAME = new JteElementType("LAYOUT_NAME");
-    IElementType DEFINE = new JteElementType("DEFINE");
-    IElementType DEFINE_NAME = new JteElementType("DEFINE_NAME");
-    IElementType ENDDEFINE = new JteElementType("ENDDEFINE");
-    IElementType RENDER = new JteElementType("RENDER");
-    IElementType RENDER_NAME = new JteElementType("RENDER_NAME");
-    IElementType ENDLAYOUT = new JteElementType("ENDLAYOUT");
     IElementType CONTENT_BEGIN = new JteElementType("CONTENT_BEGIN");
     IElementType CONTENT_END = new JteElementType("CONTENT_END");
 

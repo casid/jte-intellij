@@ -198,30 +198,15 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             } else if (child instanceof JtePsiTag) {
                 injectTagOrLayoutParams(child);
             } else if (child instanceof JtePsiLayout) {
-                JtePsiJavaInjection part = injectTagOrLayoutParams(child);
-                if (part != null) {
-                    for (PsiElement sibling = part.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
-                        processTemplateBody(sibling);
-                    }
-                }
-            } else if (child instanceof JtePsiDefine) {
-                JtePsiDefineName name = PsiTreeUtil.getChildOfType(child, JtePsiDefineName.class);
-
-                if (name != null) {
-                    for (PsiElement sibling = name.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
-                        processTemplateBody(sibling);
-                    }
-                }
+                injectTagOrLayoutParams(child);
             }
         }
 
-        private JtePsiJavaInjection injectTagOrLayoutParams(PsiElement child) {
-            return injectContentAwareJavaPart("dummyCall(", ");\n", child);
+        private void injectTagOrLayoutParams(PsiElement child) {
+            injectContentAwareJavaPart("dummyCall(", ");\n", child);
         }
 
-        private JtePsiJavaInjection injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {
-            JtePsiJavaInjection result = null;
-
+        private void injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {
             List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).collect(Collectors.toList());
 
             boolean prefixWritten = false;
@@ -241,13 +226,11 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 }
 
                 if (element instanceof JtePsiJavaInjection) {
-                    injectJavaPart(currentPrefix, currentSuffix, result = (JtePsiJavaInjection) element);
+                    injectJavaPart(currentPrefix, currentSuffix, (JtePsiJavaInjection) element);
                 } else if (element instanceof JtePsiContent) {
                     injectContent(currentPrefix, currentSuffix, element);
                 }
             }
-
-            return result;
         }
 
         void injectContent(String prefix, String suffix, PsiElement element) {

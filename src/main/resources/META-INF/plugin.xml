@@ -60,8 +60,6 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
                                  implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
 
-        <lang.refactoringSupport language="JavaTemplateEngine"
-                                 implementationClass="org.jusecase.jte.intellij.language.refactoring.JteRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="JavaTemplateEngine"
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.JteFindUsagesProvider"/>
         <completion.contributor language="JavaTemplateEngine"

@@ -87,20 +87,6 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiParamsEnd(node);
         } else if (elementType == JteTokenTypes.LAYOUT) {
             return new JtePsiLayout(node);
-        } else if (elementType == JteTokenTypes.LAYOUT_NAME) {
-            return new JtePsiLayoutName(node);
-        } else if (elementType == JteTokenTypes.ENDLAYOUT) {
-            return new JtePsiEndLayout(node);
-        } else if (elementType == JteTokenTypes.DEFINE) {
-            return new JtePsiDefine(node);
-        } else if (elementType == JteTokenTypes.ENDDEFINE) {
-            return new JtePsiEndDefine(node);
-        } else if (elementType == JteTokenTypes.DEFINE_NAME) {
-            return new JtePsiDefineName(node);
-        } else if (elementType == JteTokenTypes.RENDER) {
-            return new JtePsiRender(node);
-        } else if (elementType == JteTokenTypes.RENDER_NAME) {
-            return new JtePsiRenderName(node);
         } else if (elementType == JteTokenTypes.NAME_SEPARATOR) {
             return new JtePsiNameSeparator(node);
         } else if (elementType == JteTokenTypes.OUTPUT_BEGIN) {

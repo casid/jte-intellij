@@ -13,7 +13,7 @@ public class LayoutTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         if (hasToken(position, "@layout", JteTokenTypes.LAYOUT)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_LAYOUT_BEGIN);
+            lexer.setCurrentState(JteLexer.CONTENT_STATE_TAG_BEGIN);
             return true;
         }
         return false;

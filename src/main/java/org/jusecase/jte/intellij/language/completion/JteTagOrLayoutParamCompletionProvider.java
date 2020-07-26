@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 import org.jusecase.jte.intellij.language.psi.JtePsiJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParamName;
-import org.jusecase.jte.intellij.language.psi.JtePsiTagOrLayoutName;
+import org.jusecase.jte.intellij.language.psi.JtePsiTagName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
 import java.util.Set;
@@ -54,7 +54,7 @@ public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
             }
         }
 
-        JtePsiTagOrLayoutName tagOrLayoutName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTagOrLayoutName.class);
+        JtePsiTagName tagOrLayoutName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTagName.class);
         if (tagOrLayoutName == null) {
             return;
         }

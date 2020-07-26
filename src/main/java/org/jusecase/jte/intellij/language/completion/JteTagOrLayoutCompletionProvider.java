@@ -14,7 +14,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.JtePsiExtraJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParam;
-import org.jusecase.jte.intellij.language.psi.JtePsiTagOrLayoutName;
+import org.jusecase.jte.intellij.language.psi.JtePsiTagName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
             return;
         }
 
-        if (!(position.getParent() instanceof JtePsiTagOrLayoutName)) {
+        if (!(position.getParent() instanceof JtePsiTagName)) {
             return;
         }
-        JtePsiTagOrLayoutName nameElement = (JtePsiTagOrLayoutName) position.getParent();
+        JtePsiTagName nameElement = (JtePsiTagName) position.getParent();
 
-        JtePsiTagOrLayoutName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTagOrLayoutName.class);
+        JtePsiTagName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTagName.class);
         if (prevNameElement == null) {
             PsiDirectory directory = nameElement.findRootDirectory();
             if (directory != null) {

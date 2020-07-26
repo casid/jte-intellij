@@ -21,7 +21,7 @@
         <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@layout." value="@layout.$NAME$($END$)&#10;@endlayout" description="jte layout" toReformat="false" toShortenFQNames="false">
+    <template name="@layout." value="@layout.$NAME$($END$)" description="jte layout" toReformat="false" toShortenFQNames="false">
         <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
