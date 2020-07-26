@@ -15,6 +15,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.*;
@@ -38,10 +39,17 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             JtePsiJavaContent host = (JtePsiJavaContent) context;
             new Injector(host, registrar).inject();
         } else if (context instanceof JtePsiExtraJavaInjection) {
+            JtePsiExtraJavaInjection host = (JtePsiExtraJavaInjection) context;
+
             JtePsiJavaInjection param = PsiTreeUtil.getPrevSiblingOfType(context, JtePsiJavaInjection.class);
             if (param != null) {
-                registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
-                registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", (JtePsiExtraJavaInjection) context, new TextRange(0, context.getTextLength()));
+                JtePsiContent content = PsiTreeUtil.findChildOfType(host, JtePsiContent.class);
+                if (content == null) {
+                    registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                    registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", host, new TextRange(0, context.getTextLength()));
+                } else {
+                    new Injector(host, registrar).injectContent("class Dummy{ org.jusecase.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
+                }
                 registrar.doneInjecting();
             }
         }
@@ -54,13 +62,13 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     }
 
     private static class Injector {
-        private final JtePsiJavaContent host;
+        private final PsiLanguageInjectionHost host;
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
         private boolean hasStartedInjection;
 
-        public Injector(JtePsiJavaContent host, MultiHostRegistrar registrar) {
+        public Injector(PsiLanguageInjectionHost host, MultiHostRegistrar registrar) {
             this.host = host;
             this.registrar = registrar;
         }
@@ -242,7 +250,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             return result;
         }
 
-        private void injectContent(String prefix, String suffix, PsiElement element) {
+        void injectContent(String prefix, String suffix, PsiElement element) {
             // Super ugly hack: We do not override writeTo(TemplateOutput), otherwise line markers for override will be generated and cause an assertion error!
             injectEmptyJavaPart((prefix == null ? "" : prefix) + "new org.jusecase.jte.Content() { void writeTo() {", null, element);
 
@@ -282,9 +290,11 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             int result = node.getStartOffsetInParent();
             while (node != host) {
                 node = node.getParent();
-                result += node.getStartOffsetInParent();
+                if (node != host) {
+                    result += node.getStartOffsetInParent();
+                }
             }
-            return result - node.getTextOffset();
+            return result;
         }
     }
 }

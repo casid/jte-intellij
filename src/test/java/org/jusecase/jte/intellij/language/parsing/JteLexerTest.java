@@ -1,5 +1,6 @@
 package org.jusecase.jte.intellij.language.parsing;
 
+import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.tree.IElementType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -599,9 +600,33 @@ public class JteLexerTest {
     }
 
     @Test
-    public void defaultParamValue() {
-        givenInput("@param Content content = @``");
-        thenTokensAre(); // TODO
+    public void defaultParamValues() {
+        givenInput("@param Content content = @`x${Integer.MAX_VALUE}`\n" +
+                "@param Content content2 = null\n");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "Content content",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                CONTENT_BEGIN, "@`",
+                HTML_CONTENT, "x",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "Integer.MAX_VALUE",
+                OUTPUT_END, "}",
+                CONTENT_END, "`",
+                CustomHighlighterTokenType.WHITESPACE, "\n",
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "Content content2",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "null",
+                HTML_CONTENT, "\n"
+        );
     }
 
     private void givenInput(String input) {

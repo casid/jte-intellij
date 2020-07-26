@@ -154,6 +154,10 @@ public class JteParsing {
                 Marker javaBeginMarker = builder.mark();
                 builder.advanceLexer();
                 javaBeginMarker.done(JteTokenTypes.EXTRA_JAVA_INJECTION);
+            } else if (builder.getTokenType() == JteTokenTypes.CONTENT_BEGIN) {
+                Marker javaBeginMarker = builder.mark();
+                processContent();
+                javaBeginMarker.done(JteTokenTypes.EXTRA_JAVA_INJECTION);
             }
         }
 

@@ -36,7 +36,7 @@ public class ContentTokenParser extends AbstractTokenParser {
     public boolean hasToken(int position) {
         insideString = false;
 
-        if (shouldSkipWhitespaces() && isWhitespace(position)) {
+        if (shouldSkipWhitespaces(position) && isWhitespace(position)) {
             return skipWhitespaces(position);
         }
 
@@ -76,8 +76,12 @@ public class ContentTokenParser extends AbstractTokenParser {
         return true;
     }
 
-    private boolean shouldSkipWhitespaces() {
+    private boolean shouldSkipWhitespaces(int position) {
         int state = lexer.getCurrentState();
+        if (state == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '\n')) {
+            return false;
+        }
+
         return
                 state == JteLexer.CONTENT_STATE_IMPORT_BEGIN ||
                         state == JteLexer.CONTENT_STATE_PARAM_BEGIN ||
