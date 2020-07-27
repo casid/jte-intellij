@@ -228,22 +228,30 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 if (element instanceof JtePsiJavaInjection) {
                     injectJavaPart(currentPrefix, currentSuffix, (JtePsiJavaInjection) element);
                 } else if (element instanceof JtePsiContent) {
-                    injectContent(currentPrefix, currentSuffix, element);
+                    injectContent(currentPrefix, currentSuffix, (JtePsiContent) element);
                 }
             }
         }
 
-        void injectContent(String prefix, String suffix, PsiElement element) {
+        void injectContent(String prefix, String suffix, JtePsiContent element) {
             // Super ugly hack: We do not override writeTo(TemplateOutput), otherwise line markers for override will be generated and cause an assertion error!
-            injectEmptyJavaPart((prefix == null ? "" : prefix) + "new org.jusecase.jte.Content() { void writeTo() {", null, element);
+            prefix = (prefix == null ? "" : prefix) + "new org.jusecase.jte.Content() { void writeTo() {";
+            suffix = "}}" + (suffix == null ? "" : suffix);
 
-            for (PsiElement part : element.getChildren()) {
-                processTemplateBody(part);
-            }
+            PsiElement[] children = element.getChildren();
+            if (children.length == 0 || (children.length == 1 && children[0] instanceof JtePsiEndContent)) {
+                injectEmptyJavaPart(prefix, suffix, element);
+            } else {
+                injectEmptyJavaPart(prefix, null, element);
 
-            JtePsiEndContent endContent = PsiTreeUtil.findChildOfType(element, JtePsiEndContent.class);
-            if (endContent != null) {
-                injectEmptyJavaPart(null, "}}" + (suffix == null ? "" : suffix), endContent);
+                for (PsiElement part : children) {
+                    processTemplateBody(part);
+                }
+
+                JtePsiEndContent endContent = PsiTreeUtil.findChildOfType(element, JtePsiEndContent.class);
+                if (endContent != null) {
+                    injectEmptyJavaPart(null, suffix, endContent);
+                }
             }
         }
 
