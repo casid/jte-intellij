@@ -18,6 +18,7 @@ public class ContentBlockTokenParser extends AbstractTokenParser {
             }
             lexer.pushPreviousState();
             lexer.setCurrentState(JteLexer.CONTENT_STATE_HTML);
+            lexer.setCurrentCount(1); // To prevent syntax highlighter bugs, see https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000549784-Is-there-any-way-to-start-syntax-highlighting-lexer-for-the-whole-file-instead-of-starting-it-for-the-part-that-have-changed-
             return true;
         }
         return false;
