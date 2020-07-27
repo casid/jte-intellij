@@ -37,7 +37,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
         if (context instanceof JtePsiJavaContent) {
             JtePsiJavaContent host = (JtePsiJavaContent) context;
-            new Injector(host, registrar).inject();
+            new Injector(host, registrar, false).inject();
         } else if (context instanceof JtePsiExtraJavaInjection) {
             JtePsiExtraJavaInjection host = (JtePsiExtraJavaInjection) context;
 
@@ -48,7 +48,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
                     registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", host, new TextRange(0, context.getTextLength()));
                 } else {
-                    new Injector(host, registrar).injectContent("class Dummy{ org.jusecase.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
+                    new Injector(host, registrar, true).injectContent("class Dummy{ org.jusecase.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
                 }
                 registrar.doneInjecting();
             }
@@ -62,15 +62,18 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     }
 
     private static class Injector {
+        private static final String CLASS_PREFIX = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { org.jusecase.jte.TemplateOutput jteOutput; void render(";
+
         private final PsiLanguageInjectionHost host;
         private final MultiHostRegistrar registrar;
 
         private boolean hasWrittenClass;
         private boolean hasStartedInjection;
 
-        public Injector(PsiLanguageInjectionHost host, MultiHostRegistrar registrar) {
+        public Injector(PsiLanguageInjectionHost host, MultiHostRegistrar registrar, boolean hasWrittenClass) {
             this.host = host;
             this.registrar = registrar;
+            this.hasWrittenClass = hasWrittenClass;
         }
 
         public void inject() {
@@ -78,26 +81,25 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 if (child instanceof JtePsiImport) {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
-                        injectJavaPart("import ", ";\n", part);
+                        injectJavaPartWithoutClassCheck("import ", ";\n", part);
                     }
                 } else if (child instanceof JtePsiParam) {
                     JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
                     if (part != null) {
                         if (!hasWrittenClass) {
-                            String classPrefix = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { org.jusecase.jte.TemplateOutput jteOutput; void render(";
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
-                                injectJavaPart(classPrefix, " ", part);
+                                injectJavaPartWithoutClassCheck(CLASS_PREFIX, " ", part);
                             } else {
-                                injectJavaPart(classPrefix, ") {\n", part);
+                                injectJavaPartWithoutClassCheck(CLASS_PREFIX, ") {\n", part);
                             }
                             hasWrittenClass = true;
                         } else {
                             JtePsiParam nextParam = PsiTreeUtil.getNextSiblingOfType(child, JtePsiParam.class);
                             if (nextParam != null) {
-                                injectJavaPart(", ", " ", part);
+                                injectJavaPartWithoutClassCheck(", ", " ", part);
                             } else {
-                                injectJavaPart(", ", ") {\n", part);
+                                injectJavaPartWithoutClassCheck(", ", ") {\n", part);
                             }
                         }
                     }
@@ -261,6 +263,24 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
 
         private void injectJavaPart(String prefix, String suffix, JtePsiJavaInjection part) {
+            if (part == null) {
+                return;
+            }
+
+            if (!hasWrittenClass) {
+                String classPrefix = CLASS_PREFIX + ") {\n";
+                if (prefix == null) {
+                    prefix = classPrefix;
+                } else {
+                    prefix = classPrefix + prefix;
+                }
+                hasWrittenClass = true;
+            }
+
+            injectJavaPartWithoutClassCheck(prefix, suffix, part);
+        }
+
+        private void injectJavaPartWithoutClassCheck(String prefix, String suffix, JtePsiJavaInjection part) {
             if (part == null) {
                 return;
             }
