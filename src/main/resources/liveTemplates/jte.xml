@@ -25,12 +25,6 @@
         <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@define" value="@define($END$)&#10;@enddefine" description="jte layout define" toReformat="false" toShortenFQNames="false">
-        <context><option name="jte" value="true"/></context>
-    </template>
-    <template name="@render" value="@render($END$)" description="jte layout render" toReformat="false" toShortenFQNames="false">
-        <context><option name="jte" value="true"/></context>
-    </template>
 
     <template name="${" value="${$END$}" description="jte output" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
