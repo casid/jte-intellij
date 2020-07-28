@@ -225,7 +225,7 @@ public class JteLexerTest {
     public void testLayout_withParamsCallingMethods() {
         givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`\n" +
                 "<p>Hello, ${x}</p>\n" +
-                "`");
+                "`)");
 
         thenTokensAre(
                 LAYOUT, "@layout",
@@ -233,97 +233,20 @@ public class JteLexerTest {
                 TAG_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 JAVA_INJECTION, "a.getDuration(x.getOffset(), 5), b, c",
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n",
-
-                PARAMS_BEGIN, "(",
-
-                PARAMS_END, ")",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "content",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                CONTENT_BEGIN, "@`",
                 HTML_CONTENT, "\n<p>Hello, ",
                 OUTPUT_BEGIN, "${",
                 JAVA_INJECTION, "x",
                 OUTPUT_END, "}",
                 HTML_CONTENT, "</p>\n",
-
-                HTML_CONTENT, "\n"
-        );
-    }
-
-    @Test
-    public void testLayout_withNamedParamsCallingMethods() {
-        givenInput("@layout.simple(one = a.getDuration(x.getOffset(), 5), two = b, three = c)\n" +
-                "@define(content)\n" +
-                "<p>Hello, ${x}</p>\n" +
-                "@enddefine\n" +
-                "@endlayout");
-
-        thenTokensAre(
-                LAYOUT, "@layout",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
-                PARAMS_BEGIN, "(",
-                PARAM_NAME, "one",
-                WHITESPACE, " ",
-                EQUALS, "=",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "a.getDuration(x.getOffset(), 5)",
-                COMMA, ",",
-                WHITESPACE, " ",
-                PARAM_NAME, "two",
-                WHITESPACE, " ",
-                EQUALS, "=",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "b",
-                COMMA, ",",
-                WHITESPACE, " ",
-                PARAM_NAME, "three",
-                WHITESPACE, " ",
-                EQUALS, "=",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "c",
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n",
-
-                PARAMS_BEGIN, "(",
-
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n<p>Hello, ",
-                OUTPUT_BEGIN, "${",
-                JAVA_INJECTION, "x",
-                OUTPUT_END, "}",
-                HTML_CONTENT, "</p>\n",
-
-                HTML_CONTENT, "\n"
-        );
-    }
-
-    @Test
-    public void testLayout() {
-        givenInput("@param String name\n" +
-                "@render(header)\n" +
-                "@render(content)\n" +
-                "@render(footer)\n");
-
-        thenTokensAre(
-                PARAM, "@param",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "String name",
-                HTML_CONTENT, "\n",
-
-                PARAMS_BEGIN, "(",
-
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n",
-
-                PARAMS_BEGIN, "(",
-
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n",
-
-                PARAMS_BEGIN, "(",
-
-                PARAMS_END, ")",
-                HTML_CONTENT, "\n"
+                CONTENT_END, "`",
+                PARAMS_END, ")"
         );
     }
 
