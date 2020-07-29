@@ -4,6 +4,7 @@ import com.intellij.ide.highlighter.custom.tokens.TokenInfo;
 import com.intellij.ide.highlighter.custom.tokens.TokenParser;
 import com.intellij.ide.highlighter.custom.tokens.WhitespaceParser;
 import com.intellij.lexer.LexerBase;
+import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
@@ -43,7 +44,7 @@ public class JteLexer extends LexerBase {
     public static final int CONTENT_COUNT_PARAM_NAME_TAG = 1;
     public static final int CONTENT_COUNT_PARAM_NAME_TAG_DONE = 2;
 
-    private CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
+    private CharSequence myBuffer = Strings.EMPTY_CHAR_SEQUENCE;
     private int myEndOffset = 0;
     private final TokenParser[] myTokenParsers;
     private TokenInfo myCurrentToken;

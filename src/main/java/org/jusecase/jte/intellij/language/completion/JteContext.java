@@ -1,5 +1,6 @@
 package org.jusecase.jte.intellij.language.completion;
 
+import com.intellij.codeInsight.template.TemplateActionContext;
 import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ public class JteContext extends TemplateContextType {
     }
 
     @Override
-    public boolean isInContext(@NotNull PsiFile file, int offset) {
-        return file.getName().endsWith(".jte");
+    public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
+        return templateActionContext.getFile().getName().endsWith(".jte");
     }
 }

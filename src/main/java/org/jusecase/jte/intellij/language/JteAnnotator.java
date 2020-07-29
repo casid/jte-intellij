@@ -6,7 +6,6 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jusecase.jte.intellij.language.psi.JtePsiTagName;
 import org.jusecase.jte.intellij.language.psi.*;
 
 public class JteAnnotator implements Annotator {

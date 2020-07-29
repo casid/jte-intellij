@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.jusecase'
-version '0.4'
+version '0.5'
 
 sourceCompatibility = 1.8
 
@@ -18,7 +18,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2020.1'
+    version '2020.2'
     plugins = ['java']
 }
 

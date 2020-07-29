@@ -1,6 +1,7 @@
 package org.jusecase.jte.intellij.language;
 
 import com.intellij.codeInsight.folding.impl.FoldingUpdate;
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.editor.Document;
@@ -8,7 +9,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -45,7 +45,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             if (param != null) {
                 JtePsiContent content = PsiTreeUtil.findChildOfType(host, JtePsiContent.class);
                 if (content == null) {
-                    registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                    registrar.startInjecting(JavaFileType.INSTANCE.getLanguage());
                     registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", host, new TextRange(0, context.getTextLength()));
                 } else {
                     new Injector(host, registrar, true).injectContent("class Dummy{ org.jusecase.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
@@ -291,7 +291,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
         public MultiHostRegistrar getRegistrar() {
             if (!hasStartedInjection) {
-                registrar.startInjecting(StdFileTypes.JAVA.getLanguage());
+                registrar.startInjecting(JavaFileType.INSTANCE.getLanguage());
                 hasStartedInjection = true;
             }
             return registrar;

@@ -1,5 +1,7 @@
 package org.jusecase.jte.intellij.language;
 
+import com.intellij.ide.highlighter.HtmlFileType;
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.ex.util.LayerDescriptor;
@@ -23,7 +25,7 @@ public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
         else {
             Language language = TemplateDataLanguageMappings.getInstance(project).getMapping(virtualFile);
             if (language != null) type = language.getAssociatedFileType();
-            if (type == null) type = StdFileTypes.HTML;
+            if (type == null) type = HtmlFileType.INSTANCE;
         }
 
         SyntaxHighlighter outerHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(type, project, virtualFile);
@@ -31,7 +33,7 @@ public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
             registerLayer(JteTokenTypes.HTML_CONTENT, new LayerDescriptor(outerHighlighter, ""));
         }
 
-        SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(StdFileTypes.JAVA, project, virtualFile);
+        SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(JavaFileType.INSTANCE, project, virtualFile);
         if (outerJavaHighlighter != null) {
             registerLayer(JteTokenTypes.JAVA_INJECTION, new LayerDescriptor(outerJavaHighlighter, ""));
         }

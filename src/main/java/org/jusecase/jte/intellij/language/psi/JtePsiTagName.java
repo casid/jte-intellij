@@ -217,15 +217,6 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
         return getNextSibling() instanceof JtePsiNameSeparator;
     }
 
-    public JtePsiTagName resolveFileElement(JtePsiTagName element) {
-        JtePsiTagName sibling = PsiTreeUtil.getNextSiblingOfType(element, JtePsiTagName.class);
-        if (sibling == null) {
-            return element;
-        } else {
-            return resolveFileElement(sibling);
-        }
-    }
-
     @NotNull
     @Override
     public PsiReference[] getReferences() {

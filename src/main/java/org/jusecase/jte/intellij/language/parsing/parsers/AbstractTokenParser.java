@@ -1,7 +1,6 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
 import com.intellij.ide.highlighter.custom.tokens.TokenParser;
-import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
@@ -25,6 +24,7 @@ public abstract class AbstractTokenParser extends TokenParser {
         return true;
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected final boolean isEndOf(int position, String token) {
         int startPosition = position - token.length();
         if (startPosition < myStartOffset) {

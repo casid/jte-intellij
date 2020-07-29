@@ -1,9 +1,9 @@
 package org.jusecase.jte.intellij.language;
 
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
 import com.intellij.lang.ParserDefinition;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.LanguageSubstitutors;
 import com.intellij.psi.MultiplePsiFilesPerDocumentFileViewProvider;
@@ -23,9 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-import static org.jusecase.jte.intellij.language.parsing.JteTokenTypes.HTML_CONTENT;
-import static org.jusecase.jte.intellij.language.parsing.JteTokenTypes.OUTER_ELEMENT_TYPE;
-
 public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProvider implements ConfigurableTemplateLanguageFileViewProvider {
 
     private static final ConcurrentMap<String, TemplateDataElementType> TEMPLATE_DATA_TO_LANG = new ConcurrentHashMap<>();
@@ -34,7 +31,7 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     private static Language getTemplateDataLanguage(PsiManager manager, VirtualFile file) {
         Language dataLang = TemplateDataLanguageMappings.getInstance(manager.getProject()).getMapping(file);
         if (dataLang == null) {
-            dataLang = StdFileTypes.HTML.getLanguage();
+            dataLang = HtmlFileType.INSTANCE.getLanguage();
         }
 
         Language substituteLang = LanguageSubstitutors.getInstance().substituteLanguage(dataLang, file, manager.getProject());
