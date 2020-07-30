@@ -22,6 +22,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>0.5</h3>
+<ul>
+    <li>Support for new content blocks introduced in jte 0.8.</li>
+    <li>Old layout syntax removed.</li>
+    <li>Support for IntelliJ 2020.2.</li>
+</ul>
 <h3>0.4</h3>
 <ul>
     <li>Add support for varargs in tags/layouts.</li>
