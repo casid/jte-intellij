@@ -48,7 +48,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     registrar.startInjecting(JavaFileType.INSTANCE.getLanguage());
                     registrar.addPlace("class Dummy{" + param.getText() + "=", ";}", host, new TextRange(0, context.getTextLength()));
                 } else {
-                    new Injector(host, registrar, true).injectContent("class Dummy{ org.jusecase.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
+                    new Injector(host, registrar, true).injectContent("class Dummy{ gg.jte.TemplateOutput jteOutput;" + param.getText() + "=", ";}", content);
                 }
                 registrar.doneInjecting();
             }
@@ -62,7 +62,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     }
 
     private static class Injector {
-        private static final String CLASS_PREFIX = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { org.jusecase.jte.TemplateOutput jteOutput; void render(";
+        private static final String CLASS_PREFIX = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { gg.jte.TemplateOutput jteOutput; void render(";
 
         private final PsiLanguageInjectionHost host;
         private final MultiHostRegistrar registrar;
@@ -237,7 +237,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
         void injectContent(String prefix, String suffix, JtePsiContent element) {
             // Super ugly hack: We do not override writeTo(TemplateOutput), otherwise line markers for override will be generated and cause an assertion error!
-            prefix = (prefix == null ? "" : prefix) + "new org.jusecase.jte.Content() { void writeTo() {";
+            prefix = (prefix == null ? "" : prefix) + "new gg.jte.Content() { void writeTo() {";
             suffix = "}}" + (suffix == null ? "" : suffix);
 
             PsiElement[] children = element.getChildren();
