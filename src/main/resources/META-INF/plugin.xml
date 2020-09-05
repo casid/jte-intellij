@@ -22,6 +22,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>1.0.0</h3>
+<ul>
+    <li>Minor adjustments for jte 1.0.0.</li>
+    <li>jte icon added.</li>
+</ul>
 <h3>0.5</h3>
 <ul>
     <li>Support for new content blocks introduced in jte 0.8.</li>
