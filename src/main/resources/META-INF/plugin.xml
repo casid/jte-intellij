@@ -98,6 +98,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction"
+                class="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction"
+                text="Convert JSP file to jte file">
+            <add-to-group group-id="CodeMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
