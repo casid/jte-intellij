@@ -12,7 +12,7 @@ public class ImportTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "@import", JteTokenTypes.IMPORT)) {
+        if (!lexer.isImportOrParamIgnored() && hasToken(position, "@import", JteTokenTypes.IMPORT)) {
             lexer.setCurrentState(JteLexer.CONTENT_STATE_IMPORT_BEGIN);
             return true;
         }

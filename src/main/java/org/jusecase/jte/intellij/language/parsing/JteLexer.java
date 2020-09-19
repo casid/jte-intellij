@@ -7,7 +7,6 @@ import com.intellij.lexer.LexerBase;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.parsing.parsers.*;
 
@@ -50,6 +49,7 @@ public class JteLexer extends LexerBase {
     private TokenInfo myCurrentToken;
     private int myPosition;
     private int myState;
+    private boolean myImportOrParamIgnored;
     private final Deque<Integer> myPreviousStates = new ArrayDeque<>();
 
     public JteLexer() {
@@ -88,6 +88,7 @@ public class JteLexer extends LexerBase {
         myPosition = startOffset;
         myCurrentToken = new TokenInfo();
         myState = initialState;
+        myImportOrParamIgnored = false;
 
         for (TokenParser tokenParser : myTokenParsers) {
             tokenParser.setBuffer(myBuffer, startOffset, myEndOffset);
@@ -206,5 +207,13 @@ public class JteLexer extends LexerBase {
                 return true;
         }
         return false;
+    }
+
+    public boolean isImportOrParamIgnored() {
+        return myImportOrParamIgnored;
+    }
+
+    public void setImportOrParamIgnored(boolean value) {
+        this.myImportOrParamIgnored = value;
     }
 }

@@ -49,6 +49,9 @@ public class ContentTokenParser extends AbstractTokenParser {
         position++;
 
         while (position < myEndOffset && !isBeginOfJteKeyword(position)) {
+            if (currentState == JteLexer.CONTENT_STATE_HTML && !lexer.isImportOrParamIgnored() && !isWhitespace(position)) {
+                lexer.setImportOrParamIgnored(true);
+            }
             position++;
         }
 
@@ -93,6 +96,10 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_HTML || lexer.isInJavaEndState()) {
             for (String keyword : KEYWORDS) {
+                if (("@import".equals(keyword) || "@param".equals(keyword)) && lexer.isImportOrParamIgnored()) {
+                    continue;
+                }
+
                 if (isBeginOf(position, keyword)) {
                     return true;
                 }

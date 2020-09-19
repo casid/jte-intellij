@@ -547,6 +547,20 @@ public class JteLexerTest {
         );
     }
 
+    @Test
+    public void cssImport() {
+        givenInput("<style type=\"text/css\" rel=\"stylesheet\" media=\"all\">\n" +
+                "    @import url(\"https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap\"); /* <--- Right here */");
+        thenTokensAre(HTML_CONTENT, "<style type=\"text/css\" rel=\"stylesheet\" media=\"all\">\n" +
+                "    @import url(\"https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap\"); /* <--- Right here */");
+    }
+
+    @Test
+    public void paramAfterOutput() {
+        givenInput("Hello @param");
+        thenTokensAre(HTML_CONTENT, "Hello @param");
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }
