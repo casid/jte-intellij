@@ -26,7 +26,7 @@ public class JteTypedActionHandler extends TypedActionHandlerBase {
         }
 
         // Must be invoked after original handler, otherwise android xml handler overwrites the auto popup after we set it...
-        if (charTyped == '@' || charTyped == '$') {
+        if (charTyped == '@' || charTyped == '$' || charTyped == '!') {
             Project project = editor.getProject();
             if (project == null) {
                 return;

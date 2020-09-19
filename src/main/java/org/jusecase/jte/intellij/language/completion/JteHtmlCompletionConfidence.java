@@ -30,7 +30,7 @@ public class JteHtmlCompletionConfidence extends CompletionConfidence {
                 String contextElementText = contextElement.getText();
                 int endOffset = offset - contextElement.getTextRange().getStartOffset();
                 String prefix = contextElementText.substring(0, Math.min(contextElementText.length(), endOffset));
-                if (StringUtil.startsWithChar(prefix, '@') || StringUtil.startsWithChar(prefix, '$')) {
+                if (StringUtil.startsWithChar(prefix, '@') || StringUtil.startsWithChar(prefix, '$') || StringUtil.startsWithChar(prefix, '!')) {
                     return ThreeState.NO;
                 }
             }

@@ -32,4 +32,9 @@
     <template name="$unsafe{" value="$unsafe{$END$}" description="jte unsafe output" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
+
+    <template name="!{var" value="!{var $NAME$ = $END$;}" description="jte var" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+        <context><option name="jte" value="true"/></context>
+    </template>
 </templateSet>
