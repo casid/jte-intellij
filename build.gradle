@@ -22,6 +22,11 @@ intellij {
     plugins = ['java']
 }
 
+patchPluginXml {
+    sinceBuild '202'
+    untilBuild null
+}
+
 publishPlugin {
     token project.findProperty('publishToken')
 }
