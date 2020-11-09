@@ -105,6 +105,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <lang.foldingBuilder language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFoldingBuilder"/>
         <lang.braceMatcher language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteBraceMatcher"/>
+
+        <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
     </extensions>
 
     <actions>
@@ -114,4 +116,9 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
             <add-to-group group-id="CodeMenu" anchor="last"/>
         </action>
     </actions>
+
+    <applicationListeners>
+        <listener class="org.jusecase.jte.intellij.language.JteFileReferenceContributor$FileChangeListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </applicationListeners>
 </idea-plugin>
