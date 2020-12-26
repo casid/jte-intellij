@@ -1,9 +1,6 @@
 package org.jusecase.jte.intellij.language.parsing;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.IStubFileElementType;
-import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.tree.*;
 import org.jusecase.jte.intellij.language.JteLanguage;
 
 public interface JteTokenTypes {
@@ -13,7 +10,7 @@ public interface JteTokenTypes {
     IElementType JAVA_INJECTION = new JteElementType("JAVA_INJECTION");
     IElementType EXTRA_JAVA_INJECTION = new JteElementType("EXTRA_JAVA_INJECTION");
 
-    IElementType OUTER_ELEMENT_TYPE = new JteElementType("OUTER_ELEMENT_TYPE");
+    IElementType OUTER_ELEMENT_TYPE = new OuterLanguageElementType("OUTER_ELEMENT_TYPE", JteLanguage.INSTANCE);
 
     IElementType IMPORT = new JteElementType("IMPORT");
     IElementType PARAM = new JteElementType("PARAM");
