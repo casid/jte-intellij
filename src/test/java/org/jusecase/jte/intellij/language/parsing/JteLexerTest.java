@@ -561,6 +561,23 @@ public class JteLexerTest {
         thenTokensAre(HTML_CONTENT, "Hello @param");
     }
 
+    @Test // See https://github.com/casid/jte/issues/27
+    public void incompleteIf() {
+        givenInput("@if(\n@for(int i = 0; i < 1; ++i)\n@endfor");
+
+        thenTokensAre(
+                IF, "@if",
+                CONDITION_BEGIN, "(",
+                JAVA_INJECTION, "\n",
+                FOR, "@for",
+                CONDITION_BEGIN, "(",
+                JAVA_INJECTION, "int i = 0; i < 1; ++i",
+                CONDITION_END, ")",
+                HTML_CONTENT, "\n",
+                ENDFOR, "@endfor"
+        );
+    }
+
     private void givenInput(String input) {
         lexer.start(input);
     }

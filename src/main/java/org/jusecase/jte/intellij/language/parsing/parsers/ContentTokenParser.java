@@ -94,15 +94,13 @@ public class ContentTokenParser extends AbstractTokenParser {
             return false;
         }
 
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_HTML || lexer.isInJavaEndState()) {
-            for (String keyword : KEYWORDS) {
-                if (("@import".equals(keyword) || "@param".equals(keyword)) && lexer.isImportOrParamIgnored()) {
-                    continue;
-                }
+        for (String keyword : KEYWORDS) {
+            if (("@import".equals(keyword) || "@param".equals(keyword)) && lexer.isImportOrParamIgnored()) {
+                continue;
+            }
 
-                if (isBeginOf(position, keyword)) {
-                    return true;
-                }
+            if (isBeginOf(position, keyword)) {
+                return true;
             }
         }
 
