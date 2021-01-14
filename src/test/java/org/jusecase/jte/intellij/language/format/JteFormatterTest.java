@@ -95,6 +95,17 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testContentBlock() {
+        reformatCode("@tag.card(content = @`\n" +
+                "This is <b>my content</b>!\n" +
+                "`)",
+
+                "@tag.card(content = @`\n" +
+                "    This is <b>my content</b>!\n" +
+                "`)"
+        );
+    }
+
     @SuppressWarnings("Convert2Lambda")
     private void reformatCode(final String code, String expectedResult) throws IncorrectOperationException {
         final PsiFile file = createFile("test.jte", code);
