@@ -33,12 +33,16 @@ public class JteBlock extends TemplateLanguageBlock {
             return Indent.getNoneIndent();
         }
 
-        return null;
+        if (elementType == JteTokenTypes.BLOCK) {
+            return Indent.getNormalIndent();
+        }
+
+        return Indent.getNoneIndent();
     }
 
     @Override
-    public @NotNull ChildAttributes getChildAttributes(int newChildIndex) {
-        return super.getChildAttributes(newChildIndex); // TODO
+    protected @Nullable Indent getChildIndent() {
+        return super.getChildIndent(); // TODO?
     }
 
     @Override

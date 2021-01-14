@@ -17,13 +17,13 @@ public class JteParsing {
         Marker begin = builder.mark();
 
         while (!builder.eof()) {
-            processBlock();
+            processBlock(null);
         }
 
         begin.done(JteTokenTypes.JAVA_CONTENT);
     }
 
-    private void processBlock() {
+    private Marker processBlock(Marker currentBlock) {
         IElementType tokenType = builder.getTokenType();
 
         if (tokenType == JteTokenTypes.HTML_CONTENT) {
@@ -39,9 +39,9 @@ public class JteParsing {
         } else if (tokenType == JteTokenTypes.IF) {
             processIf();
         } else if (tokenType == JteTokenTypes.ELSEIF) {
-            processElseIf();
+            currentBlock = processElseIf(currentBlock);
         } else if (tokenType == JteTokenTypes.ELSE) {
-            processElse();
+            currentBlock = processElse(currentBlock);
         } else if (tokenType == JteTokenTypes.ENDIF) {
             processEndIf();
         } else if (tokenType == JteTokenTypes.FOR) {
@@ -59,6 +59,8 @@ public class JteParsing {
         } else {
             builder.advanceLexer();
         }
+
+        return currentBlock;
     }
 
     private void processOutput() {
@@ -200,7 +202,11 @@ public class JteParsing {
         ifMarker.done(JteTokenTypes.IF);
     }
 
-    private void processElseIf() {
+    private Marker processElseIf(Marker currentBlock) {
+        if (currentBlock != null) {
+            currentBlock.done(JteTokenTypes.BLOCK);
+        }
+
         Marker elseIfMarker = builder.mark();
         builder.advanceLexer();
 
@@ -227,12 +233,28 @@ public class JteParsing {
         }
 
         elseIfMarker.done(JteTokenTypes.ELSEIF);
+
+        if (currentBlock == null) {
+            return null;
+        }
+
+        return builder.mark();
     }
 
-    private void processElse() {
+    private Marker processElse(Marker currentBlock) {
+        if (currentBlock != null) {
+            currentBlock.done(JteTokenTypes.BLOCK);
+        }
+
         Marker marker = builder.mark();
         builder.advanceLexer();
         marker.done(JteTokenTypes.ELSE);
+
+        if (currentBlock == null) {
+            return null;
+        }
+
+        return builder.mark();
     }
 
     private void processEndIf() {
@@ -351,12 +373,16 @@ public class JteParsing {
     }
 
     private void processEnd(IElementType tokenType) {
+        Marker blockMarker = builder.mark();
+
         while (builder.getTokenType() != tokenType && !builder.eof()) {
-            processBlock();
+            blockMarker = processBlock(blockMarker);
         }
 
+        blockMarker.done(JteTokenTypes.BLOCK);
+
         if (builder.getTokenType() == tokenType) {
-            processBlock();
+            processBlock(null);
         }
     }
 }

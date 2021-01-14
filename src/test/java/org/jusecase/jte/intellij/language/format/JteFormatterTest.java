@@ -39,6 +39,62 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testIf() {
+        reformatCode(
+                "@if(true)\nIt is true\n@endif",
+                "@if(true)\n    It is true\n@endif"
+        );
+    }
+
+    public void testIfElse() {
+        reformatCode(
+                "@if(true)\nIt is <b>true</b>\n@else\nIt is <b>false</b>\n@endif",
+                "@if(true)\n    It is <b>true</b>\n@else\n    It is <b>false</b>\n@endif"
+        );
+    }
+
+    public void testIfElseIf() {
+        reformatCode(
+                "@if(true)\nIt is <b>true</b>\n@elseif(false)\nIt is <b>false</b>\n@endif",
+                "@if(true)\n    It is <b>true</b>\n@elseif(false)\n    It is <b>false</b>\n@endif"
+        );
+    }
+
+    public void testNestedIf() {
+        reformatCode(
+                "@if(true)\n" +
+                "It is <b>true</b>\n" +
+                "@else\n" +
+                "@if(true)\n" +
+                "True?\n" +
+                "@else\n" +
+                "It is <b>false</b>\n" +
+                "@endif\n" +
+                "@endif",
+
+                "@if(true)\n" +
+                "    It is <b>true</b>\n" +
+                "@else\n" +
+                "    @if(true)\n" +
+                "        True?\n" +
+                "    @else\n" +
+                "        It is <b>false</b>\n" +
+                "    @endif\n" +
+                "@endif"
+        );
+    }
+
+    public void testFor() {
+        reformatCode("@for(int i = 0; i < 100; ++i)\n" +
+                "i is ${i}\n" +
+                "@endfor\n",
+
+                "@for(int i = 0; i < 100; ++i)\n" +
+                "    i is ${i}\n" +
+                "@endfor\n"
+        );
+    }
+
     @SuppressWarnings("Convert2Lambda")
     private void reformatCode(final String code, String expectedResult) throws IncorrectOperationException {
         final PsiFile file = createFile("test.jte", code);
