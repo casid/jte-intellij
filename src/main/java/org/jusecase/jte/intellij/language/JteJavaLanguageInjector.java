@@ -201,6 +201,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 injectTagOrLayoutParams(child);
             } else if (child instanceof JtePsiLayout) {
                 injectTagOrLayoutParams(child);
+            } else if (child instanceof JtePsiBlock) {
+                for (PsiElement element : child.getChildren()) {
+                    processTemplateBody(element);
+                }
             }
         }
 
