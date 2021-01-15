@@ -17,9 +17,9 @@ import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
 import java.util.List;
 
-public class JteBlock extends TemplateLanguageBlock {
+public class JteFormattingBlock extends TemplateLanguageBlock {
 
-    protected JteBlock(@NotNull TemplateLanguageBlockFactory blockFactory, @NotNull CodeStyleSettings settings, @NotNull ASTNode node, @Nullable List<DataLanguageBlockWrapper> foreignChildren) {
+    protected JteFormattingBlock(@NotNull TemplateLanguageBlockFactory blockFactory, @NotNull CodeStyleSettings settings, @NotNull ASTNode node, @Nullable List<DataLanguageBlockWrapper> foreignChildren) {
         super(blockFactory, settings, node, foreignChildren);
     }
 

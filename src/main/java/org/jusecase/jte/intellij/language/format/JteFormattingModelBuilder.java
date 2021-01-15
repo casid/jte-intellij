@@ -20,7 +20,7 @@ import java.util.List;
 public class JteFormattingModelBuilder extends TemplateLanguageFormattingModelBuilder {
     @Override
     public TemplateLanguageBlock createTemplateLanguageBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nullable List<DataLanguageBlockWrapper> foreignChildren, @NotNull CodeStyleSettings codeStyleSettings) {
-        return new JteBlock(this, codeStyleSettings, node, foreignChildren);
+        return new JteFormattingBlock(this, codeStyleSettings, node, foreignChildren);
     }
 
     /**
