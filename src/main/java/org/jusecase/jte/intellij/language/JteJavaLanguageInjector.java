@@ -244,15 +244,14 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             prefix = (prefix == null ? "" : prefix) + "new gg.jte.Content() { void writeTo() {";
             suffix = "}}" + (suffix == null ? "" : suffix);
 
-            PsiElement[] children = element.getChildren();
-            if (children.length == 0 || (children.length == 1 && children[0] instanceof JtePsiEndContent)) {
+            JtePsiBlock block = PsiTreeUtil.getChildOfType(element, JtePsiBlock.class);
+
+            if (block == null || block.getChildren().length == 0) {
                 injectEmptyJavaPart(prefix, suffix, element);
             } else {
                 injectEmptyJavaPart(prefix, null, element);
 
-                for (PsiElement part : children) {
-                    processTemplateBody(part);
-                }
+                processTemplateBody(block);
 
                 JtePsiEndContent endContent = PsiTreeUtil.findChildOfType(element, JtePsiEndContent.class);
                 if (endContent != null) {
