@@ -54,4 +54,5 @@ public interface JteTokenTypes {
 
     TokenSet COMMENTS = TokenSet.create(COMMENT, COMMENT_CONTENT);
     TokenSet STRING_LITERALS = TokenSet.create(STRING);
+    TokenSet WHITESPACES = TokenSet.create(WHITESPACE);
 }

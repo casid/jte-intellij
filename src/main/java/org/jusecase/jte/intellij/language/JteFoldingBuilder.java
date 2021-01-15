@@ -26,7 +26,10 @@ public class JteFoldingBuilder extends CustomFoldingBuilder {
             ProgressManager.checkCanceled();
 
             if (child instanceof JtePsiBlock) {
-                descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "..."));
+                TextRange textRange = child.getTextRange();
+                if (textRange.getLength() > 0) {
+                    descriptors.add(new FoldingDescriptor(child.getNode(), textRange, null, "..."));
+                }
             }
 
             addFoldRegions(descriptors, child);

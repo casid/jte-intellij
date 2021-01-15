@@ -44,6 +44,11 @@ public class JteParserDefinition implements ParserDefinition {
         return JteTokenTypes.STRING_LITERALS;
     }
 
+    @Override
+    public @NotNull TokenSet getWhitespaceTokens() {
+        return JteTokenTypes.WHITESPACES;
+    }
+
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {

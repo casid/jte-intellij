@@ -142,6 +142,38 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testForInDiv() {
+        reformatCode(
+                "<div class=\"foo  ffo    bar\" about=\"faf\">\n" +
+                "@for(int i : model.getStuff())\n" +
+                "${i}\n" +
+                "@endfor\n" +
+                "</div>",
+
+                "<div class=\"foo  ffo    bar\" about=\"faf\">\n" +
+                "    @for(int i : model.getStuff())\n" +
+                "        ${i}\n" +
+                "    @endfor\n" +
+                "</div>");
+    }
+
+    public void testDivAroundHeadlineInFor() {
+        reformatCode(
+                "<div>\n" +
+                "@for(int i : model.getStuff())\n" +
+                "<h1>${i}</h1>\n" +
+                "@tag.foo()\n" +
+                "@endfor\n" +
+                "</div>\n",
+
+                "<div>\n" +
+                "    @for(int i : model.getStuff())\n" +
+                "        <h1>${i}</h1>\n" +
+                "        @tag.foo()\n" +
+                "    @endfor\n" +
+                "</div>\n");
+    }
+
     @SuppressWarnings("Convert2Lambda")
     private void reformatCode(final String code, String expectedResult) throws IncorrectOperationException {
         final PsiFile file = createFile("test.jte", code);

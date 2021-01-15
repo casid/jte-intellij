@@ -18,7 +18,7 @@ public class JteLexerTest {
                 IMPORT, "@import",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "test",
-                HTML_CONTENT, "\n"
+                WHITESPACE, "\n"
         );
     }
 
@@ -46,13 +46,13 @@ public class JteLexerTest {
                 PARAM, "@param",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "Model x",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 IF, "@if",
                 WHITESPACE, " ",
                 CONDITION_BEGIN, "(",
                 JAVA_INJECTION, "(model.x == true) && !somethingElse",
                 CONDITION_END, ")",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 OUTPUT_BEGIN, "${",
                 JAVA_INJECTION, "model.x",
                 OUTPUT_END, "}",
@@ -264,7 +264,7 @@ public class JteLexerTest {
                 TAG_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAMS_END, ")",
-                HTML_CONTENT, "\n"
+                WHITESPACE, "\n"
         );
     }
 
@@ -347,7 +347,7 @@ public class JteLexerTest {
                 "Hello ${value}");
         thenTokensAre(
                 COMMENT, "<%-- Comment --%>",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 PARAM, "@param",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "String value",
@@ -444,11 +444,11 @@ public class JteLexerTest {
                 PARAM, "@param",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "String value",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 PARAM, "@param",
                 WHITESPACE, " ",
                 JAVA_INJECTION, "test.Localizer localizer",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 TAG, "@tag",
                 NAME_SEPARATOR, ".",
                 TAG_NAME, "simple",
@@ -459,7 +459,7 @@ public class JteLexerTest {
                 WHITESPACE, " ",
                 JAVA_INJECTION, "localizer.localize(\"key\", ",
                 CONTENT_BEGIN, "@`",
-                HTML_CONTENT, "\n        ",
+                WHITESPACE, "\n        ",
                 TAG, "@tag",
                 NAME_SEPARATOR, ".",
                 TAG_NAME, "verySimple",
@@ -483,7 +483,7 @@ public class JteLexerTest {
                 WHITESPACE, " ",
                 JAVA_INJECTION, "localizer",
                 PARAMS_END, ")",
-                HTML_CONTENT, "\n    ",
+                WHITESPACE, "\n    ",
                 CONTENT_END, "`",
                 JAVA_INJECTION, ",\n    ",
                 CONTENT_BEGIN, "@`",
@@ -543,7 +543,7 @@ public class JteLexerTest {
                 EQUALS, "=",
                 WHITESPACE, " ",
                 EXTRA_JAVA_INJECTION, "null",
-                HTML_CONTENT, "\n"
+                WHITESPACE, "\n"
         );
     }
 
@@ -573,7 +573,7 @@ public class JteLexerTest {
                 CONDITION_BEGIN, "(",
                 JAVA_INJECTION, "int i = 0; i < 1; ++i",
                 CONDITION_END, ")",
-                HTML_CONTENT, "\n",
+                WHITESPACE, "\n",
                 ENDFOR, "@endfor"
         );
     }
