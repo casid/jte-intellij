@@ -6,9 +6,7 @@ import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
 import com.intellij.formatting.templateLanguages.TemplateLanguageFormattingModelBuilder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.formatter.DocumentBasedFormattingModel;
 import com.intellij.psi.templateLanguages.SimpleTemplateLanguageFormattingModelBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +33,6 @@ public class JteFormattingModelBuilder extends TemplateLanguageFormattingModelBu
     public @NotNull FormattingModel createModel(@NotNull FormattingContext context) {
 
         PsiElement element = context.getPsiElement();
-        PsiFile file = element.getContainingFile();
-        Block rootBlock;
-
         ASTNode node = element.getNode();
 
         if (node.getElementType() == JteTokenTypes.OUTER_ELEMENT_TYPE) {
@@ -45,9 +40,8 @@ public class JteFormattingModelBuilder extends TemplateLanguageFormattingModelBu
             // language. Make a dummy block to allow that formatter to continue
             return new SimpleTemplateLanguageFormattingModelBuilder().createModel(context);
         } else {
-            rootBlock = getRootBlock(file, file.getViewProvider(), context.getCodeStyleSettings());
+            return super.createModel(context);
         }
-        return new DocumentBasedFormattingModel(rootBlock, element.getProject(), context.getCodeStyleSettings(), file.getFileType(), file);
     }
 
     @Override
