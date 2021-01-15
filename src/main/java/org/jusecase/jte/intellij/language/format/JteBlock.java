@@ -1,7 +1,6 @@
 package org.jusecase.jte.intellij.language.format;
 
 
-import com.intellij.formatting.ChildAttributes;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
 import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
@@ -29,20 +28,28 @@ public class JteBlock extends TemplateLanguageBlock {
             return Indent.getAbsoluteNoneIndent();
         }
 
-        if (elementType == JteTokenTypes.WHITESPACE) {
-            return Indent.getNoneIndent();
-        }
-
         if (elementType == JteTokenTypes.BLOCK) {
             return Indent.getNormalIndent();
+        }
+
+        if (getParent() instanceof DataLanguageBlockWrapper) {
+            DataLanguageBlockWrapper parent = (DataLanguageBlockWrapper)getParent();
+            return parent.getChildAttributes(1).getChildIndent();
         }
 
         return Indent.getNoneIndent();
     }
 
     @Override
-    protected @Nullable Indent getChildIndent() {
-        return super.getChildIndent(); // TODO?
+    @Nullable
+    protected Indent getChildIndent() {
+        IElementType elementType = myNode.getElementType();
+
+        if (elementType == JteTokenTypes.IF || elementType == JteTokenTypes.FOR || elementType == JteTokenTypes.CONTENT_BEGIN) {
+            return Indent.getNormalIndent();
+        }
+
+        return Indent.getNoneIndent();
     }
 
     @Override

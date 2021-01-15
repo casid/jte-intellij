@@ -106,6 +106,42 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testOutputInDiv() {
+        reformatCode(
+                "<div>\n" +
+                "x is ${x}\n" +
+                "</div>\n",
+
+                "<div>\n" +
+                "    x is ${x}\n" +
+                "</div>\n"
+        );
+    }
+
+    public void testOutputInDiv_withoutOtherText() {
+        reformatCode(
+                "<div>\n" +
+                "${x}\n" +
+                "</div>\n",
+
+                "<div>\n" +
+                "    ${x}\n" +
+                "</div>\n"
+        );
+    }
+
+    public void testOutputInIf() {
+        reformatCode(
+                "@if(true)\n" +
+                "${x}\n" +
+                "@endif\n",
+
+                "@if(true)\n" +
+                "    ${x}\n" +
+                "@endif\n"
+        );
+    }
+
     @SuppressWarnings("Convert2Lambda")
     private void reformatCode(final String code, String expectedResult) throws IncorrectOperationException {
         final PsiFile file = createFile("test.jte", code);
