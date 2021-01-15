@@ -20,6 +20,10 @@ public class JteParsing {
             processBlock(null);
         }
 
+        // For some reason this helps with code completion with @param when the template is empty
+        Marker endContentMarker = builder.mark();
+        endContentMarker.done(JteTokenTypes.HTML_CONTENT);
+
         begin.done(JteTokenTypes.JAVA_CONTENT);
     }
 
