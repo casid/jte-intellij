@@ -1,51 +1,38 @@
 package org.jusecase.jte.intellij.language.format;
 
-import com.intellij.formatting.*;
-import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
-import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
-import com.intellij.formatting.templateLanguages.TemplateLanguageFormattingModelBuilder;
+import com.intellij.formatting.Alignment;
+import com.intellij.formatting.Block;
+import com.intellij.formatting.Indent;
+import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.templateLanguages.SimpleTemplateLanguageFormattingModelBuilder;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.formatter.xml.XmlFormattingPolicy;
+import com.intellij.xml.template.formatter.AbstractXmlTemplateFormattingModelBuilder;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.psi.JtePsiFile;
 
-import java.util.List;
+public class JteFormattingModelBuilder extends AbstractXmlTemplateFormattingModelBuilder {
 
-/**
- * Big thanks to https://github.com/dmarcotte/idea-handlebars/pull/27/files
- */
-public class JteFormattingModelBuilder extends TemplateLanguageFormattingModelBuilder {
     @Override
-    public TemplateLanguageBlock createTemplateLanguageBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nullable List<DataLanguageBlockWrapper> foreignChildren, @NotNull CodeStyleSettings codeStyleSettings) {
-        return new JteFormattingBlock(this, codeStyleSettings, node, foreignChildren);
-    }
-
-    /**
-     * We have to override {@link com.intellij.formatting.templateLanguages.TemplateLanguageFormattingModelBuilder#createModel}
-     * since after we delegate to some templated languages, those languages (xml/html for sure, potentially others)
-     * delegate right back to us to format the OUTER_ELEMENT_TYPE token we tell them to ignore,
-     * causing an stack-overflowing loop of polite format-delegation.
-     */
-    @Override
-    public @NotNull FormattingModel createModel(@NotNull FormattingContext context) {
-
-        PsiElement element = context.getPsiElement();
-        ASTNode node = element.getNode();
-
-        if (node.getElementType() == JteTokenTypes.OUTER_ELEMENT_TYPE) {
-            // If we're looking at a OUTER_ELEMENT_TYPE element, then we've been invoked by our templated
-            // language. Make a dummy block to allow that formatter to continue
-            return new SimpleTemplateLanguageFormattingModelBuilder().createModel(context);
-        } else {
-            return super.createModel(context);
-        }
+    protected boolean isTemplateFile(PsiFile file) {
+        return file instanceof JtePsiFile;
     }
 
     @Override
-    public boolean dontFormatMyModel() {
-        return false;
+    public boolean isOuterLanguageElement(PsiElement element) {
+        return element.getNode().getElementType() == JteTokenTypes.OUTER_ELEMENT_TYPE;
+    }
+
+    @Override
+    public boolean isMarkupLanguageElement(PsiElement element) {
+        return element.getNode().getElementType() == JteTokenTypes.HTML_CONTENT;
+    }
+
+    @Override
+    protected Block createTemplateLanguageBlock(ASTNode node, CodeStyleSettings settings, XmlFormattingPolicy xmlFormattingPolicy, Indent indent, @Nullable Alignment alignment, @Nullable Wrap wrap) {
+        return new JteFormattingBlock(this, node, wrap, alignment, settings, xmlFormattingPolicy, indent);
     }
 }

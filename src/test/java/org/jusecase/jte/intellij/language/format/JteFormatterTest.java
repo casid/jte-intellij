@@ -106,6 +106,21 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testContentBlockVariable() {
+        reformatCode("@tag.card(content = @`\n" +
+                        "<div>\n" +
+                        "This is <b>${x}</b>!\n" +
+                        "</div>\n" +
+                        "`)",
+
+                "@tag.card(content = @`\n" +
+                        "    <div>\n" +
+                        "        This is <b>${x}</b>!\n" +
+                        "    </div>\n" +
+                        "`)"
+        );
+    }
+
     public void testOutputInDiv() {
         reformatCode(
                 "<div>\n" +
