@@ -112,6 +112,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <lang.braceMatcher language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteBraceMatcher"/>
 
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
+
+        <lang.formatter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.JteFormattingModelBuilder"/>
     </extensions>
 
     <actions>

@@ -60,4 +60,13 @@ public abstract class AbstractTokenParser extends TokenParser {
     protected boolean isWhitespace(int position) {
         return Character.isWhitespace(myBuffer.charAt(position));
     }
+
+    protected boolean isBlank(int position, int end) {
+        for (int i = position; i < end; ++i) {
+            if (!isWhitespace(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

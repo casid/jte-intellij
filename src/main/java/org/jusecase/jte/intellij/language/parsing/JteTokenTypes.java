@@ -6,6 +6,7 @@ import org.jusecase.jte.intellij.language.JteLanguage;
 public interface JteTokenTypes {
     IElementType HTML_CONTENT = new JteElementType("HTML_CONTENT");
     IElementType JAVA_CONTENT = new JteElementType("JAVA_CONTENT");
+    IElementType BLOCK = new JteElementType("BLOCK");
 
     IElementType JAVA_INJECTION = new JteElementType("JAVA_INJECTION");
     IElementType EXTRA_JAVA_INJECTION = new JteElementType("EXTRA_JAVA_INJECTION");
@@ -53,4 +54,5 @@ public interface JteTokenTypes {
 
     TokenSet COMMENTS = TokenSet.create(COMMENT, COMMENT_CONTENT);
     TokenSet STRING_LITERALS = TokenSet.create(STRING);
+    TokenSet WHITESPACES = TokenSet.create(WHITESPACE);
 }

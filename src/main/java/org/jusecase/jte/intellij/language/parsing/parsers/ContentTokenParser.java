@@ -58,7 +58,11 @@ public class ContentTokenParser extends AbstractTokenParser {
         if (currentState == JteLexer.CONTENT_STATE_TAG_NAME_BEGIN) {
             myTokenInfo.updateData(start, position, JteTokenTypes.TAG_NAME);
         } else if (currentState == JteLexer.CONTENT_STATE_HTML) {
-            myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
+            if (isBlank(start, position)) {
+                myTokenInfo.updateData(start, position, JteTokenTypes.WHITESPACE);
+            } else {
+                myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
+            }
         } else if (currentState == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE) {
             myTokenInfo.updateData(start, position, JteTokenTypes.EXTRA_JAVA_INJECTION);
         } else if (currentState == JteLexer.CONTENT_STATE_PARAM_NAME) {

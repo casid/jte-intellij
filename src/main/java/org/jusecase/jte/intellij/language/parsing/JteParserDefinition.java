@@ -44,6 +44,11 @@ public class JteParserDefinition implements ParserDefinition {
         return JteTokenTypes.STRING_LITERALS;
     }
 
+    @Override
+    public @NotNull TokenSet getWhitespaceTokens() {
+        return JteTokenTypes.WHITESPACES;
+    }
+
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
@@ -105,14 +110,14 @@ public class JteParserDefinition implements ParserDefinition {
             return new JtePsiExtraJavaInjection(node);
         } else if (elementType == JteTokenTypes.COMMA) {
             return new JtePsiComma(node);
-        } else if (elementType == JteTokenTypes.WHITESPACE) {
-            return new JtePsiWhitespace(node);
         } else if (elementType == JteTokenTypes.PARAM_NAME) {
             return new JtePsiParamName(node);
         } else if (elementType == JteTokenTypes.CONTENT_BEGIN) {
             return new JtePsiContent(node);
         } else if (elementType == JteTokenTypes.CONTENT_END) {
             return new JtePsiEndContent(node);
+        } else if (elementType == JteTokenTypes.BLOCK) {
+            return new JtePsiBlock(node);
         }
 
         return new JtePsiElement(node);
