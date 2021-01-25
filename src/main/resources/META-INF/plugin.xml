@@ -1,5 +1,6 @@
 <idea-plugin>
     <id>org.jusecase.jte-intellij</id>
+    <!--suppress PluginXmlCapitalization -->
     <name>jte</name>
     <vendor email="andy@mazebert.com" url="https://github.com/casid/jte">Andreas Hager</vendor>
 
@@ -120,9 +121,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
 
         <lang.formatter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.JteFormattingModelBuilder"/>
+        <codeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.JteCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.JteLanguageCodeStyleSettingsProvider"/>
     </extensions>
 
     <actions>
+        <!--suppress PluginXmlCapitalization -->
         <action id="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction"
                 class="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction"
                 text="Convert JSP file to jte file">

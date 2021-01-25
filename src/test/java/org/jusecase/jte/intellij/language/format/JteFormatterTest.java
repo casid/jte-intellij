@@ -84,6 +84,17 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testIfWithVariable() {
+        reformatCode(
+                "@if(true)\n" +
+                "!{var output = 42;}\n" +
+                "@endif",
+                "@if(true)\n" +
+                "    !{var output = 42;}\n" +
+                "@endif"
+        );
+    }
+
     public void testFor() {
         reformatCode("@for(int i = 0; i < 100; ++i)\n" +
                 "i is ${i}\n" +
