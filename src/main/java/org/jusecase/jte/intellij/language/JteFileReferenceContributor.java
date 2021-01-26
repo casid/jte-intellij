@@ -1,9 +1,6 @@
 package org.jusecase.jte.intellij.language;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -85,8 +82,11 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
    private static Collection<String> getBasePaths( @NotNull PsiElement element ) {
       Project project = element.getProject();
       Module module = getModule(element);
+
       List<String> paths = new ArrayList<>();
-      paths.addAll(getJteDirPaths(module));
+      if (module != null) {
+         paths.addAll(getJteDirPaths(module));
+      }
       paths.addAll(getJteDirPaths(project));
       paths.add(project.getBasePath());
       return paths;
@@ -97,14 +97,14 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
       return ModuleUtilCore.findModuleForPsiElement(element);
    }
 
-   private static Collection<String> getJteDirPaths( Project project ) {
+   private static Collection<String> getJteDirPaths( @NotNull Project project ) {
       return PROJECT_TO_JTE_DIRS_CACHE.computeIfAbsent(project, p -> {
          PsiFileSystemItem[] jteDirectories = FilenameIndex.getFilesByName(p, "jte", GlobalSearchScope.projectScope(p), true);
          return Arrays.stream(jteDirectories).map(d -> d.getVirtualFile().getPath()).collect(Collectors.toList());
       });
    }
 
-   private static Collection<String> getJteDirPaths( Module module ) {
+   private static Collection<String> getJteDirPaths( @NotNull Module module ) {
       return MODULE_TO_JTE_DIRS_CACHE.computeIfAbsent(module, m -> {
          PsiFileSystemItem[] jteDirectories = FilenameIndex.getFilesByName(m.getProject(), "jte", GlobalSearchScope.moduleScope(m), true);
          return Arrays.stream(jteDirectories).map(d -> d.getVirtualFile().getPath()).collect(Collectors.toList());
