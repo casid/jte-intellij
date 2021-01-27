@@ -1,6 +1,7 @@
 package org.jusecase.jte.intellij.language.refactoring;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.UseScopeEnlarger;
@@ -15,7 +16,12 @@ public class JteUseScopeEnlarger extends UseScopeEnlarger {
             return null;
         }
 
-        if (!element.getContainingFile().getName().endsWith(".jte")) {
+        PsiFile containingFile = element.getContainingFile();
+        if (containingFile == null) {
+            return null;
+        }
+
+        if (!containingFile.getName().endsWith(".jte")) {
             return null;
         }
 
