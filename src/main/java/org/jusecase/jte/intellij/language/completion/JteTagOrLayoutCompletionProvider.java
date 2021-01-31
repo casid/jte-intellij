@@ -84,7 +84,8 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
                 Editor editor = context.getEditor();
                 int offset = context.getTailOffset();
                 boolean needsParenthesis = true;
-                if (editor.getDocument().getCharsSequence().charAt(offset) == '(') {
+                CharSequence documentText = editor.getDocument().getImmutableCharSequence();
+                if (offset < documentText.length() && documentText.charAt(offset) == '(') {
                     offset += 1;
                     needsParenthesis = false;
                 }
