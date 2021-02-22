@@ -81,7 +81,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteFileType"
-                  fieldName="INSTANCE" language="JavaTemplateEngine" extensions="jte;kte"/>
+                  fieldName="INSTANCE" language="JavaTemplateEngine" extensions="jte"/>
 
         <lang.parserDefinition language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.parsing.JteParserDefinition"/>
 
