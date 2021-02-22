@@ -78,6 +78,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteFileType"
