@@ -11,7 +11,7 @@ public class KteFileType extends LanguageFileType {
     public static final KteFileType INSTANCE = new KteFileType();
 
     private KteFileType() {
-        super(JteLanguage.INSTANCE);
+        super(KteLanguage.INSTANCE);
     }
 
     @NotNull

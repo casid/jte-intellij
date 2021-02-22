@@ -51,8 +51,8 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     private final Language myBaseLanguage;
     private final Language myTemplateLanguage;
 
-    public JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled) {
-        this(manager, virtualFile, eventSystemEnabled, JteLanguage.INSTANCE, getTemplateDataLanguage(manager, virtualFile));
+    public JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language language) {
+        this(manager, virtualFile, eventSystemEnabled, language, getTemplateDataLanguage(manager, virtualFile));
     }
 
     private JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language myBaseLanguage, Language myTemplateLanguage) {

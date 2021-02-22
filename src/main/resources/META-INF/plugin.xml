@@ -87,12 +87,16 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
                   fieldName="INSTANCE" language="KotlinTemplateEngine" extensions="kte"/>
 
         <lang.parserDefinition language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.parsing.JteParserDefinition"/>
+        <lang.parserDefinition language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.parsing.KteParserDefinition"/>
 
         <lang.fileViewProviderFactory language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFileViewProviderFactory"/>
+        <lang.fileViewProviderFactory language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.KteFileViewProviderFactory"/>
 
         <lang.syntaxHighlighter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteHighlighter"/>
+        <lang.syntaxHighlighter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.KteHighlighter"/>
 
         <editorHighlighterProvider filetype="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteHighlighterProvider"/>
+        <editorHighlighterProvider filetype="Kotlin Template Engine File" implementationClass="org.jusecase.jte.intellij.language.KteHighlighterProvider"/>
 
         <highlightVisitor implementation="org.jusecase.jte.intellij.language.JteHighlightVisitor"/>
 

@@ -6,13 +6,13 @@ import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-public class JteParser implements PsiParser {
+public class KteParser implements PsiParser {
     @NotNull
     @Override
     public ASTNode parse(@NotNull IElementType root, @NotNull PsiBuilder builder) {
         final PsiBuilder.Marker rootMarker = builder.mark();
 
-        new Parsing(builder, JteTokenTypes.INSTANCE).parse();
+        new Parsing(builder, KteTokenTypes.INSTANCE).parse();
 
         rootMarker.done(root);
 

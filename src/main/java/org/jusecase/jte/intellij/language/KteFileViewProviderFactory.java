@@ -7,10 +7,10 @@ import com.intellij.psi.FileViewProviderFactory;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 
-public class JteFileViewProviderFactory implements FileViewProviderFactory {
+public class KteFileViewProviderFactory implements FileViewProviderFactory {
     @NotNull
     @Override
     public FileViewProvider createFileViewProvider(@NotNull VirtualFile file, Language language, @NotNull PsiManager manager, boolean eventSystemEnabled) {
-        return new JteFileViewProvider(manager, file, eventSystemEnabled, JteLanguage.INSTANCE);
+        return new JteFileViewProvider(manager, file, eventSystemEnabled, KteLanguage.INSTANCE);
     }
 }
