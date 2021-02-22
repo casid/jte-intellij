@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.source.tree.FileElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -55,7 +56,12 @@ public class JteParserDefinition implements ParserDefinition {
         IElementType elementType = node.getElementType();
 
         if (elementType == JteTokenTypes.JAVA_CONTENT) {
-            return new JtePsiJavaContent(node);
+            String containingFileName = getContainingFileName(node);
+            if (containingFileName.endsWith(".kte")) {
+                return new JtePsiKotlinContent(node);
+            } else {
+                return new JtePsiJavaContent(node);
+            }
         } else if (elementType == JteTokenTypes.JAVA_INJECTION) {
             return new JtePsiJavaInjection(node);
         } else if (elementType == JteTokenTypes.PARAM) {
@@ -131,5 +137,25 @@ public class JteParserDefinition implements ParserDefinition {
     @Override
     public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
+    }
+
+    private String getContainingFileName(ASTNode node) {
+        ASTNode parent = node.getTreeParent();
+        if (parent == null) {
+            return "";
+        }
+
+        if (!(parent instanceof FileElement)) {
+            return getContainingFileName(parent);
+        }
+
+        FileElement fileElement = (FileElement) parent;
+        PsiElement psi = fileElement.getPsi();
+        if (!(psi instanceof JtePsiFile)) {
+            return getContainingFileName(parent);
+        }
+
+        JtePsiFile psiFile = (JtePsiFile) psi;
+        return psiFile.getName();
     }
 }
