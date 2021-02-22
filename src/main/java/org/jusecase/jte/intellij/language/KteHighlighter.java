@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
+import org.jusecase.jte.intellij.language.parsing.KteLexer;
 import org.jusecase.jte.intellij.language.parsing.KteTokenTypes;
 import org.jusecase.jte.intellij.language.parsing.Lexer;
 
@@ -17,7 +17,7 @@ public class KteHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new JteLexer();
+        return new KteLexer();
     }
 
     @Override

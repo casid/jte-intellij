@@ -17,6 +17,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jusecase.jte.intellij.language.parsing.TokenTypes;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,21 +46,23 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     }
 
     private TemplateDataElementType getTemplateDataElementType(Language lang, Function<String, TemplateDataElementType> provider) {
-        return TEMPLATE_DATA_TO_LANG.computeIfAbsent(lang.getID(), provider);
+        return TEMPLATE_DATA_TO_LANG.computeIfAbsent(lang.getID() + myTokenTypes, provider);
     }
 
     private final Language myBaseLanguage;
     private final Language myTemplateLanguage;
+    private final TokenTypes myTokenTypes;
 
-    public JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language language) {
-        this(manager, virtualFile, eventSystemEnabled, language, getTemplateDataLanguage(manager, virtualFile));
+    public JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language language, TokenTypes tokenTypes) {
+        this(manager, virtualFile, eventSystemEnabled, language, getTemplateDataLanguage(manager, virtualFile), tokenTypes);
     }
 
-    private JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language myBaseLanguage, Language myTemplateLanguage) {
+    private JteFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile virtualFile, boolean eventSystemEnabled, Language myBaseLanguage, Language myTemplateLanguage, TokenTypes tokenTypes) {
         super(manager, virtualFile, eventSystemEnabled);
 
         this.myBaseLanguage = myBaseLanguage;
         this.myTemplateLanguage = myTemplateLanguage;
+        this.myTokenTypes = tokenTypes;
     }
 
     @NotNull
@@ -83,7 +86,7 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     @NotNull
     @Override
     protected MultiplePsiFilesPerDocumentFileViewProvider cloneInner(@NotNull VirtualFile fileCopy) {
-        return new JteFileViewProvider(getManager(), fileCopy, false, myBaseLanguage, myTemplateLanguage);
+        return new JteFileViewProvider(getManager(), fileCopy, false, myBaseLanguage, myTemplateLanguage, myTokenTypes);
     }
 
     @Nullable
@@ -111,7 +114,7 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     @Override
     public IElementType getContentElementType(@NotNull Language language) {
         if (language.is(getTemplateDataLanguage())) {
-            return getTemplateDataElementType(language, s -> new JteTemplateDataElementType(language));
+            return getTemplateDataElementType(language, s -> new JteTemplateDataElementType(language, myTokenTypes));
         }
         return null;
     }

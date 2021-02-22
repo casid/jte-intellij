@@ -11,11 +11,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.templateLanguages.TemplateDataLanguageMappings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.TokenTypes;
 
-public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
-    public JteTemplateHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile, @NotNull EditorColorsScheme colors, LanguageFileType expressionLanguageFileType) {
-        super(new JteHighlighter(), colors);
+public class TemplateHighlighter extends LayeredLexerEditorHighlighter {
+    public TemplateHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile, @NotNull EditorColorsScheme colors, LanguageFileType expressionLanguageFileType, TokenTypes tokenTypes, SyntaxHighlighter syntaxHighlighter) {
+        super(syntaxHighlighter, colors);
 
         FileType type = null;
         if (project == null || virtualFile == null) {
@@ -29,12 +29,12 @@ public class JteTemplateHighlighter extends LayeredLexerEditorHighlighter {
 
         SyntaxHighlighter outerHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(type, project, virtualFile);
         if (outerHighlighter != null) {
-            registerLayer(JteTokenTypes.HTML_CONTENT, new LayerDescriptor(outerHighlighter, ""));
+            registerLayer(tokenTypes.HTML_CONTENT(), new LayerDescriptor(outerHighlighter, ""));
         }
 
-        SyntaxHighlighter outerJavaHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(expressionLanguageFileType, project, virtualFile);
-        if (outerJavaHighlighter != null) {
-            registerLayer(JteTokenTypes.JAVA_INJECTION, new LayerDescriptor(outerJavaHighlighter, ""));
+        SyntaxHighlighter outerExpressionLanguageHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(expressionLanguageFileType, project, virtualFile);
+        if (outerExpressionLanguageHighlighter != null) {
+            registerLayer(tokenTypes.JAVA_INJECTION(), new LayerDescriptor(outerExpressionLanguageHighlighter, ""));
         }
     }
 }

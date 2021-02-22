@@ -10,18 +10,21 @@ import com.intellij.xml.template.formatter.AbstractXmlTemplateFormattingModelBui
 import com.intellij.xml.template.formatter.TemplateLanguageBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.TokenTypes;
 
 import java.util.List;
 
 public class JteFormattingBlock extends TemplateLanguageBlock {
-    protected JteFormattingBlock(AbstractXmlTemplateFormattingModelBuilder builder, @NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, CodeStyleSettings settings, XmlFormattingPolicy xmlFormattingPolicy, @Nullable Indent indent) {
+    private final TokenTypes tokenTypes;
+
+    protected JteFormattingBlock(AbstractXmlTemplateFormattingModelBuilder builder, @NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, CodeStyleSettings settings, XmlFormattingPolicy xmlFormattingPolicy, @Nullable Indent indent, TokenTypes tokenTypes) {
         super(builder, node, wrap, alignment, settings, xmlFormattingPolicy, indent);
+        this.tokenTypes = tokenTypes;
     }
 
     @Override
     protected @NotNull Indent getChildIndent(@NotNull ASTNode node) {
-        if (myNode.getElementType() == JteTokenTypes.BLOCK) {
+        if (myNode.getElementType() == tokenTypes.BLOCK()) {
             return Indent.getNormalIndent();
         }
         return Indent.getNoneIndent();
@@ -43,7 +46,7 @@ public class JteFormattingBlock extends TemplateLanguageBlock {
 
         if (previousBlock != null) {
             IElementType elementType = previousBlock.getNode().getElementType();
-            if (elementType == JteTokenTypes.IMPORT || elementType == JteTokenTypes.PARAM) {
+            if (elementType == tokenTypes.IMPORT() || elementType == tokenTypes.PARAM()) {
                 return new ChildAttributes(Indent.getNoneIndent(), null);
             }
         }

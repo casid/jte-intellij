@@ -9,10 +9,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.idea.KotlinFileType;
+import org.jusecase.jte.intellij.language.parsing.KteTokenTypes;
 
 public class KteHighlighterProvider implements EditorHighlighterProvider {
     @Override
     public EditorHighlighter getEditorHighlighter(@Nullable Project project, @NotNull FileType fileType, @Nullable VirtualFile virtualFile, @NotNull EditorColorsScheme colors) {
-        return new JteTemplateHighlighter(project, virtualFile, colors, KotlinFileType.INSTANCE);
+        return new TemplateHighlighter(project, virtualFile, colors, KotlinFileType.INSTANCE, KteTokenTypes.INSTANCE, new KteHighlighter());
     }
 }

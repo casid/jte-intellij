@@ -98,6 +98,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <editorHighlighterProvider filetype="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteHighlighterProvider"/>
         <editorHighlighterProvider filetype="Kotlin Template Engine File" implementationClass="org.jusecase.jte.intellij.language.KteHighlighterProvider"/>
 
+        <!-- To calculate and display Java warnings in sidebar -->
         <highlightVisitor implementation="org.jusecase.jte.intellij.language.JteHighlightVisitor"/>
 
         <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
@@ -132,6 +133,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
 
         <lang.formatter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.JteFormattingModelBuilder"/>
+        <lang.formatter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.KteFormattingModelBuilder"/>
+
         <codeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.JteCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.JteLanguageCodeStyleSettingsProvider"/>
     </extensions>
