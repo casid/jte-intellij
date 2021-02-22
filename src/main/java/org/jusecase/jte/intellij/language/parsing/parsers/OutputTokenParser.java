@@ -1,31 +1,29 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class OutputTokenParser extends AbstractTokenParser {
-    private final JteLexer lexer;
 
-    public OutputTokenParser(JteLexer lexer) {
-        this.lexer = lexer;
+    public OutputTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
     public boolean hasToken(int position) {
         int state = lexer.getCurrentState();
 
-        if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "${", JteTokenTypes.OUTPUT_BEGIN)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_OUTPUT_BEGIN);
+        if (state == Lexer.CONTENT_STATE_HTML && hasToken(position, "${", lexer.tokens.OUTPUT_BEGIN())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_OUTPUT_BEGIN);
             return true;
         }
 
-        if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "$unsafe{", JteTokenTypes.OUTPUT_BEGIN)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_OUTPUT_BEGIN);
+        if (state == Lexer.CONTENT_STATE_HTML && hasToken(position, "$unsafe{", lexer.tokens.OUTPUT_BEGIN())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_OUTPUT_BEGIN);
             return true;
         }
 
-        if (state == JteLexer.CONTENT_STATE_OUTPUT_BEGIN && hasToken(position, "}", JteTokenTypes.OUTPUT_END)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_OUTPUT_END);
+        if (state == Lexer.CONTENT_STATE_OUTPUT_BEGIN && hasToken(position, "}", lexer.tokens.OUTPUT_END())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_OUTPUT_END);
             return true;
         }
 

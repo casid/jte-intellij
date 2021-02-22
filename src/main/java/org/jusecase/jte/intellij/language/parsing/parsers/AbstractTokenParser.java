@@ -2,9 +2,16 @@ package org.jusecase.jte.intellij.language.parsing.parsers;
 
 import com.intellij.ide.highlighter.custom.tokens.TokenParser;
 import com.intellij.psi.tree.IElementType;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public abstract class AbstractTokenParser extends TokenParser {
+
+    protected final Lexer lexer;
+
+    public AbstractTokenParser(Lexer lexer) {
+        this.lexer = lexer;
+    }
+
     protected final boolean isBeginOf(int position, char token) {
         return myBuffer.charAt(position) == token;
     }
@@ -53,7 +60,7 @@ public abstract class AbstractTokenParser extends TokenParser {
         int start = position;
         //noinspection StatementWithEmptyBody
         for (position++; position < myEndOffset && isWhitespace(position); position++) ;
-        myTokenInfo.updateData(start, position, JteTokenTypes.WHITESPACE);
+        myTokenInfo.updateData(start, position, lexer.tokens.WHITESPACE());
         return true;
     }
 

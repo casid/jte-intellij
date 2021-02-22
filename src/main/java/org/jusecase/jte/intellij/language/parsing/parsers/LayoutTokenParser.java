@@ -1,19 +1,17 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class LayoutTokenParser extends AbstractTokenParser {
-    private final JteLexer lexer;
 
-    public LayoutTokenParser(JteLexer lexer) {
-        this.lexer = lexer;
+    public LayoutTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "@layout", JteTokenTypes.LAYOUT)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_TAG_BEGIN);
+        if (hasToken(position, "@layout", lexer.tokens.LAYOUT())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_TAG_BEGIN);
             return true;
         }
         return false;

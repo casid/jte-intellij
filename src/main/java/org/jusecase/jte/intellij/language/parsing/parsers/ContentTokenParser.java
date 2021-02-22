@@ -1,7 +1,6 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class ContentTokenParser extends AbstractTokenParser {
     private static final String[] KEYWORDS = {
@@ -21,11 +20,10 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@layout"
     };
 
-    private final JteLexer lexer;
     private boolean insideString;
 
-    public ContentTokenParser(JteLexer lexer) {
-        this.lexer = lexer;
+    public ContentTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         }
 
         if (lexer.isInJavaEndState()) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_HTML);
+            lexer.setCurrentState(Lexer.CONTENT_STATE_HTML);
         }
 
         if (isBeginOfJteKeyword(position)) {
@@ -49,45 +47,45 @@ public class ContentTokenParser extends AbstractTokenParser {
         position++;
 
         while (position < myEndOffset && !isBeginOfJteKeyword(position)) {
-            if (currentState == JteLexer.CONTENT_STATE_HTML && !lexer.isImportOrParamIgnored() && !isWhitespace(position)) {
+            if (currentState == Lexer.CONTENT_STATE_HTML && !lexer.isImportOrParamIgnored() && !isWhitespace(position)) {
                 lexer.setImportOrParamIgnored(true);
             }
             position++;
         }
 
-        if (currentState == JteLexer.CONTENT_STATE_TAG_NAME_BEGIN) {
-            myTokenInfo.updateData(start, position, JteTokenTypes.TAG_NAME);
-        } else if (currentState == JteLexer.CONTENT_STATE_HTML) {
+        if (currentState == Lexer.CONTENT_STATE_TAG_NAME_BEGIN) {
+            myTokenInfo.updateData(start, position, lexer.tokens.TAG_NAME());
+        } else if (currentState == Lexer.CONTENT_STATE_HTML) {
             if (isBlank(start, position)) {
-                myTokenInfo.updateData(start, position, JteTokenTypes.WHITESPACE);
+                myTokenInfo.updateData(start, position, lexer.tokens.WHITESPACE());
             } else {
-                myTokenInfo.updateData(start, position, JteTokenTypes.HTML_CONTENT);
+                myTokenInfo.updateData(start, position, lexer.tokens.HTML_CONTENT());
             }
-        } else if (currentState == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE) {
-            myTokenInfo.updateData(start, position, JteTokenTypes.EXTRA_JAVA_INJECTION);
-        } else if (currentState == JteLexer.CONTENT_STATE_PARAM_NAME) {
-            myTokenInfo.updateData(start, position, JteTokenTypes.PARAM_NAME);
+        } else if (currentState == Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE) {
+            myTokenInfo.updateData(start, position, lexer.tokens.EXTRA_JAVA_INJECTION());
+        } else if (currentState == Lexer.CONTENT_STATE_PARAM_NAME) {
+            myTokenInfo.updateData(start, position, lexer.tokens.PARAM_NAME());
         } else {
-            myTokenInfo.updateData(start, position, JteTokenTypes.JAVA_INJECTION);
+            myTokenInfo.updateData(start, position, lexer.tokens.JAVA_INJECTION());
         }
         return true;
     }
 
     private boolean shouldSkipWhitespaces(int position) {
         int state = lexer.getCurrentState();
-        if (state == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '\n')) {
+        if (state == Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '\n')) {
             return false;
         }
 
         return
-                state == JteLexer.CONTENT_STATE_IMPORT_BEGIN ||
-                        state == JteLexer.CONTENT_STATE_PARAM_BEGIN ||
-                        state == JteLexer.CONTENT_STATE_FOR_BEGIN ||
-                        state == JteLexer.CONTENT_STATE_ELSEIF_BEGIN ||
-                        state == JteLexer.CONTENT_STATE_IF_BEGIN ||
-                        state == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE ||
-                        state == JteLexer.CONTENT_STATE_PARAM_NAME ||
-                        state == JteLexer.CONTENT_STATE_TAG_PARAMS;
+                state == Lexer.CONTENT_STATE_IMPORT_BEGIN ||
+                        state == Lexer.CONTENT_STATE_PARAM_BEGIN ||
+                        state == Lexer.CONTENT_STATE_FOR_BEGIN ||
+                        state == Lexer.CONTENT_STATE_ELSEIF_BEGIN ||
+                        state == Lexer.CONTENT_STATE_IF_BEGIN ||
+                        state == Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE ||
+                        state == Lexer.CONTENT_STATE_PARAM_NAME ||
+                        state == Lexer.CONTENT_STATE_TAG_PARAMS;
     }
 
     private boolean isBeginOfJteKeyword(int position) {
@@ -110,20 +108,20 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (isBeginOf(position, '\n')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_IMPORT_BEGIN:
-                    lexer.setCurrentState(JteLexer.CONTENT_STATE_IMPORT_END);
+                case Lexer.CONTENT_STATE_IMPORT_BEGIN:
+                    lexer.setCurrentState(Lexer.CONTENT_STATE_IMPORT_END);
                     return true;
-                case JteLexer.CONTENT_STATE_PARAM_BEGIN:
-                case JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE:
-                    lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_END);
+                case Lexer.CONTENT_STATE_PARAM_BEGIN:
+                case Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE:
+                    lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_END);
                     return true;
             }
         }
 
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_BEGIN) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN) {
             for (int index = position; index < myEndOffset; ++index) {
                 if (myBuffer.charAt(index) == '=') {
-                    lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE);
+                    lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE);
                     return true;
                 }
 
@@ -133,19 +131,19 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '=')) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE && isBeginOf(position, '=')) {
             return true;
         }
 
-        if (isBeginOf(position, "@`") && lexer.getCurrentState() != JteLexer.CONTENT_STATE_HTML) {
+        if (isBeginOf(position, "@`") && lexer.getCurrentState() != Lexer.CONTENT_STATE_HTML) {
             return true;
         }
 
-        if (isBeginOf(position, "`") && lexer.getCurrentState() == JteLexer.CONTENT_STATE_HTML) {
+        if (isBeginOf(position, "`") && lexer.getCurrentState() == Lexer.CONTENT_STATE_HTML) {
             return true;
         }
 
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_TAG_PARAMS) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_TAG_PARAMS) {
             for (int index = position; index < myEndOffset; ++index) {
                 if (isBeginOf(index, "@`")) {
                     break;
@@ -161,27 +159,27 @@ public class ContentTokenParser extends AbstractTokenParser {
                 }
 
                 if (currentChar == '=' && index + 1 < myEndOffset && myBuffer.charAt(index + 1) != '=' && myBuffer.charAt(index - 1) != '=') {
-                    lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_NAME);
-                    lexer.setCurrentCount(JteLexer.CONTENT_COUNT_PARAM_NAME_TAG);
+                    lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_NAME);
+                    lexer.setCurrentCount(Lexer.CONTENT_COUNT_PARAM_NAME_TAG);
                     return isBeginOf(position, ',');
                 }
             }
         }
 
-        if (lexer.getCurrentState() == JteLexer.CONTENT_STATE_PARAM_NAME) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_NAME) {
             if (isBeginOf(position, '=') || isWhitespace(position) || isBeginOf(position, ',')) {
                 return true;
             }
 
-            if (lexer.getCurrentCount() == JteLexer.CONTENT_COUNT_PARAM_NAME_TAG_DONE) {
-                lexer.setCurrentState(JteLexer.CONTENT_STATE_TAG_PARAMS);
+            if (lexer.getCurrentCount() == Lexer.CONTENT_COUNT_PARAM_NAME_TAG_DONE) {
+                lexer.setCurrentState(Lexer.CONTENT_STATE_TAG_PARAMS);
             }
         }
 
         if (isBeginOf(position, '{')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_OUTPUT_BEGIN:
-                case JteLexer.CONTENT_STATE_STATEMENT_BEGIN:
+                case Lexer.CONTENT_STATE_OUTPUT_BEGIN:
+                case Lexer.CONTENT_STATE_STATEMENT_BEGIN:
                     lexer.incrementCurrentCount();
                     return false;
             }
@@ -189,8 +187,8 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (isBeginOf(position, '}')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_OUTPUT_BEGIN:
-                case JteLexer.CONTENT_STATE_STATEMENT_BEGIN:
+                case Lexer.CONTENT_STATE_OUTPUT_BEGIN:
+                case Lexer.CONTENT_STATE_STATEMENT_BEGIN:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;
@@ -199,15 +197,15 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (isBeginOf(position, '(')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_IF_BEGIN:
-                case JteLexer.CONTENT_STATE_ELSEIF_BEGIN:
-                case JteLexer.CONTENT_STATE_FOR_BEGIN:
-                case JteLexer.CONTENT_STATE_TAG_NAME_BEGIN:
+                case Lexer.CONTENT_STATE_IF_BEGIN:
+                case Lexer.CONTENT_STATE_ELSEIF_BEGIN:
+                case Lexer.CONTENT_STATE_FOR_BEGIN:
+                case Lexer.CONTENT_STATE_TAG_NAME_BEGIN:
                     return true;
-                case JteLexer.CONTENT_STATE_IF_CONDITION:
-                case JteLexer.CONTENT_STATE_ELSEIF_CONDITION:
-                case JteLexer.CONTENT_STATE_FOR_CONDITION:
-                case JteLexer.CONTENT_STATE_TAG_PARAMS:
+                case Lexer.CONTENT_STATE_IF_CONDITION:
+                case Lexer.CONTENT_STATE_ELSEIF_CONDITION:
+                case Lexer.CONTENT_STATE_FOR_CONDITION:
+                case Lexer.CONTENT_STATE_TAG_PARAMS:
                     lexer.incrementCurrentCount();
                     return false;
             }
@@ -215,10 +213,10 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (isBeginOf(position, ')')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_IF_CONDITION:
-                case JteLexer.CONTENT_STATE_ELSEIF_CONDITION:
-                case JteLexer.CONTENT_STATE_FOR_CONDITION:
-                case JteLexer.CONTENT_STATE_TAG_PARAMS:
+                case Lexer.CONTENT_STATE_IF_CONDITION:
+                case Lexer.CONTENT_STATE_ELSEIF_CONDITION:
+                case Lexer.CONTENT_STATE_FOR_CONDITION:
+                case Lexer.CONTENT_STATE_TAG_PARAMS:
                     int count = lexer.getCurrentCount();
                     lexer.decrementCurrentCount();
                     return count <= 0;
@@ -227,13 +225,13 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (isBeginOf(position, '.')) {
             switch (lexer.getCurrentState()) {
-                case JteLexer.CONTENT_STATE_TAG_BEGIN:
-                case JteLexer.CONTENT_STATE_TAG_NAME_BEGIN:
+                case Lexer.CONTENT_STATE_TAG_BEGIN:
+                case Lexer.CONTENT_STATE_TAG_NAME_BEGIN:
                     return true;
             }
         }
 
-        if (lexer.getCurrentState() != JteLexer.CONTENT_STATE_HTML && isBeginOf(position, '\"')) {
+        if (lexer.getCurrentState() != Lexer.CONTENT_STATE_HTML && isBeginOf(position, '\"')) {
             insideString = true;
             return false;
         }

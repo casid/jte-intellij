@@ -1,19 +1,17 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class ParamTokenParser extends AbstractTokenParser {
-    private final JteLexer lexer;
 
-    public ParamTokenParser(JteLexer lexer) {
-        this.lexer = lexer;
+    public ParamTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
     public boolean hasToken(int position) {
-        if (!lexer.isImportOrParamIgnored() && hasToken(position, "@param", JteTokenTypes.PARAM)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_PARAM_BEGIN);
+        if (!lexer.isImportOrParamIgnored() && hasToken(position, "@param", lexer.tokens.PARAM())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_BEGIN);
             return true;
         }
         return false;

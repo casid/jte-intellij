@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.jusecase.jte.intellij.language.parsing.JteTokenTypes.*;
 
 public class JteLexerTest {
-    final JteLexer lexer = new JteLexer();
+    final Lexer lexer = new JteLexer();
 
     @Test
     public void testImport() {

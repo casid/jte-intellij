@@ -1,9 +1,10 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class CommentTokenParser extends AbstractTokenParser {
-    public CommentTokenParser() {
+    public CommentTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
@@ -19,7 +20,7 @@ public class CommentTokenParser extends AbstractTokenParser {
             position++;
         }
 
-        myTokenInfo.updateData(start, position, JteTokenTypes.COMMENT);
+        myTokenInfo.updateData(start, position, lexer.tokens.COMMENT());
         return true;
     }
 }

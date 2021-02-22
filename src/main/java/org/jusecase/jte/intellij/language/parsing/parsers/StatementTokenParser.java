@@ -1,26 +1,24 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
-import org.jusecase.jte.intellij.language.parsing.JteLexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 
 public class StatementTokenParser extends AbstractTokenParser {
-    private final JteLexer lexer;
 
-    public StatementTokenParser(JteLexer lexer) {
-        this.lexer = lexer;
+    public StatementTokenParser(Lexer lexer) {
+        super(lexer);
     }
 
     @Override
     public boolean hasToken(int position) {
         int state = lexer.getCurrentState();
 
-        if (state == JteLexer.CONTENT_STATE_HTML && hasToken(position, "!{", JteTokenTypes.STATEMENT_BEGIN)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_STATEMENT_BEGIN);
+        if (state == Lexer.CONTENT_STATE_HTML && hasToken(position, "!{", lexer.tokens.STATEMENT_BEGIN())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_STATEMENT_BEGIN);
             return true;
         }
 
-        if (state == JteLexer.CONTENT_STATE_STATEMENT_BEGIN && hasToken(position, "}", JteTokenTypes.STATEMENT_END)) {
-            lexer.setCurrentState(JteLexer.CONTENT_STATE_STATEMENT_END);
+        if (state == Lexer.CONTENT_STATE_STATEMENT_BEGIN && hasToken(position, "}", lexer.tokens.STATEMENT_END())) {
+            lexer.setCurrentState(Lexer.CONTENT_STATE_STATEMENT_END);
             return true;
         }
 

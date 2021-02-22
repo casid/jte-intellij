@@ -1,12 +1,12 @@
 package org.jusecase.jte.intellij.language;
 
-import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.parsing.JteLexer;
+import org.jusecase.jte.intellij.language.parsing.Lexer;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
 import java.util.HashMap;
@@ -58,9 +58,8 @@ public class JteHighlighter extends SyntaxHighlighterBase {
         return new JteLexer();
     }
 
-    @NotNull
     @Override
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
         TextAttributesKey[] attributes = MAPPING.get(tokenType);
         if (attributes != null) {
             return attributes;
