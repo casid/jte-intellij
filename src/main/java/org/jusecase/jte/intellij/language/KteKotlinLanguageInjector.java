@@ -1,7 +1,6 @@
 package org.jusecase.jte.intellij.language;
 
 import com.intellij.codeInsight.folding.impl.FoldingUpdate;
-import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.editor.Document;
@@ -9,9 +8,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -33,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class KteKotlinLanguageInjector implements MultiHostInjector {
-    public static final Key<KtFile> JAVA_FILE_KEY = Key.create("KteJavaLanguageInjector.KtFile");
+    public static final Key<KtFile> KOTLIN_FILE_KEY = Key.create("KteJavaLanguageInjector.KtFile");
     private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Collections.singletonList(KtePsiJavaContent.class);
     private static Key<Object> LAST_UPDATE_INJECTED_STAMP_KEY;
 
@@ -127,7 +123,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                             .filter(it -> it.length > 0)
                             .toList();
 
-                    host.getContainingFile().putUserData(JAVA_FILE_KEY, injectedFile);
+                    host.getContainingFile().putUserData(KOTLIN_FILE_KEY, injectedFile);
                 } catch (Exception e) {
                     // noop
                 }

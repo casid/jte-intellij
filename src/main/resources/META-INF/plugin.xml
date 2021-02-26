@@ -116,6 +116,13 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <completion.contributor language="JAVA"
                                 implementationClass="org.jusecase.jte.intellij.language.completion.JteCompletionContributorForJava"/>
 
+        <lang.findUsagesProvider language="KotlinTemplateEngine"
+                                 implementationClass="org.jusecase.jte.intellij.language.refactoring.KteFindUsagesProvider"/>
+        <completion.contributor language="KotlinTemplateEngine"
+                                implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributor"/>
+        <completion.contributor language="kotlin"
+                                implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributorForKotlin"/>
+
         <defaultLiveTemplates file="liveTemplates/jte.xml"/>
         <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext"/>
 

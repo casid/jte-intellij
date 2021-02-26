@@ -13,8 +13,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
-    public JtePsiTagName(@NotNull ASTNode node) {
+
+    private final String extension;
+
+    public JtePsiTagName(@NotNull ASTNode node, String extension) {
         super(node);
+        this.extension = extension;
     }
 
     public String getIdentifier() {
@@ -203,7 +207,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
     private PsiFile resolveFile(JtePsiTagName fileElement) {
         JtePsiTagName prevName = PsiTreeUtil.getPrevSiblingOfType(fileElement, getClass());
 
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), fileElement.getText() + ".jte", GlobalSearchScope.allScope(getProject()));
+        PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), fileElement.getText() + extension, GlobalSearchScope.allScope(getProject()));
         for (PsiFile psiFile : filesByName) {
             if (matchesParent(psiFile.getParent(), prevName)) {
                 return psiFile;

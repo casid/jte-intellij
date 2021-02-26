@@ -84,7 +84,7 @@ public class KteParserDefinition implements ParserDefinition {
         } else if (elementType == KteTokenTypes.TAG) {
             return new JtePsiTag(node);
         } else if (elementType == KteTokenTypes.TAG_NAME) {
-            return new JtePsiTagName(node);
+            return new JtePsiTagName(node, ".kte");
         } else if (elementType == KteTokenTypes.PARAMS_BEGIN) {
             return new JtePsiParamsBegin(node);
         } else if (elementType == KteTokenTypes.PARAMS_END) {
@@ -110,7 +110,7 @@ public class KteParserDefinition implements ParserDefinition {
         } else if (elementType == KteTokenTypes.COMMA) {
             return new JtePsiComma(node);
         } else if (elementType == KteTokenTypes.PARAM_NAME) {
-            return new JtePsiParamName(node);
+            return new KtePsiParamName(node);
         } else if (elementType == KteTokenTypes.CONTENT_BEGIN) {
             return new JtePsiContent(node);
         } else if (elementType == KteTokenTypes.CONTENT_END) {
