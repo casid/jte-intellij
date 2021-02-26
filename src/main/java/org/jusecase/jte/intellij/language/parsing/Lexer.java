@@ -220,4 +220,6 @@ public abstract class Lexer extends LexerBase {
     public void setImportOrParamIgnored(boolean value) {
         this.myImportOrParamIgnored = value;
     }
+
+    public abstract boolean isExtraParamInjectionRequired();
 }

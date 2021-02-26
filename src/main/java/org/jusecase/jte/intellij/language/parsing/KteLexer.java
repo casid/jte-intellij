@@ -4,4 +4,9 @@ public class KteLexer extends Lexer {
     public KteLexer() {
         super(KteTokenTypes.INSTANCE);
     }
+
+    @Override
+    public boolean isExtraParamInjectionRequired() {
+        return false;
+    }
 }

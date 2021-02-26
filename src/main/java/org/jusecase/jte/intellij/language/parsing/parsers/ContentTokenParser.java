@@ -118,7 +118,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN && lexer.isExtraParamInjectionRequired()) {
             for (int index = position; index < myEndOffset; ++index) {
                 if (myBuffer.charAt(index) == '=') {
                     lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE);
