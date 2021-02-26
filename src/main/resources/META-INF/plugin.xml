@@ -102,8 +102,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <highlightVisitor implementation="org.jusecase.jte.intellij.language.JteHighlightVisitor"/>
 
         <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
+        <multiHostInjector implementation="org.jusecase.jte.intellij.language.KteKotlinLanguageInjector"/>
+
         <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
                                  implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
+        <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.KtePsiJavaContent"
+                                 implementationClass="org.jusecase.jte.intellij.language.KteKotlinContentManipulator"/>
 
         <lang.findUsagesProvider language="JavaTemplateEngine"
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.JteFindUsagesProvider"/>

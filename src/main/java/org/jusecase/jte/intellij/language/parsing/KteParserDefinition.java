@@ -53,7 +53,9 @@ public class KteParserDefinition implements ParserDefinition {
     public PsiElement createElement(ASTNode node) {
         IElementType elementType = node.getElementType();
 
-        if (elementType == KteTokenTypes.JAVA_INJECTION) {
+        if (elementType == KteTokenTypes.JAVA_CONTENT) {
+            return new KtePsiJavaContent(node);
+        } else if (elementType == KteTokenTypes.JAVA_INJECTION) {
             return new JtePsiJavaInjection(node);
         } else if (elementType == KteTokenTypes.PARAM) {
             return new JtePsiParam(node);
