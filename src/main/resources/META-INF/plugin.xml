@@ -136,6 +136,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <annotator language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
 
         <lang.commenter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
+        <lang.commenter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
         <useScopeEnlarger implementation="org.jusecase.jte.intellij.language.refactoring.JteUseScopeEnlarger"/>
 
         <lang.foldingBuilder language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFoldingBuilder"/>
