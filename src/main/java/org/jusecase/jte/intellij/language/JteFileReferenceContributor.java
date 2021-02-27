@@ -4,8 +4,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import com.intellij.extapi.psi.PsiFileBase;
+import com.intellij.patterns.PlatformPatterns;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry;
+import org.jetbrains.kotlin.psi.KtStringTemplateEntry;
+import org.jetbrains.kotlin.psi.KtStringTemplateExpression;
 import org.jusecase.jte.intellij.language.psi.JtePsiFile;
 
 import com.intellij.openapi.module.Module;
@@ -36,22 +41,23 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ProcessingContext;
+import org.jusecase.jte.intellij.language.psi.KtePsiFile;
 
 
 public class JteFileReferenceContributor extends PsiReferenceContributor {
 
    @Override
    public void registerReferenceProviders( @NotNull PsiReferenceRegistrar registrar ) {
-      registrar.registerReferenceProvider(PsiJavaPatterns.literalExpression().and(new FilterPattern(new JteStringLiteralFilter())),
-            FILE_REFERENCE_PROVIDER);
+      registrar.registerReferenceProvider(PsiJavaPatterns.literalExpression().and(new FilterPattern(new JavaStringLiteralFilter())), new FileReferenceProvider());
+      registrar.registerReferenceProvider(PlatformPatterns.psiElement(KtStringTemplateExpression.class).and(new FilterPattern(new KotlinStringLiteralFilter())), new FileReferenceProvider());
    }
 
    private static final ConcurrentHashMap<Project, Collection<String>> PROJECT_TO_JTE_DIRS_CACHE = new ConcurrentHashMap<>();
    private static final ConcurrentHashMap<Module, Collection<String>>  MODULE_TO_JTE_DIRS_CACHE  = new ConcurrentHashMap<>();
-   private static final PsiReferenceProvider                           FILE_REFERENCE_PROVIDER   = new PsiReferenceProvider() {
 
+   private static class FileReferenceProvider extends PsiReferenceProvider {
       @Override
-      public @NotNull PsiReference[] getReferencesByElement( @NotNull PsiElement element, @NotNull ProcessingContext context ) {
+      public @NotNull PsiReference @NotNull [] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context ) {
          String elementText = getElementText(element);
          if ( !elementText.startsWith("/") ) {
             elementText = "/" + elementText;
@@ -68,10 +74,13 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
             }
          }
 
-         return psiFile == null ? PsiReference.EMPTY_ARRAY : new PsiReference[] { new JteFileReference(element, psiFile) };
-      }
+         if (psiFile == null) {
+            return PsiReference.EMPTY_ARRAY;
+         }
 
-   };
+         return new PsiReference[] { new JteFileReference(element, psiFile) };
+      }
+   }
 
    @NotNull
    private static String getElementText( @NotNull PsiElement element ) {
@@ -132,8 +141,8 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
 
       @Override
       public PsiElement bindToElement( @NotNull PsiElement element ) throws IncorrectOperationException {
-         if ( element instanceof JtePsiFile ) {
-            String newPath = ((JtePsiFile)element).getVirtualFile().getPath();
+         if ( element instanceof JtePsiFile || element instanceof KtePsiFile) {
+            String newPath = ((PsiFileBase)element).getVirtualFile().getPath();
             for ( String basePath : getBasePaths(element) ) {
                int basePathIndex = basePath == null ? -1 : newPath.indexOf(basePath);
                if ( basePathIndex >= 0 ) {
@@ -152,7 +161,7 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
       }
    }
 
-   public static class JteStringLiteralFilter implements ElementFilter {
+   public static class JavaStringLiteralFilter implements ElementFilter {
 
       public boolean isAcceptable( Object element, PsiElement psiElement ) {
          PsiLiteralExpression literalExpression = (PsiLiteralExpression)element;
@@ -162,7 +171,31 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
          }
 
          String stringValue = (String)value;
-         return stringValue.endsWith(".jte");
+         return stringValue.endsWith(".jte") || stringValue.endsWith(".kte");
+      }
+
+      public boolean isClassAcceptable( Class aClass ) {
+         return true;
+      }
+   }
+
+   public static class KotlinStringLiteralFilter implements ElementFilter {
+
+      public boolean isAcceptable( Object element, PsiElement psiElement ) {
+         KtStringTemplateExpression literalExpression = (KtStringTemplateExpression)element;
+
+         KtStringTemplateEntry[] entries = literalExpression.getEntries();
+         if (entries.length != 1) {
+            return false;
+         }
+
+         KtStringTemplateEntry entry = entries[0];
+         if (!(entry instanceof KtLiteralStringTemplateEntry)) {
+            return false;
+         }
+
+         String stringValue = entry.getText();
+         return stringValue.endsWith(".jte") || stringValue.endsWith(".kte");
       }
 
       public boolean isClassAcceptable( Class aClass ) {
