@@ -134,6 +134,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
                 implementationClass="org.jusecase.jte.intellij.language.completion.JteHtmlCompletionConfidence"/>
 
         <annotator language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
+        <annotator language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
 
         <lang.commenter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
         <lang.commenter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
@@ -141,6 +142,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <lang.foldingBuilder language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteFoldingBuilder"/>
         <lang.braceMatcher language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteBraceMatcher"/>
+        <lang.foldingBuilder language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.KteFoldingBuilder"/>
+        <lang.braceMatcher language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.KteBraceMatcher"/>
 
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
 
