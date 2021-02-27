@@ -5,15 +5,15 @@ import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.JteLanguage;
+import org.jusecase.jte.intellij.language.KteLanguage;
 
-public class JteLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
+public class KteLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
     @Override
     public @Nullable String getCodeSample(@NotNull SettingsType settingsType) {
         return "@import foo.Page\n" +
                 "\n" +
-                "@param Page page\n" +
-                "@param boolean verbose = false\n" +
+                "@param page:Page\n" +
+                "@param verbose:boolean = false\n" +
                 "\n" +
                 "<div>\n" +
                 "@if(verbose)\n" +
@@ -26,7 +26,7 @@ public class JteLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSetti
 
     @Override
     public @NotNull Language getLanguage() {
-        return JteLanguage.INSTANCE;
+        return KteLanguage.INSTANCE;
     }
 
     @Override
