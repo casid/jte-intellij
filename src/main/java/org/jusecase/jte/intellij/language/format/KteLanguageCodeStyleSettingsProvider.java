@@ -1,6 +1,7 @@
 package org.jusecase.jte.intellij.language.format;
 
 import com.intellij.application.options.IndentOptionsEditor;
+import com.intellij.application.options.SmartIndentOptionsEditor;
 import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,6 @@ public class KteLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSetti
 
     @Override
     public @Nullable IndentOptionsEditor getIndentOptionsEditor() {
-        return new IndentOptionsEditor();
+        return new SmartIndentOptionsEditor();
     }
 }

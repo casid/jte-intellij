@@ -5,6 +5,6 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
 public class KteCodeStyleSettings extends CustomCodeStyleSettings {
     protected KteCodeStyleSettings(CodeStyleSettings container) {
-        super("JteCodeStyleSettings", container);
+        super("KteCodeStyleSettings", container);
     }
 }
