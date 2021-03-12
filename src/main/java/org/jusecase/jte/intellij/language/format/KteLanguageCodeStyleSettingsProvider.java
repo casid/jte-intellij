@@ -14,7 +14,7 @@ public class KteLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSetti
         return "@import foo.Page\n" +
                 "\n" +
                 "@param page:Page\n" +
-                "@param verbose:boolean = false\n" +
+                "@param verbose:Boolean = false\n" +
                 "\n" +
                 "<div>\n" +
                 "@if(verbose)\n" +
