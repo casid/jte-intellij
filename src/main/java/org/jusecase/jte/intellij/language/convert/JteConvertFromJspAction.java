@@ -9,7 +9,9 @@ import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
@@ -34,7 +36,9 @@ public class JteConvertFromJspAction extends AnAction {
 
         Project project = psiFile.getProject();
 
-        PsiClass converterBaseClass = JavaPsiFacade.getInstance(project).findClass(CONVERTER_BASE_CLASS, GlobalSearchScope.everythingScope(project));
+        GlobalSearchScope searchScope = resolveSearchScope(psiFile, project);
+
+        PsiClass converterBaseClass = JavaPsiFacade.getInstance(project).findClass(CONVERTER_BASE_CLASS, searchScope);
         if (converterBaseClass == null) {
             JteConvertNotification.error(project, ERROR_TITLE, "Could not locate class '" + CONVERTER_BASE_CLASS + "' on the classpath. You're probably missing the jte-jsp-converter dependency.");
             return;
@@ -59,6 +63,16 @@ public class JteConvertFromJspAction extends AnAction {
         configuration.setProgramParameters(psiFile.getOriginalFile().getVirtualFile().getPath());
 
         ExecutionUtil.runConfiguration(Objects.requireNonNull(configurationContext.getConfiguration()), DefaultDebugExecutor.getDebugExecutorInstance());
+    }
+
+    @NotNull
+    private GlobalSearchScope resolveSearchScope(PsiFile psiFile, Project project) {
+        Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(psiFile.getVirtualFile());
+        if (module != null) {
+            return GlobalSearchScope.moduleScope(module);
+        } else {
+            return GlobalSearchScope.everythingScope(project);
+        }
     }
 
     @Override
