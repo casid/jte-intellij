@@ -69,7 +69,7 @@ public class JteConvertFromJspAction extends AnAction {
     private GlobalSearchScope resolveSearchScope(PsiFile psiFile, Project project) {
         Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(psiFile.getVirtualFile());
         if (module != null) {
-            return GlobalSearchScope.moduleScope(module);
+            return GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
         } else {
             return GlobalSearchScope.everythingScope(project);
         }
