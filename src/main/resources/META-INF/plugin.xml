@@ -25,6 +25,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>1.4.2</h3>
+<ul>
+    <li>Hotfix for wrong module scope of JSP converter</li>
+</ul>
 <h3>1.4.1</h3>
 <ul>
     <li>Support for one JSP converter per module</li>
