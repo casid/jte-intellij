@@ -25,6 +25,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>1.5.0</h3>
+<ul>
+    <li>Annotate type errors on tag/layout parameters</li>
+    <li>Annotate missing required tag/layout parameters</li>
+</ul>
 <h3>1.4.2</h3>
 <ul>
     <li>Hotfix for wrong module scope of JSP converter</li>
