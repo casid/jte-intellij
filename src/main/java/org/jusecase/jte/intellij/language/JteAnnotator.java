@@ -5,7 +5,9 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.*;
 
@@ -57,6 +59,8 @@ public class JteAnnotator implements Annotator {
         if (!(element.getLastChild() instanceof JtePsiEndContent)) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Missing `").create();
         }
+
+        doAnnotateContentParam(element, holder);
     }
 
     private void doAnnotate(JtePsiElseIf element, AnnotationHolder holder) {
@@ -144,6 +148,55 @@ public class JteAnnotator implements Annotator {
 
         if (!javaParameter.getType().isAssignableFrom(injectedExpression.getType())) {
             holder.newAnnotation(HighlightSeverity.ERROR, injectedExpression.getType().getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
+        }
+    }
+
+    private void doAnnotateContentParam(@NotNull JtePsiContent element, @NotNull AnnotationHolder holder) {
+        // This only works for jte, not kte templates! If needed for kte, this would require an additional implementation using Kotlin PSI elements.
+        if (!JteLanguage.INSTANCE.equals(element.getLanguage())) {
+            return;
+        }
+
+        PsiElement parent = element.getParent();
+        if (!(parent instanceof JtePsiTag || parent instanceof JtePsiLayout)) {
+            return;
+        }
+
+        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(parent, JtePsiTagName.class);
+        if (tagOrLayoutName == null) {
+            return;
+        }
+
+        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
+        if (tagOrLayoutFile == null) {
+            return;
+        }
+
+        JtePsiParamName paramName = PsiTreeUtil.getPrevSiblingOfType(element, JtePsiParamName.class);
+        if (paramName == null) {
+            return;
+        }
+
+        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        if (psiParameterList == null) {
+            return;
+        }
+
+        PsiParameter javaParameter = paramName.getParameterWithSameName(psiParameterList);
+        if (javaParameter == null) {
+            return;
+        }
+
+        JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(element.getProject());
+        PsiClass contentClass = javaPsiFacade.findClass("gg.jte.Content", GlobalSearchScope.everythingScope(element.getProject()));
+        if (contentClass == null) {
+            return;
+        }
+
+        PsiClassType contentType = javaPsiFacade.getElementFactory().createType(contentClass);
+
+        if (!javaParameter.getType().isAssignableFrom(contentType)) {
+            holder.newAnnotation(HighlightSeverity.ERROR, contentType.getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
         }
     }
 }
