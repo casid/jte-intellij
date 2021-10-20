@@ -91,4 +91,26 @@ public class JtePsiUtil {
 
         return result;
     }
+
+    public static <T extends PsiElement> T getTopMostParentOfType(@Nullable PsiElement element, @NotNull Class<T> aClass, int minStartOffset) {
+        if (element == null) {
+            return null;
+        }
+
+        T result = null;
+
+        while (element != null && (minStartOffset == -1 || element.getNode().getStartOffset() >= minStartOffset)) {
+            if (aClass.isInstance(element)) {
+                result = aClass.cast(element);
+            } else if (result != null) {
+                break;
+            }
+            if (element instanceof PsiFile) {
+                break;
+            }
+            element = element.getParent();
+        }
+
+        return result;
+    }
 }

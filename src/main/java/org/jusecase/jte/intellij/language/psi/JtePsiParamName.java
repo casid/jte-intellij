@@ -55,6 +55,14 @@ public class JtePsiParamName extends JtePsiElement {
         return getText();
     }
 
+    public PsiParameter getParameterWithSameName(PsiParameterList parameterList) {
+        String name = getName();
+        if (name == null) {
+            return null;
+        }
+        return getParameterWithSameName(name, parameterList);
+    }
+
     private PsiParameter getParameterWithSameName(String name, PsiParameterList parameterList) {
         for (PsiParameter parameter : parameterList.getParameters()) {
             if (name.equals(parameter.getName())) {
