@@ -1,5 +1,10 @@
 package org.jusecase.jte.intellij.language.psi;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -9,6 +14,8 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.JteJavaLanguageInjector;
+import org.jusecase.jte.intellij.language.JteLanguage;
+
 
 public class JtePsiUtil {
     public static void rename(JtePsiElement element, String name) throws IncorrectOperationException {
@@ -74,6 +81,42 @@ public class JtePsiUtil {
         }
 
         return PsiTreeUtil.getChildOfType(javaMethod, PsiParameterList.class);
+    }
+
+    public static List<String> resolveRequiredParameters(PsiFile tagOrLayoutFile) {
+        PsiFile jteFile = tagOrLayoutFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
+        if (jteFile == null) {
+            return Collections.emptyList();
+        }
+
+        Collection<JtePsiParam> params = PsiTreeUtil.findChildrenOfType(jteFile, JtePsiParam.class);
+        if (params.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        if (psiParameterList == null) {
+            return Collections.emptyList();
+        }
+
+        if (params.size() != psiParameterList.getParametersCount()) {
+            return Collections.emptyList();
+        }
+
+        List<String> result = new ArrayList<>();
+        int i = 0;
+        for ( JtePsiParam param : params ) {
+            PsiParameter psiParam = psiParameterList.getParameter(i);
+            if (psiParam != null) {
+                // Hack: Optional parameters have an additional JtePsiExtraJavaInjection node...
+                if (PsiTreeUtil.getChildOfType(param, JtePsiExtraJavaInjection.class) == null) {
+                    result.add(psiParam.getName()); // This is a required parameter
+                }
+            }
+            i++;
+        }
+
+        return result;
     }
 
     @SuppressWarnings("unused")

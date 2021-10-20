@@ -1,5 +1,9 @@
 package org.jusecase.jte.intellij.language;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
@@ -34,6 +38,8 @@ public class JteAnnotator implements Annotator {
             doAnnotate((JtePsiEndFor)element, holder);
         } else if (element instanceof JtePsiJavaInjection) {
             doAnnotate((JtePsiJavaInjection)element, holder);
+        } else if (element instanceof JtePsiTag || element instanceof JtePsiLayout) {
+            doAnnotateMissingTagOrLayoutParams(element, holder);
         }
     }
 
@@ -197,6 +203,35 @@ public class JteAnnotator implements Annotator {
 
         if (!javaParameter.getType().isAssignableFrom(contentType)) {
             holder.newAnnotation(HighlightSeverity.ERROR, contentType.getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
+        }
+    }
+
+    private void doAnnotateMissingTagOrLayoutParams( PsiElement element, AnnotationHolder holder ) {
+        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(element, JtePsiTagName.class);
+        if (tagOrLayoutName == null) {
+            return;
+        }
+
+        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
+        if (tagOrLayoutFile == null) {
+            return;
+        }
+
+        List<String> requiredParameters = JtePsiUtil.resolveRequiredParameters(tagOrLayoutFile);
+        if (requiredParameters.isEmpty()) {
+            return;
+        }
+
+        Set<String> missingParameters = new LinkedHashSet<>(requiredParameters);
+
+        for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
+             paramName != null;
+             paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
+            missingParameters.remove(paramName.getName());
+        }
+
+        if (!missingParameters.isEmpty()) {
+            holder.newAnnotation(HighlightSeverity.ERROR, "Missing required parameters: " + String.join(", ", missingParameters)).create();
         }
     }
 }
