@@ -61,7 +61,7 @@ public class JtePsiUtil {
 
     public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
         PsiJavaFile javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
-        if (javaFile == null) {
+        if (javaFile == null || !javaFile.isValid()) {
             // Try to trigger injection and check if java file is there afterwards
             InjectedLanguageManager.getInstance(tagOrLayoutFile.getProject()).findInjectedElementAt(tagOrLayoutFile, 0);
             javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
