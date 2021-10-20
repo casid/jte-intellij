@@ -75,7 +75,7 @@ public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
                 continue;
             }
             if (!usedNames.contains(parameter.getName())) {
-                result.addElement(LookupElementBuilder.create(parameter.getName() + " = "));
+                result.addElement(LookupElementBuilder.create(parameter.getName() + " = ").withTypeText(parameter.getType().getPresentableText()));
             }
         }
     }
