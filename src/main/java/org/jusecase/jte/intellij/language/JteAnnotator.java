@@ -219,12 +219,17 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
-        List<String> requiredParameters = JtePsiUtil.resolveRequiredParameters(tagOrLayoutFile);
+        List<PsiParameter> requiredParameters = JtePsiUtil.resolveRequiredParameters(tagOrLayoutFile);
         if (requiredParameters.isEmpty()) {
             return;
         }
 
-        Set<String> missingParameters = new LinkedHashSet<>(requiredParameters);
+        Set<String> missingParameters = new LinkedHashSet<>(requiredParameters.size());
+        for (PsiParameter requiredParameter : requiredParameters) {
+            if (!requiredParameter.isVarArgs()) {
+                missingParameters.add(requiredParameter.getName());
+            }
+        }
 
         for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
              paramName != null;

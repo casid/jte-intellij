@@ -79,7 +79,7 @@ public class JtePsiUtil {
         return PsiTreeUtil.getParentOfType(injectedElementAt, PsiParameterList.class);
     }
 
-    public static List<String> resolveRequiredParameters(PsiFile tagOrLayoutFile) {
+    public static List<PsiParameter> resolveRequiredParameters(PsiFile tagOrLayoutFile) {
         PsiFile jteFile = tagOrLayoutFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
         if (jteFile == null) {
             return Collections.emptyList();
@@ -99,14 +99,14 @@ public class JtePsiUtil {
             return Collections.emptyList();
         }
 
-        List<String> result = new ArrayList<>();
+        List<PsiParameter> result = new ArrayList<>();
         int i = 0;
         for ( JtePsiParam param : params ) {
             PsiParameter psiParam = psiParameterList.getParameter(i);
             if (psiParam != null) {
                 // Hack: Optional parameters have an additional JtePsiExtraJavaInjection node...
                 if (PsiTreeUtil.getChildOfType(param, JtePsiExtraJavaInjection.class) == null) {
-                    result.add(psiParam.getName()); // This is a required parameter
+                    result.add(psiParam); // ... so, this is a required parameter
                 }
             }
             i++;
