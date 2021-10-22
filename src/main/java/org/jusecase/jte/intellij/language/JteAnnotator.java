@@ -40,6 +40,8 @@ public class JteAnnotator implements Annotator {
             doAnnotate((JtePsiJavaInjection)element, holder);
         } else if (element instanceof JtePsiTag || element instanceof JtePsiLayout) {
             doAnnotateMissingTagOrLayoutParams(element, holder);
+        } else if (element instanceof JtePsiParamName) {
+            doAnnotate(element, holder);
         }
     }
 
@@ -232,6 +234,13 @@ public class JteAnnotator implements Annotator {
 
         if (!missingParameters.isEmpty()) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Missing required parameters: " + String.join(", ", missingParameters)).create();
+        }
+    }
+
+    private void doAnnotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+        JtePsiJavaInjection injection = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiJavaInjection.class, JtePsiComma.class);
+        if (injection == null) {
+            holder.newAnnotation(HighlightSeverity.ERROR, "Missing parameter assignment").create();
         }
     }
 }
