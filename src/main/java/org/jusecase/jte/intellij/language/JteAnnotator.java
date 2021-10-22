@@ -240,7 +240,10 @@ public class JteAnnotator implements Annotator {
     private void doAnnotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         JtePsiJavaInjection injection = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiJavaInjection.class, JtePsiComma.class);
         if (injection == null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing parameter assignment").create();
+            JtePsiContent content = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiContent.class, JtePsiComma.class);
+            if (content == null) {
+                holder.newAnnotation(HighlightSeverity.ERROR, "Missing parameter assignment").create();
+            }
         }
     }
 }
