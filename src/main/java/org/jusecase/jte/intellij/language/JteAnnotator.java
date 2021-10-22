@@ -125,7 +125,7 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
-        JtePsiParamName paramName = PsiTreeUtil.getPrevSiblingOfType(element, JtePsiParamName.class);
+        JtePsiParamName paramName = JtePsiUtil.getPrevSiblingIfBefore(element, JtePsiParamName.class, JtePsiJavaInjection.class);
         if (paramName == null) {
             return;
         }
@@ -180,7 +180,7 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
-        JtePsiParamName paramName = PsiTreeUtil.getPrevSiblingOfType(element, JtePsiParamName.class);
+        JtePsiParamName paramName = JtePsiUtil.getPrevSiblingIfBefore(element, JtePsiParamName.class, JtePsiJavaInjection.class);
         if (paramName == null) {
             return;
         }

@@ -153,8 +153,23 @@ public class JtePsiUtil {
         return result;
     }
 
-    public static <T extends PsiElement> T getNextSiblingIfBefore(PsiElement element, Class<T> classToFind, Class<JtePsiComma> classToStopAt) {
+    public static <T extends PsiElement> T getNextSiblingIfBefore(PsiElement element, Class<T> classToFind, Class<? extends PsiElement> classToStopAt) {
         for (element = element.getNextSibling(); element != null; element = element.getNextSibling()) {
+            if (classToFind.isAssignableFrom(element.getClass())) {
+                //noinspection unchecked
+                return (T)element;
+            }
+
+            if (classToStopAt.isAssignableFrom(element.getClass())) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    public static <T extends PsiElement> T getPrevSiblingIfBefore(PsiElement element, Class<T> classToFind, Class<? extends PsiElement> classToStopAt) {
+        for (element = element.getPrevSibling(); element != null; element = element.getPrevSibling()) {
             if (classToFind.isAssignableFrom(element.getClass())) {
                 //noinspection unchecked
                 return (T)element;
