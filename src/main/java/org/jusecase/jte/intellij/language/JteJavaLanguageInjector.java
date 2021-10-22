@@ -13,8 +13,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
-    public static final Key<PsiJavaFile> JAVA_FILE_KEY = Key.create("JteJavaLanguageInjector.PsiJavaFile");
     private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Arrays.asList(
             JtePsiJavaContent.class,
             JtePsiExtraJavaInjection.class
@@ -116,18 +113,6 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                 preventJavaFolding();
 
                 getRegistrar().doneInjecting();
-
-                try {
-                    Field resultFiles = getRegistrar().getClass().getDeclaredField("resultFiles");
-                    resultFiles.setAccessible(true);
-                    @SuppressWarnings("unchecked")
-                    List<PsiFile> files = (List<PsiFile>) resultFiles.get(getRegistrar());
-                    PsiJavaFile injectedFile = (PsiJavaFile) files.get(0);
-
-                    host.getContainingFile().putUserData(JAVA_FILE_KEY, injectedFile);
-                } catch (Exception e) {
-                    // noop
-                }
             }
         }
 

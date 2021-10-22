@@ -13,7 +13,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.JteJavaLanguageInjector;
 import org.jusecase.jte.intellij.language.JteLanguage;
 
 
@@ -60,27 +59,24 @@ public class JtePsiUtil {
     }
 
     public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
-        PsiJavaFile javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
-        if (javaFile == null || !javaFile.isValid()) {
-            // Try to trigger injection and check if java file is there afterwards
-            InjectedLanguageManager.getInstance(tagOrLayoutFile.getProject()).findInjectedElementAt(tagOrLayoutFile, 0);
-            javaFile = tagOrLayoutFile.getUserData(JteJavaLanguageInjector.JAVA_FILE_KEY);
-            if (javaFile == null) {
-                return null;
-            }
-        }
-
-        PsiClass javaClass = PsiTreeUtil.getChildOfType(javaFile, PsiClass.class);
-        if (javaClass == null) {
+        PsiFile jteFile = tagOrLayoutFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
+        if (jteFile == null) {
             return null;
         }
 
-        PsiMethod javaMethod = PsiTreeUtil.getChildOfType(javaClass, PsiMethod.class);
-        if (javaMethod == null) {
+        JtePsiParam param = PsiTreeUtil.findChildOfType(jteFile, JtePsiParam.class);
+        if (param == null) {
+            return null; // Template has no parameters
+        }
+
+        JtePsiJavaInjection javaInjection = PsiTreeUtil.findChildOfType(param, JtePsiJavaInjection.class);
+        if (javaInjection == null) {
             return null;
         }
 
-        return PsiTreeUtil.getChildOfType(javaMethod, PsiParameterList.class);
+        PsiElement injectedElementAt = InjectedLanguageManager.getInstance(javaInjection.getProject()).findInjectedElementAt(javaInjection.getContainingFile(), javaInjection.getTextOffset());
+
+        return PsiTreeUtil.getParentOfType(injectedElementAt, PsiParameterList.class);
     }
 
     public static List<String> resolveRequiredParameters(PsiFile tagOrLayoutFile) {
@@ -94,7 +90,7 @@ public class JtePsiUtil {
             return Collections.emptyList();
         }
 
-        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        PsiParameterList psiParameterList = resolveParameterList(tagOrLayoutFile);
         if (psiParameterList == null) {
             return Collections.emptyList();
         }
