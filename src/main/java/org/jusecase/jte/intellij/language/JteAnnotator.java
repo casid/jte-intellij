@@ -41,7 +41,7 @@ public class JteAnnotator implements Annotator {
         } else if (element instanceof JtePsiTag || element instanceof JtePsiLayout) {
             doAnnotateMissingTagOrLayoutParams(element, holder);
         } else if (element instanceof JtePsiParamName) {
-            doAnnotate(element, holder);
+            doAnnotate((JtePsiParamName)element, holder);
         }
     }
 
@@ -242,13 +242,40 @@ public class JteAnnotator implements Annotator {
         }
     }
 
-    private void doAnnotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+    private void doAnnotate(@NotNull JtePsiParamName element, @NotNull AnnotationHolder holder) {
+        doAnnotateMissingParameterAssignment(element, holder);
+        doAnnotateUnknownParameters(element, holder);
+    }
+
+    private void doAnnotateMissingParameterAssignment(@NotNull JtePsiParamName element, @NotNull AnnotationHolder holder) {
         JtePsiJavaInjection injection = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiJavaInjection.class, JtePsiComma.class);
         if (injection == null) {
             JtePsiContent content = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiContent.class, JtePsiComma.class);
             if (content == null) {
                 holder.newAnnotation(HighlightSeverity.ERROR, "Missing parameter assignment").create();
             }
+        }
+    }
+
+    private void doAnnotateUnknownParameters(@NotNull JtePsiParamName element, @NotNull AnnotationHolder holder) {
+        PsiElement parent = element.getParent();
+        if (!(parent instanceof JtePsiTag || parent instanceof JtePsiLayout)) {
+            return;
+        }
+
+        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(parent, JtePsiTagName.class);
+        if (tagOrLayoutName == null) {
+            return;
+        }
+
+        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
+        if (tagOrLayoutFile == null) {
+            return;
+        }
+
+        Set<String> availableParameterNames = JtePsiUtil.resolveAvailableParameterNames(tagOrLayoutFile);
+        if (!availableParameterNames.contains(element.getName())) {
+            holder.newAnnotation(HighlightSeverity.ERROR, "Unknown parameter " + element.getName()).create();
         }
     }
 }

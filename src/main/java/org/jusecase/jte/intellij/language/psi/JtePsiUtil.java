@@ -1,9 +1,6 @@
 package org.jusecase.jte.intellij.language.psi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
@@ -56,6 +53,20 @@ public class JtePsiUtil {
             }
         }
         return null;
+    }
+
+    public static Set<String> resolveAvailableParameterNames(PsiFile tagOrLayoutFile) {
+        PsiParameterList psiParameterList = resolveParameterList(tagOrLayoutFile);
+        if (psiParameterList == null || psiParameterList.getParametersCount() == 0) {
+            return Collections.emptySet();
+        }
+
+        Set<String> result = new LinkedHashSet<>(psiParameterList.getParametersCount());
+        for (PsiParameter parameter : psiParameterList.getParameters()) {
+            result.add(parameter.getName());
+        }
+
+        return result;
     }
 
     public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
