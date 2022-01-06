@@ -25,6 +25,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>1.5.1</h3>
+<ul>
+    <li>Unknown tag/layout parameters are annotated as errors</li>
+    <li>Fix else if injections (pattern matching works now with else if)</li>
+</ul>
 <h3>1.5.0</h3>
 <ul>
     <li>Annotate type errors on tag/layout parameters</li>
