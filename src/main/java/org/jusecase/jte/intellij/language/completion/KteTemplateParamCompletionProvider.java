@@ -22,10 +22,10 @@ import org.jusecase.jte.intellij.language.psi.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class KteTagOrLayoutParamCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class KteTemplateParamCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final boolean kotlin;
 
-    public KteTagOrLayoutParamCompletionProvider(boolean kotlin) {
+    public KteTemplateParamCompletionProvider(boolean kotlin) {
         this.kotlin = kotlin;
     }
 
@@ -50,22 +50,22 @@ public class KteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
             }
         }
 
-        JtePsiTagName tagOrLayoutName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
-        KtParameterList parameterList = KtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
         if (parameterList == null) {
             return;
         }
 
-        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(tagOrLayoutName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
+        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(templateName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
         for (KtParameter parameter : parameterList.getParameters()) {
             if (parameter.isVarArg()) {
                 continue;

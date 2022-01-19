@@ -107,24 +107,24 @@ public class JteFormatterTest extends LightIdeaTestCase {
     }
 
     public void testContentBlock() {
-        reformatCode("@tag.card(content = @`\n" +
+        reformatCode("@template.card(content = @`\n" +
                 "This is <b>my content</b>!\n" +
                 "`)",
 
-                "@tag.card(content = @`\n" +
+                "@template.card(content = @`\n" +
                 "    This is <b>my content</b>!\n" +
                 "`)"
         );
     }
 
     public void testContentBlockVariable() {
-        reformatCode("@tag.card(content = @`\n" +
+        reformatCode("@template.card(content = @`\n" +
                         "<div>\n" +
                         "This is <b>${x}</b>!\n" +
                         "</div>\n" +
                         "`)",
 
-                "@tag.card(content = @`\n" +
+                "@template.card(content = @`\n" +
                         "    <div>\n" +
                         "        This is <b>${x}</b>!\n" +
                         "    </div>\n" +
@@ -188,14 +188,14 @@ public class JteFormatterTest extends LightIdeaTestCase {
                 "<div>\n" +
                 "@for(int i : model.getStuff())\n" +
                 "<h1>${i}</h1>\n" +
-                "@tag.foo()\n" +
+                "@template.foo()\n" +
                 "@endfor\n" +
                 "</div>\n",
 
                 "<div>\n" +
                 "    @for(int i : model.getStuff())\n" +
                 "        <h1>${i}</h1>\n" +
-                "        @tag.foo()\n" +
+                "        @template.foo()\n" +
                 "    @endfor\n" +
                 "</div>\n");
     }

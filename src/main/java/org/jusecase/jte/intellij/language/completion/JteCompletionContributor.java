@@ -8,7 +8,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class JteCompletionContributor extends CompletionContributor {
     public JteCompletionContributor() {
-        extend(null, psiElement(JteTokenTypes.TAG_NAME), new JteTagOrLayoutCompletionProvider());
-        extend(null, psiElement(), new JteTagOrLayoutParamCompletionProvider(false));
+        extend(null, psiElement(JteTokenTypes.TEMPLATE_NAME), new JteTemplateCompletionProvider());
+        extend(null, psiElement(), new JteTemplateParamCompletionProvider(false));
     }
 }

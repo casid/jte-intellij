@@ -1,7 +1,6 @@
 package org.jusecase.jte.intellij.language.parsing.parsers;
 
 import org.jusecase.jte.intellij.language.parsing.Lexer;
-import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 
 public class ContentBlockTokenParser extends AbstractTokenParser {
 
@@ -13,7 +12,7 @@ public class ContentBlockTokenParser extends AbstractTokenParser {
     public boolean hasToken(int position) {
         if (hasToken(position, "@`", lexer.tokens.CONTENT_BEGIN())) {
             if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_NAME) {
-                lexer.setCurrentState(Lexer.CONTENT_STATE_TAG_PARAMS);
+                lexer.setCurrentState(Lexer.CONTENT_STATE_TEMPLATE_PARAMS);
             }
             lexer.pushPreviousState();
             lexer.setCurrentState(Lexer.CONTENT_STATE_HTML);

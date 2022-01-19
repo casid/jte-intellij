@@ -29,8 +29,6 @@ public class FoldingBuilderBase extends CustomFoldingBuilder {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@if(...)"));
             } else if (child instanceof JtePsiFor) {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@for(...)"));
-            } else if (child instanceof JtePsiLayout) {
-                descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@layout(...)"));
             } else if (child instanceof JtePsiContent) {
                 descriptors.add(new FoldingDescriptor(child.getNode(), child.getTextRange(), null, "@`...`"));
             }

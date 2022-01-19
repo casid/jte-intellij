@@ -16,8 +16,8 @@ public class EqualsTokenParser extends AbstractTokenParser {
 
         if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_NAME) {
             if (hasToken(position, "=", lexer.tokens.EQUALS())) {
-                if (lexer.getCurrentCount() == Lexer.CONTENT_COUNT_PARAM_NAME_TAG) {
-                    lexer.setCurrentCount(Lexer.CONTENT_COUNT_PARAM_NAME_TAG_DONE);
+                if (lexer.getCurrentCount() == Lexer.CONTENT_COUNT_PARAM_NAME_TEMPLATE) {
+                    lexer.setCurrentCount(Lexer.CONTENT_COUNT_PARAM_NAME_TEMPLATE_DONE);
                     return true;
                 }
             }

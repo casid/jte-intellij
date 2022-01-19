@@ -10,12 +10,12 @@ import org.jusecase.jte.intellij.language.KteKotlinLanguageInjector;
 
 public class KtePsiUtil {
 
-    public static KtParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
-        KtFile kotlinFile = tagOrLayoutFile.getUserData(KteKotlinLanguageInjector.KOTLIN_FILE_KEY);
+    public static KtParameterList resolveParameterList(PsiFile templateFile) {
+        KtFile kotlinFile = templateFile.getUserData(KteKotlinLanguageInjector.KOTLIN_FILE_KEY);
         if (kotlinFile == null) {
             // Try to trigger injection and check if kotlin file is there afterwards
-            InjectedLanguageManager.getInstance(tagOrLayoutFile.getProject()).findInjectedElementAt(tagOrLayoutFile, 0);
-            kotlinFile = tagOrLayoutFile.getUserData(KteKotlinLanguageInjector.KOTLIN_FILE_KEY);
+            InjectedLanguageManager.getInstance(templateFile.getProject()).findInjectedElementAt(templateFile, 0);
+            kotlinFile = templateFile.getUserData(KteKotlinLanguageInjector.KOTLIN_FILE_KEY);
             if (kotlinFile == null) {
                 return null;
             }

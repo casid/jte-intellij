@@ -16,6 +16,6 @@ public class JteCompletionContributorForJava extends CompletionContributor {
             public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
                 return element.getContainingFile() != null && element.getContainingFile().getName().endsWith(".jte");
             }
-        }), new JteTagOrLayoutParamCompletionProvider(true));
+        }), new JteTemplateParamCompletionProvider(true));
     }
 }

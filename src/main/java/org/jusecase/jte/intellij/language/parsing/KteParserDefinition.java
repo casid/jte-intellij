@@ -81,16 +81,14 @@ public class KteParserDefinition implements ParserDefinition {
             return new JtePsiFor(node);
         } else if (elementType == KteTokenTypes.ENDFOR) {
             return new JtePsiEndFor(node);
-        } else if (elementType == KteTokenTypes.TAG) {
-            return new JtePsiTag(node);
-        } else if (elementType == KteTokenTypes.TAG_NAME) {
-            return new JtePsiTagName(node, ".kte");
+        } else if (elementType == KteTokenTypes.TEMPLATE) {
+            return new JtePsiTemplate(node);
+        } else if (elementType == KteTokenTypes.TEMPLATE_NAME) {
+            return new JtePsiTemplateName(node, ".kte");
         } else if (elementType == KteTokenTypes.PARAMS_BEGIN) {
             return new JtePsiParamsBegin(node);
         } else if (elementType == KteTokenTypes.PARAMS_END) {
             return new JtePsiParamsEnd(node);
-        } else if (elementType == KteTokenTypes.LAYOUT) {
-            return new JtePsiLayout(node);
         } else if (elementType == KteTokenTypes.NAME_SEPARATOR) {
             return new JtePsiNameSeparator(node);
         } else if (elementType == KteTokenTypes.OUTPUT_BEGIN) {

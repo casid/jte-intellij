@@ -30,13 +30,12 @@ public interface TokenTypes {
     IElementType FOR();
     IElementType ENDFOR();
 
-    IElementType TAG();
-    IElementType TAG_NAME();
+    IElementType TEMPLATE();
+    IElementType TEMPLATE_NAME();
     IElementType NAME_SEPARATOR();
     IElementType PARAMS_BEGIN();
     IElementType PARAM_NAME();
     IElementType PARAMS_END();
-    IElementType LAYOUT();
     IElementType CONTENT_BEGIN();
     IElementType CONTENT_END();
 

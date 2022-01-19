@@ -21,17 +21,17 @@ public class JtePsiParamName extends JtePsiElement {
             return null;
         }
 
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTemplateName.class);
+        if (templateName == null) {
             return null;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return null;
         }
 
-        PsiParameterList parameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
         if (parameterList == null) {
             return null;
         }

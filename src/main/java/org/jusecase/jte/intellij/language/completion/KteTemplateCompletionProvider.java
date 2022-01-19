@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class KteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class KteTemplateCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
         PsiElement position = parameters.getPosition();
@@ -28,12 +28,12 @@ public class KteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
             return;
         }
 
-        if (!(position.getParent() instanceof JtePsiTagName)) {
+        if (!(position.getParent() instanceof JtePsiTemplateName)) {
             return;
         }
-        JtePsiTagName nameElement = (JtePsiTagName) position.getParent();
+        JtePsiTemplateName nameElement = (JtePsiTemplateName) position.getParent();
 
-        JtePsiTagName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTagName.class);
+        JtePsiTemplateName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTemplateName.class);
         if (prevNameElement == null) {
             PsiDirectory directory = nameElement.findRootDirectory();
             if (directory != null) {
@@ -70,10 +70,10 @@ public class KteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
     }
 
     private static class AfterCompletionInsertHandler implements InsertHandler<LookupElement> {
-        private final PsiFile tagOrLayoutFile;
+        private final PsiFile templateFile;
 
-        private AfterCompletionInsertHandler(PsiFile tagOrLayoutFile) {
-            this.tagOrLayoutFile = tagOrLayoutFile;
+        private AfterCompletionInsertHandler(PsiFile templateFile) {
+            this.templateFile = templateFile;
         }
 
         @Override
@@ -96,7 +96,7 @@ public class KteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
                     template.addTextSegment("(");
                 }
 
-                KtParameterList parameterList = KtePsiUtil.resolveParameterList(tagOrLayoutFile);
+                KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
                 if (parameterList != null) {
                     int i = 0;
                     List<KtParameter> parameters = resolveRequiredParams(parameterList);

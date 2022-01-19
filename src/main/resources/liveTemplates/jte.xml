@@ -17,11 +17,7 @@
     <template name="@for" value="@for($END$)&#10;@endfor" description="jte for statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@tag." value="@tag.$NAME$($END$)" description="jte tag" toReformat="false" toShortenFQNames="false">
-        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
-        <context><option name="jte" value="true"/></context>
-    </template>
-    <template name="@layout." value="@layout.$NAME$($END$)" description="jte layout" toReformat="false" toShortenFQNames="false">
+    <template name="@template." value="@template.$NAME$($END$)" description="jte template" toReformat="false" toShortenFQNames="false">
         <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>

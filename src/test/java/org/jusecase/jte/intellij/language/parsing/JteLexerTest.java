@@ -62,43 +62,43 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testTag_simple() {
-        givenInput("@tag.simple()");
+    public void testTemplate_simple() {
+        givenInput("@template.simple()");
 
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAMS_END, ")"
         );
     }
 
     @Test
-    public void testTag_simple_withPackage() {
-        givenInput("@tag.my.test.simple()");
+    public void testTemplate_simple_withPackage() {
+        givenInput("@template.my.test.simple()");
 
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "my",
+                TEMPLATE_NAME, "my",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "test",
+                TEMPLATE_NAME, "test",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAMS_END, ")"
         );
     }
 
     @Test
-    public void testTag_withParams() {
-        givenInput("@tag.simple(a, b, c)");
+    public void testTemplate_withParams() {
+        givenInput("@template.simple(a, b, c)");
 
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 JAVA_INJECTION, "a, b, c",
                 PARAMS_END, ")"
@@ -106,13 +106,13 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testTag_withParamsCallingMethods() {
-        givenInput("@tag.simple(a.getDuration(x.getOffset()), b, c)");
+    public void testTemplate_withParamsCallingMethods() {
+        givenInput("@template.simple(a.getDuration(x.getOffset()), b, c)");
 
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 JAVA_INJECTION, "a.getDuration(x.getOffset()), b, c",
                 PARAMS_END, ")"
@@ -120,118 +120,15 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testTag_withNamedParams1() {
-        givenInput("@tag.named(one=\"Hello\")");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                PARAM_NAME, "one",
-                EQUALS, "=",
-                JAVA_INJECTION, "\"Hello\"",
-                PARAMS_END, ")"
-        );
-    }
-
-    @Test
-    public void testTag_withNamedParams2() {
-        givenInput("@tag.named(two = 1 == 2 ? 1 : 0, one = 1)");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                PARAM_NAME, "two",
-                WHITESPACE, " ",
-                EQUALS, "=",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "1 == 2 ? 1 : 0",
-                COMMA, ",",
-                WHITESPACE, " ",
-                PARAM_NAME, "one",
-                WHITESPACE, " ",
-                EQUALS, "=",
-                WHITESPACE, " ",
-                JAVA_INJECTION, "1",
-                PARAMS_END, ")"
-                );
-    }
-
-    @Test
-    public void testTag_withNamedParams3() {
-        givenInput("@tag.named(one=\"Hello, my name = two\")");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                PARAM_NAME, "one",
-                EQUALS, "=",
-                JAVA_INJECTION, "\"Hello, my name = two\"",
-                PARAMS_END, ")"
-        );
-    }
-
-    @Test
-    public void testTag_withNamedParams4() {
-        givenInput("@tag.named(one=\"Hello, my name = \\\"two\")");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                PARAM_NAME, "one",
-                EQUALS, "=",
-                JAVA_INJECTION, "\"Hello, my name = \\\"two\"",
-                PARAMS_END, ")"
-        );
-    }
-
-    @Test
-    public void testTag_withNamedParams5() {
-        givenInput("@tag.named(\none=\"Hello\"\n)");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                WHITESPACE, "\n",
-                PARAM_NAME, "one",
-                EQUALS, "=",
-                JAVA_INJECTION, "\"Hello\"",
-                WHITESPACE, "\n",
-                PARAMS_END, ")"
-        );
-    }
-
-    @Test
-    public void testTag_withNamedParams6() {
-        givenInput("@tag.named(\r\none=\"Hello\"\r\n)");
-        thenTokensAre(
-                TAG, "@tag",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "named",
-                PARAMS_BEGIN, "(",
-                WHITESPACE, "\r\n",
-                PARAM_NAME, "one",
-                EQUALS, "=",
-                JAVA_INJECTION, "\"Hello\"",
-                WHITESPACE, "\r\n",
-                PARAMS_END, ")"
-        );
-    }
-
-    @Test
-    public void testLayout_withParamsCallingMethods() {
-        givenInput("@layout.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`\n" +
+    public void testTemplate_withParamsCallingMethods_2() {
+        givenInput("@template.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`\n" +
                 "<p>Hello, ${x}</p>\n" +
                 "`)");
 
         thenTokensAre(
-                LAYOUT, "@layout",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 JAVA_INJECTION, "a.getDuration(x.getOffset(), 5), b, c",
                 COMMA, ",",
@@ -252,20 +149,105 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testLayout_simple_withPackage() {
-        givenInput("@layout.my.test.simple()\n");
-
+    public void testTemplate_withNamedParams1() {
+        givenInput("@template.named(one=\"Hello\")");
         thenTokensAre(
-                LAYOUT, "@layout",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "my",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "test",
-                NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "named",
                 PARAMS_BEGIN, "(",
-                PARAMS_END, ")",
-                WHITESPACE, "\n"
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTemplate_withNamedParams2() {
+        givenInput("@template.named(two = 1 == 2 ? 1 : 0, one = 1)");
+        thenTokensAre(
+                TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "two",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "1 == 2 ? 1 : 0",
+                COMMA, ",",
+                WHITESPACE, " ",
+                PARAM_NAME, "one",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "1",
+                PARAMS_END, ")"
+                );
+    }
+
+    @Test
+    public void testTemplate_withNamedParams3() {
+        givenInput("@template.named(one=\"Hello, my name = two\")");
+        thenTokensAre(
+                TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello, my name = two\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTemplate_withNamedParams4() {
+        givenInput("@template.named(one=\"Hello, my name = \\\"two\")");
+        thenTokensAre(
+                TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "named",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello, my name = \\\"two\"",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTemplate_withNamedParams5() {
+        givenInput("@template.named(\none=\"Hello\"\n)");
+        thenTokensAre(
+                TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "named",
+                PARAMS_BEGIN, "(",
+                WHITESPACE, "\n",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                WHITESPACE, "\n",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testTemplate_withNamedParams6() {
+        givenInput("@template.named(\r\none=\"Hello\"\r\n)");
+        thenTokensAre(
+                TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "named",
+                PARAMS_BEGIN, "(",
+                WHITESPACE, "\r\n",
+                PARAM_NAME, "one",
+                EQUALS, "=",
+                JAVA_INJECTION, "\"Hello\"",
+                WHITESPACE, "\r\n",
+                PARAMS_END, ")"
         );
     }
 
@@ -364,12 +346,12 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testContentWithinTagParam() {
-        givenInput("@tag.test(foo = @`<b>static</b>`)");
+    public void testContentWithinTemplateParam() {
+        givenInput("@template.test(foo = @`<b>static</b>`)");
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "test",
+                TEMPLATE_NAME, "test",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "foo",
                 WHITESPACE, " ",
@@ -383,12 +365,12 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
-    public void testContentWithinTagParam_output() {
-        givenInput("@tag.test(foo = @`<b>${data}</b>`)");
+    public void testContentWithinTemplateParam_output() {
+        givenInput("@template.test(foo = @`<b>${data}</b>`)");
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "test",
+                TEMPLATE_NAME, "test",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "foo",
                 WHITESPACE, " ",
@@ -407,11 +389,11 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testContentWithinJava() {
-        givenInput("@tag.test(foo = localize(key, @`<b>static</b>!{var x = \"Hello\";}${x}`, 3))");
+        givenInput("@template.test(foo = localize(key, @`<b>static</b>!{var x = \"Hello\";}${x}`, 3))");
         thenTokensAre(
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "test",
+                TEMPLATE_NAME, "test",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "foo",
                 WHITESPACE, " ",
@@ -436,8 +418,8 @@ public class JteLexerTest extends LexerTest {
     public void nestedContent() {
         givenInput("@param String value\n" +
                 "@param test.Localizer localizer\n" +
-                "@tag.simple(text = localizer.localize(\"key\", @`\n" +
-                "        @tag.verySimple(value = @`<b>${value}</b>`, localizer = localizer)\n" +
+                "@template.simple(text = localizer.localize(\"key\", @`\n" +
+                "        @template.verySimple(value = @`<b>${value}</b>`, localizer = localizer)\n" +
                 "    `,\n" +
                 "    @`<b>${value}</b>`, \"bar\")\n" +
                 ")");
@@ -450,9 +432,9 @@ public class JteLexerTest extends LexerTest {
                 WHITESPACE, " ",
                 JAVA_INJECTION, "test.Localizer localizer",
                 WHITESPACE, "\n",
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "simple",
+                TEMPLATE_NAME, "simple",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "text",
                 WHITESPACE, " ",
@@ -461,9 +443,9 @@ public class JteLexerTest extends LexerTest {
                 JAVA_INJECTION, "localizer.localize(\"key\", ",
                 CONTENT_BEGIN, "@`",
                 WHITESPACE, "\n        ",
-                TAG, "@tag",
+                TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
-                TAG_NAME, "verySimple",
+                TEMPLATE_NAME, "verySimple",
                 PARAMS_BEGIN, "(",
                 PARAM_NAME, "value",
                 WHITESPACE, " ",

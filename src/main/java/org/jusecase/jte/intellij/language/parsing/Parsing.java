@@ -54,10 +54,8 @@ public class Parsing {
             processFor();
         } else if (tokenType == tokens.ENDFOR()) {
             processEndFor();
-        } else if (tokenType == tokens.TAG()) {
-            processTag();
-        } else if (tokenType == tokens.LAYOUT()) {
-            processLayout();
+        } else if (tokenType == tokens.TEMPLATE()) {
+            processTemplate();
         } else if (tokenType == tokens.CONTENT_BEGIN()) {
             processContent();
         } else if (tokenType == tokens.CONTENT_END()) {
@@ -302,18 +300,18 @@ public class Parsing {
         marker.done(tokens.ENDFOR());
     }
 
-    private void processTag() {
-        Marker tagMarker = builder.mark();
+    private void processTemplate() {
+        Marker templateMarker = builder.mark();
         builder.advanceLexer();
 
-        processTagOrLayoutName();
-        processTagOrLayoutParams();
+        processTemplateName();
+        processTemplateParams();
 
-        tagMarker.done(tokens.TAG());
+        templateMarker.done(tokens.TEMPLATE());
     }
 
-    private void processTagOrLayoutName() {
-        while (builder.getTokenType() == tokens.TAG_NAME() || builder.getTokenType() == tokens.NAME_SEPARATOR()) {
+    private void processTemplateName() {
+        while (builder.getTokenType() == tokens.TEMPLATE_NAME() || builder.getTokenType() == tokens.NAME_SEPARATOR()) {
             IElementType currentType = Objects.requireNonNull(builder.getTokenType());
             Marker marker = builder.mark();
             builder.advanceLexer();
@@ -321,7 +319,7 @@ public class Parsing {
         }
     }
 
-    private void processTagOrLayoutParams() {
+    private void processTemplateParams() {
         if (builder.getTokenType() == tokens.PARAMS_BEGIN()) {
             builder.advanceLexer();
         } else {
@@ -351,16 +349,6 @@ public class Parsing {
         if (builder.getTokenType() == tokens.PARAMS_END()) {
             builder.advanceLexer();
         }
-    }
-
-    private void processLayout() {
-        Marker layoutMarker = builder.mark();
-        builder.advanceLexer();
-
-        processTagOrLayoutName();
-        processTagOrLayoutParams();
-
-        layoutMarker.done(tokens.LAYOUT());
     }
 
     private void processContent() {

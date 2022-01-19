@@ -14,7 +14,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.JtePsiExtraJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParam;
-import org.jusecase.jte.intellij.language.psi.JtePsiTagName;
+import org.jusecase.jte.intellij.language.psi.JtePsiTemplateName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class JteTagOrLayoutCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class JteTemplateCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
         PsiElement position = parameters.getPosition();
@@ -30,12 +30,12 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
             return;
         }
 
-        if (!(position.getParent() instanceof JtePsiTagName)) {
+        if (!(position.getParent() instanceof JtePsiTemplateName)) {
             return;
         }
-        JtePsiTagName nameElement = (JtePsiTagName) position.getParent();
+        JtePsiTemplateName nameElement = (JtePsiTemplateName) position.getParent();
 
-        JtePsiTagName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTagName.class);
+        JtePsiTemplateName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTemplateName.class);
         if (prevNameElement == null) {
             PsiDirectory directory = nameElement.findRootDirectory();
             if (directory != null) {
@@ -72,10 +72,10 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
     }
 
     private static class AfterCompletionInsertHandler implements InsertHandler<LookupElement> {
-        private final PsiFile tagOrLayoutFile;
+        private final PsiFile templateFile;
 
-        private AfterCompletionInsertHandler(PsiFile tagOrLayoutFile) {
-            this.tagOrLayoutFile = tagOrLayoutFile;
+        private AfterCompletionInsertHandler(PsiFile templateFile) {
+            this.templateFile = templateFile;
         }
 
         @Override
@@ -98,7 +98,7 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
                     template.addTextSegment("(");
                 }
 
-                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
                 if (parameterList != null) {
                     int i = 0;
                     List<PsiParameter> parameters = resolveRequiredParams(parameterList);
@@ -146,7 +146,7 @@ public class JteTagOrLayoutCompletionProvider extends CompletionProvider<Complet
             boolean[] defaultParams = new boolean[paramLength];
             AtomicInteger index = new AtomicInteger();
 
-            SyntaxTraverser.psiTraverser(tagOrLayoutFile).filter(JtePsiParam.class).forEach(param -> {
+            SyntaxTraverser.psiTraverser(templateFile).filter(JtePsiParam.class).forEach(param -> {
                 if (index.get() >= defaultParams.length) {
                     return;
                 }

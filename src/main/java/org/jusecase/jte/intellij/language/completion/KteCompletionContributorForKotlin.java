@@ -16,6 +16,6 @@ public class KteCompletionContributorForKotlin extends CompletionContributor {
             public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
                 return element.getContainingFile() != null && element.getContainingFile().getName().endsWith(".kte");
             }
-        }), new KteTagOrLayoutParamCompletionProvider(true));
+        }), new KteTemplateParamCompletionProvider(true));
     }
 }
