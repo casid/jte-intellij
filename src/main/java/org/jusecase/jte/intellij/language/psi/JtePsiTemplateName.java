@@ -18,31 +18,13 @@ import java.util.stream.Collectors;
 
 public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement {
 
+    public static final String JTE_ROOT = ".jteroot";
+
     private final String extension;
 
     public JtePsiTemplateName(@NotNull ASTNode node, String extension) {
         super(node);
         this.extension = extension;
-    }
-
-    public String getIdentifier() {
-        return "template";
-    }
-
-    private boolean matchesParent(PsiDirectory parent, JtePsiTemplateName prevName) {
-        if (parent == null) {
-            return false;
-        }
-
-        if (prevName == null) {
-            return false;
-        }
-
-        if (!prevName.getText().equals(parent.getName())) {
-            return false;
-        }
-
-        return matchesParent(parent.getParent(), PsiTreeUtil.getPrevSiblingOfType(prevName, getClass()));
     }
 
     @Override
@@ -235,7 +217,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         return path;
     }
 
-    private boolean isDirectory() {
+    public boolean isDirectory() {
         return getNextSibling() instanceof JtePsiNameSeparator;
     }
 
@@ -274,7 +256,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
             return null;
         }
 
-        if (parent.findFile(".jteroot") != null) {
+        if (parent.findFile(JTE_ROOT) != null) {
             return parent;
         }
 

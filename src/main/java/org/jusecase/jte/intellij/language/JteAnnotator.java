@@ -47,7 +47,16 @@ public class JteAnnotator implements Annotator {
 
     private void doAnnotate(JtePsiTemplateName element, AnnotationHolder holder) {
         if (element.getReference() == null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved " + element.getIdentifier()).create();
+            if (element.findRootDirectory() == null) {
+                holder.newAnnotation(HighlightSeverity.ERROR, "Please add a '" + JtePsiTemplateName.JTE_ROOT + "' file to the root source directory of your jte sources, so that IntelliJ knows how to reference templates.").create();
+            } else {
+                if (element.isDirectory()) {
+                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved directory " + element.getName()).create();
+                } else {
+                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved template").create();
+                }
+            }
+
         }
     }
 
