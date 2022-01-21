@@ -185,6 +185,10 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
 
     public PsiFile resolveFile() {
         PsiDirectory rootDirectory = findRootDirectory();
+        if (rootDirectory == null) {
+            return null;
+        }
+
         String relativePath = getRelativePath();
 
         VirtualFile virtualFile = rootDirectory.getVirtualFile().findFileByRelativePath(relativePath);
@@ -247,10 +251,12 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         return this;
     }
 
+    @Nullable
     public PsiDirectory findRootDirectory() {
         return findRootDirectory(getContainingFile().getOriginalFile().getParent());
     }
 
+    @Nullable
     private PsiDirectory findRootDirectory(@Nullable PsiDirectory parent) {
         if (parent == null) {
             return null;
