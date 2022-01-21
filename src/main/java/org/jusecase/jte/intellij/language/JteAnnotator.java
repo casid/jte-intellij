@@ -18,8 +18,8 @@ import org.jusecase.jte.intellij.language.psi.*;
 public class JteAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (element instanceof JtePsiTagName) {
-            doAnnotate((JtePsiTagName) element, holder);
+        if (element instanceof JtePsiTemplateName) {
+            doAnnotate((JtePsiTemplateName) element, holder);
         } else if (element instanceof JtePsiIf) {
             doAnnotate((JtePsiIf) element, holder);
         } else if (element instanceof JtePsiFor) {
@@ -38,16 +38,25 @@ public class JteAnnotator implements Annotator {
             doAnnotate((JtePsiEndFor)element, holder);
         } else if (element instanceof JtePsiJavaInjection) {
             doAnnotate((JtePsiJavaInjection)element, holder);
-        } else if (element instanceof JtePsiTag || element instanceof JtePsiLayout) {
-            doAnnotateMissingTagOrLayoutParams(element, holder);
+        } else if (element instanceof JtePsiTemplate) {
+            doAnnotateMissingTemplateParams(element, holder);
         } else if (element instanceof JtePsiParamName) {
             doAnnotate((JtePsiParamName)element, holder);
         }
     }
 
-    private void doAnnotate(JtePsiTagName element, AnnotationHolder holder) {
+    private void doAnnotate(JtePsiTemplateName element, AnnotationHolder holder) {
         if (element.getReference() == null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved " + element.getIdentifier()).create();
+            if (element.findRootDirectory() == null) {
+                holder.newAnnotation(HighlightSeverity.ERROR, "Please add a '" + JtePsiTemplateName.JTE_ROOT + "' file to the root source directory of your jte sources, so that IntelliJ knows how to reference templates.").create();
+            } else {
+                if (element.isDirectory()) {
+                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved directory " + element.getName()).create();
+                } else {
+                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved template").create();
+                }
+            }
+
         }
     }
 
@@ -111,17 +120,17 @@ public class JteAnnotator implements Annotator {
         }
 
         PsiElement parent = element.getParent();
-        if (!(parent instanceof JtePsiTag || parent instanceof JtePsiLayout)) {
+        if (!(parent instanceof JtePsiTemplate)) {
             return;
         }
 
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(parent, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(parent, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
@@ -130,7 +139,7 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
-        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(templateFile);
         if (psiParameterList == null) {
             return;
         }
@@ -166,17 +175,17 @@ public class JteAnnotator implements Annotator {
         }
 
         PsiElement parent = element.getParent();
-        if (!(parent instanceof JtePsiTag || parent instanceof JtePsiLayout)) {
+        if (!(parent instanceof JtePsiTemplate)) {
             return;
         }
 
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(parent, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(parent, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
@@ -185,7 +194,7 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
-        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        PsiParameterList psiParameterList = JtePsiUtil.resolveParameterList(templateFile);
         if (psiParameterList == null) {
             return;
         }
@@ -208,18 +217,18 @@ public class JteAnnotator implements Annotator {
         }
     }
 
-    private void doAnnotateMissingTagOrLayoutParams( PsiElement element, AnnotationHolder holder ) {
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(element, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+    private void doAnnotateMissingTemplateParams(PsiElement element, AnnotationHolder holder ) {
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(element, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
-        List<PsiParameter> requiredParameters = JtePsiUtil.resolveRequiredParameters(tagOrLayoutFile);
+        List<PsiParameter> requiredParameters = JtePsiUtil.resolveRequiredParameters(templateFile);
         if (requiredParameters.isEmpty()) {
             return;
         }
@@ -259,21 +268,21 @@ public class JteAnnotator implements Annotator {
 
     private void doAnnotateUnknownParameters(@NotNull JtePsiParamName element, @NotNull AnnotationHolder holder) {
         PsiElement parent = element.getParent();
-        if (!(parent instanceof JtePsiTag || parent instanceof JtePsiLayout)) {
+        if (!(parent instanceof JtePsiTemplate)) {
             return;
         }
 
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getChildOfType(parent, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(parent, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
-        Set<String> availableParameterNames = JtePsiUtil.resolveAvailableParameterNames(tagOrLayoutFile);
+        Set<String> availableParameterNames = JtePsiUtil.resolveAvailableParameterNames(templateFile);
         if (!availableParameterNames.contains(element.getName())) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Unknown parameter " + element.getName()).create();
         }

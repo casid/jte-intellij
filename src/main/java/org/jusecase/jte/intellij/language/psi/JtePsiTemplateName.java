@@ -2,46 +2,29 @@ package org.jusecase.jte.intellij.language.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.SharedPsiElementImplUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement {
+
+    public static final String JTE_ROOT = ".jteroot";
 
     private final String extension;
 
-    public JtePsiTagName(@NotNull ASTNode node, String extension) {
+    public JtePsiTemplateName(@NotNull ASTNode node, String extension) {
         super(node);
         this.extension = extension;
-    }
-
-    public String getIdentifier() {
-        if (getParent() instanceof JtePsiLayout) {
-            return "layout";
-        }
-        return "tag";
-    }
-
-    private boolean matchesParent(PsiDirectory parent, JtePsiTagName prevName) {
-        if (parent == null) {
-            return false;
-        }
-
-        if (prevName == null) {
-            return getIdentifier().equals(parent.getName());
-        }
-
-        if (!prevName.getText().equals(parent.getName())) {
-            return false;
-        }
-
-        return matchesParent(parent.getParent(), PsiTreeUtil.getPrevSiblingOfType(prevName, getClass()));
     }
 
     @Override
@@ -60,7 +43,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
             return null;
         }
 
-        JtePsiTagName nextSibling = JtePsiUtil.getFirstSiblingOfSameType(this, JtePsiTagName.class);
+        JtePsiTemplateName nextSibling = JtePsiUtil.getFirstSiblingOfSameType(this, JtePsiTemplateName.class);
         if (nextSibling.getName() == null) {
             return null;
         }
@@ -76,7 +59,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
                 }
             }
 
-            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, JtePsiTagName.class);
+            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, JtePsiTemplateName.class);
             if (nextSibling == null || nextSibling.getName() == null) {
                 return null;
             }
@@ -91,7 +74,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
             @NotNull
             @Override
             public PsiElement getElement() {
-                return JtePsiTagName.this;
+                return JtePsiTemplateName.this;
             }
 
             @NotNull
@@ -115,7 +98,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
             @Override
             public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
                 setName(newElementName);
-                return JtePsiTagName.this;
+                return JtePsiTemplateName.this;
             }
 
             @Override
@@ -137,7 +120,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
 
     @Nullable
     private PsiReference resolveFileReference() {
-        PsiFile file = resolveFile(this);
+        PsiFile file = resolveFile();
         if (file != null) {
             return createFileReference(file);
         }
@@ -152,7 +135,7 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
             @NotNull
             @Override
             public PsiElement getElement() {
-                return JtePsiTagName.this;
+                return JtePsiTemplateName.this;
             }
 
             @NotNull
@@ -195,29 +178,46 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
             @NotNull
             @Override
             public ResolveResult[] multiResolve(boolean incompleteCode) {
-                return new ResolveResult[0]; // TODO ???
+                return ResolveResult.EMPTY_ARRAY; // TODO ???
             }
         };
     }
 
     public PsiFile resolveFile() {
-        return resolveFile(this);
-    }
+        PsiDirectory rootDirectory = findRootDirectory();
+        String relativePath = getRelativePath();
 
-    private PsiFile resolveFile(JtePsiTagName fileElement) {
-        JtePsiTagName prevName = PsiTreeUtil.getPrevSiblingOfType(fileElement, getClass());
-
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(getProject(), fileElement.getText() + extension, GlobalSearchScope.allScope(getProject()));
-        for (PsiFile psiFile : filesByName) {
-            if (matchesParent(psiFile.getParent(), prevName)) {
-                return psiFile;
-            }
+        VirtualFile virtualFile = rootDirectory.getVirtualFile().findFileByRelativePath(relativePath);
+        if (virtualFile == null) {
+            return null;
         }
 
-        return null;
+        PsiManager psiManager = PsiManager.getInstance(getProject());
+        return psiManager.findFile(virtualFile);
     }
 
-    private boolean isDirectory() {
+    @NotNull
+    private String getRelativePath() {
+        List<JtePsiTemplateName> names = new ArrayList<>();
+
+        names.add(this);
+
+        JtePsiTemplateName prevName = this;
+        while ((prevName = PsiTreeUtil.getPrevSiblingOfType(prevName, getClass())) != null) {
+            names.add(prevName);
+        }
+
+        Collections.reverse(names);
+
+        String path = names.stream().map(JtePsiTemplateName::getName).collect(Collectors.joining("/"));
+        if (!isDirectory()) {
+            path += extension;
+        }
+
+        return path;
+    }
+
+    public boolean isDirectory() {
         return getNextSibling() instanceof JtePsiNameSeparator;
     }
 
@@ -251,22 +251,16 @@ public class JtePsiTagName extends JtePsiElement implements PsiNamedElement {
         return findRootDirectory(getContainingFile().getOriginalFile().getParent());
     }
 
-    private PsiDirectory findRootDirectory(PsiDirectory directory) {
-        if (directory == null) {
+    private PsiDirectory findRootDirectory(@Nullable PsiDirectory parent) {
+        if (parent == null) {
             return null;
         }
 
-        String directoryName = getIdentifier();
-        if (directoryName.equals(directory.getName())) {
-            return directory;
+        if (parent.findFile(JTE_ROOT) != null) {
+            return parent;
         }
 
-        PsiDirectory subdirectory = directory.findSubdirectory(directoryName);
-        if (subdirectory != null) {
-            return subdirectory;
-        }
-
-        return findRootDirectory(directory.getParent());
+        return findRootDirectory(parent.getParent());
     }
 }
 

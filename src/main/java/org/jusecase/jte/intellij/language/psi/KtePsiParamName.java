@@ -23,17 +23,17 @@ public class KtePsiParamName extends JtePsiElement {
             return null;
         }
 
-        JtePsiTagName tagOrLayoutName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(this, JtePsiTemplateName.class);
+        if (templateName == null) {
             return null;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return null;
         }
 
-        KtParameterList parameterList = KtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
         if (parameterList == null) {
             return null;
         }

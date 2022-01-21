@@ -33,13 +33,12 @@ public class JteTokenTypes implements TokenTypes {
     public static final IElementType FOR = new JteElementType("FOR");
     public static final IElementType ENDFOR = new JteElementType("ENDFOR");
 
-    public static final IElementType TAG = new JteElementType("TAG");
-    public static final IElementType TAG_NAME = new JteElementType("TAG_NAME");
+    public static final IElementType TEMPLATE = new JteElementType("TEMPLATE");
+    public static final IElementType TEMPLATE_NAME = new JteElementType("TEMPLATE_NAME");
     public static final IElementType NAME_SEPARATOR = new JteElementType("NAME_SEPARATOR");
     public static final IElementType PARAMS_BEGIN = new JteElementType("PARAMS_BEGIN");
     public static final IElementType PARAM_NAME = new JteElementType("PARAM_NAME");
     public static final IElementType PARAMS_END = new JteElementType("PARAMS_END");
-    public static final IElementType LAYOUT = new JteElementType("LAYOUT");
     public static final IElementType CONTENT_BEGIN = new JteElementType("CONTENT_BEGIN");
     public static final IElementType CONTENT_END = new JteElementType("CONTENT_END");
 
@@ -170,13 +169,13 @@ public class JteTokenTypes implements TokenTypes {
     }
 
     @Override
-    public IElementType TAG() {
-        return TAG;
+    public IElementType TEMPLATE() {
+        return TEMPLATE;
     }
 
     @Override
-    public IElementType TAG_NAME() {
-        return TAG_NAME;
+    public IElementType TEMPLATE_NAME() {
+        return TEMPLATE_NAME;
     }
 
     @Override
@@ -197,11 +196,6 @@ public class JteTokenTypes implements TokenTypes {
     @Override
     public IElementType PARAMS_END() {
         return PARAMS_END;
-    }
-
-    @Override
-    public IElementType LAYOUT() {
-        return LAYOUT;
     }
 
     @Override

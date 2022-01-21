@@ -31,17 +31,17 @@ public abstract class Lexer extends LexerBase {
     public static final int CONTENT_STATE_ELSEIF_BEGIN = 13;
     public static final int CONTENT_STATE_ELSEIF_CONDITION = 14;
     public static final int CONTENT_STATE_ELSEIF_END = 15;
-    public static final int CONTENT_STATE_TAG_BEGIN = 16;
-    public static final int CONTENT_STATE_TAG_NAME_BEGIN = 17;
-    public static final int CONTENT_STATE_TAG_PARAMS = 18;
-    public static final int CONTENT_STATE_TAG_END = 19;
+    public static final int CONTENT_STATE_TEMPLATE_BEGIN = 16;
+    public static final int CONTENT_STATE_TEMPLATE_NAME_BEGIN = 17;
+    public static final int CONTENT_STATE_TEMPLATE_PARAMS = 18;
+    public static final int CONTENT_STATE_TEMPLATE_END = 19;
     public static final int CONTENT_STATE_STATEMENT_BEGIN = 20;
     public static final int CONTENT_STATE_STATEMENT_END = 21;
     public static final int CONTENT_STATE_PARAM_DEFAULT_VALUE = 32;
     public static final int CONTENT_STATE_PARAM_NAME = 33;
 
-    public static final int CONTENT_COUNT_PARAM_NAME_TAG = 1;
-    public static final int CONTENT_COUNT_PARAM_NAME_TAG_DONE = 2;
+    public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE = 1;
+    public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE_DONE = 2;
 
     public final TokenTypes tokens;
 
@@ -73,10 +73,9 @@ public abstract class Lexer extends LexerBase {
                 new ForTokenParser(this),
                 new ForConditionTokenParser(this),
                 new EndForTokenParser(this),
-                new TagTokenParser(this),
-                new TagNameTokenParser(this),
-                new TagParamsTokenParser(this),
-                new LayoutTokenParser(this),
+                new TemplateTokenParser(this),
+                new TemplateNameTokenParser(this),
+                new TemplateParamsTokenParser(this),
                 new WhitespaceParser(),
                 new EqualsTokenParser(this),
                 new CommaTokenParser(this),
@@ -207,7 +206,7 @@ public abstract class Lexer extends LexerBase {
             case CONTENT_STATE_IF_END:
             case CONTENT_STATE_FOR_END:
             case CONTENT_STATE_ELSEIF_END:
-            case CONTENT_STATE_TAG_END:
+            case CONTENT_STATE_TEMPLATE_END:
                 return true;
         }
         return false;

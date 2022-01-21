@@ -55,8 +55,8 @@ public class JtePsiUtil {
         return null;
     }
 
-    public static Set<String> resolveAvailableParameterNames(PsiFile tagOrLayoutFile) {
-        PsiParameterList psiParameterList = resolveParameterList(tagOrLayoutFile);
+    public static Set<String> resolveAvailableParameterNames(PsiFile templateFile) {
+        PsiParameterList psiParameterList = resolveParameterList(templateFile);
         if (psiParameterList == null || psiParameterList.getParametersCount() == 0) {
             return Collections.emptySet();
         }
@@ -69,8 +69,8 @@ public class JtePsiUtil {
         return result;
     }
 
-    public static PsiParameterList resolveParameterList(PsiFile tagOrLayoutFile) {
-        PsiFile jteFile = tagOrLayoutFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
+    public static PsiParameterList resolveParameterList(PsiFile templateFile) {
+        PsiFile jteFile = templateFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
         if (jteFile == null) {
             return null;
         }
@@ -90,8 +90,8 @@ public class JtePsiUtil {
         return PsiTreeUtil.getParentOfType(injectedElementAt, PsiParameterList.class);
     }
 
-    public static List<PsiParameter> resolveRequiredParameters(PsiFile tagOrLayoutFile) {
-        PsiFile jteFile = tagOrLayoutFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
+    public static List<PsiParameter> resolveRequiredParameters(PsiFile templateFile) {
+        PsiFile jteFile = templateFile.getViewProvider().getPsi(JteLanguage.INSTANCE);
         if (jteFile == null) {
             return Collections.emptyList();
         }
@@ -101,7 +101,7 @@ public class JtePsiUtil {
             return Collections.emptyList();
         }
 
-        PsiParameterList psiParameterList = resolveParameterList(tagOrLayoutFile);
+        PsiParameterList psiParameterList = resolveParameterList(templateFile);
         if (psiParameterList == null) {
             return Collections.emptyList();
         }

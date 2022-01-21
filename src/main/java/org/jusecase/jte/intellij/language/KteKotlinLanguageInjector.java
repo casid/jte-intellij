@@ -196,10 +196,8 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                 }
             } else if (child instanceof JtePsiEndFor) {
                 injectEmptyJavaPart(null, "}\n", child);
-            } else if (child instanceof JtePsiTag) {
-                injectTagOrLayoutParams(child);
-            } else if (child instanceof JtePsiLayout) {
-                injectTagOrLayoutParams(child);
+            } else if (child instanceof JtePsiTemplate) {
+                injectTemplateParams(child);
             } else if (child instanceof JtePsiBlock) {
                 for (PsiElement element : child.getChildren()) {
                     processTemplateBody(element);
@@ -207,7 +205,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
             }
         }
 
-        private void injectTagOrLayoutParams(PsiElement child) {
+        private void injectTemplateParams(PsiElement child) {
             injectContentAwareJavaPart("dummyCall(", ")\n", child);
         }
 

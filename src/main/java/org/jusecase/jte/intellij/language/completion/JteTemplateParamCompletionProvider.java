@@ -19,16 +19,16 @@ import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 import org.jusecase.jte.intellij.language.psi.JtePsiJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParamName;
-import org.jusecase.jte.intellij.language.psi.JtePsiTagName;
+import org.jusecase.jte.intellij.language.psi.JtePsiTemplateName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class JteTemplateParamCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final boolean java;
 
-    public JteTagOrLayoutParamCompletionProvider(boolean java) {
+    public JteTemplateParamCompletionProvider(boolean java) {
         this.java = java;
     }
 
@@ -54,22 +54,22 @@ public class JteTagOrLayoutParamCompletionProvider extends CompletionProvider<Co
             }
         }
 
-        JtePsiTagName tagOrLayoutName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTagName.class);
-        if (tagOrLayoutName == null) {
+        JtePsiTemplateName templateName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTemplateName.class);
+        if (templateName == null) {
             return;
         }
 
-        PsiFile tagOrLayoutFile = tagOrLayoutName.resolveFile();
-        if (tagOrLayoutFile == null) {
+        PsiFile templateFile = templateName.resolveFile();
+        if (templateFile == null) {
             return;
         }
 
-        PsiParameterList parameterList = JtePsiUtil.resolveParameterList(tagOrLayoutFile);
+        PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
         if (parameterList == null) {
             return;
         }
 
-        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(tagOrLayoutName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
+        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(templateName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
         for (PsiParameter parameter : parameterList.getParameters()) {
             if (parameter.isVarArgs()) {
                 continue;

@@ -16,15 +16,19 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 <h3>Features</h3>
 <ul>
     <li>Completion for all jte keywords in templates.</li>
-    <li>Navigation from tags and layouts to their definition.</li>
     <li>Coding assistance for Java parts in jte files.</li>
     <li>Coding assistance for Kotlin parts in kte files (Beta).</li>
-    <li>Refactoring support for tag and layout names and parameters.</li>
+    <li>Navigation from templates to their definition.</li>
+    <li>Refactoring support for template names and parameters.</li>
     <li>Formatting of templates with HTML support.</li>
 </ul>
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.0.0</h3>
+<ul>
+    <li>Support for jte 2</li>
+</ul>
 <h3>1.5.1</h3>
 <ul>
     <li>Unknown tag/layout parameters are annotated as errors</li>
