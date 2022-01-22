@@ -28,6 +28,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 <h3>2.0.0</h3>
 <ul>
     <li>Support for jte 2</li>
+    <li>Support move refactorings of .jte template files</li>
 </ul>
 <h3>1.5.1</h3>
 <ul>
