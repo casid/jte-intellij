@@ -20,12 +20,8 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.JteLanguage;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
-import org.jusecase.jte.intellij.language.psi.JtePsiFile;
-import org.jusecase.jte.intellij.language.psi.JtePsiTemplate;
-import org.jusecase.jte.intellij.language.psi.JtePsiTemplateName;
-import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
+import org.jusecase.jte.intellij.language.psi.*;
 
 import java.util.*;
 
@@ -33,7 +29,7 @@ public class JteMoveFileHandler extends MoveFileHandler {
 
     @Override
     public boolean canProcessElement(PsiFile element) {
-        return element instanceof JtePsiFile;
+        return element instanceof JtePsiFile || element instanceof KtePsiFile;
     }
 
     @Override
@@ -123,9 +119,9 @@ public class JteMoveFileHandler extends MoveFileHandler {
         Project project = template.getProject();
         PsiManager psiManager = PsiManager.getInstance(project);
         DummyHolder dummyHolder = DummyHolderFactory.createHolder(psiManager, null);
-        ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(JteLanguage.INSTANCE);
+        ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(template.getLanguage());
         Lexer lexer = parserDefinition.createLexer(project);
-        PsiBuilder psiBuilder = PsiBuilderFactory.getInstance().createBuilder(project, dummyHolder.getTreeElement(), lexer, JteLanguage.INSTANCE, text);
+        PsiBuilder psiBuilder = PsiBuilderFactory.getInstance().createBuilder(project, dummyHolder.getTreeElement(), lexer, template.getLanguage(), text);
         ASTNode node = parserDefinition.createParser(project).parse(JteTokenTypes.HTML_CONTENT, psiBuilder);
 
         CodeEditUtil.setNodeGeneratedRecursively(node, true);

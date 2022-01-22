@@ -28,7 +28,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 <h3>2.0.0</h3>
 <ul>
     <li>Support for jte 2</li>
-    <li>Support move refactorings of .jte template files</li>
+    <li>Support move refactorings of template files</li>
 </ul>
 <h3>1.5.1</h3>
 <ul>
@@ -176,6 +176,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <lang.braceMatcher language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.KteBraceMatcher"/>
 
         <moveFileHandler implementation="org.jusecase.jte.intellij.language.refactoring.JteMoveFileHandler" id="JavaTemplateEngine"/>
+        <moveFileHandler implementation="org.jusecase.jte.intellij.language.refactoring.JteMoveFileHandler" id="KotlinTemplateEngine"/>
 
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
 
