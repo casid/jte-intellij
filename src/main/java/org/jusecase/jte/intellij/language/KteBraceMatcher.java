@@ -13,6 +13,7 @@ public class KteBraceMatcher implements PairedBraceMatcher {
     private final BracePair[] pairs = new BracePair[]{
             new BracePair(KteTokenTypes.IF, KteTokenTypes.ENDIF, true),
             new BracePair(KteTokenTypes.FOR, KteTokenTypes.ENDFOR, true),
+            new BracePair(KteTokenTypes.RAW, KteTokenTypes.ENDRAW, true),
             new BracePair(KteTokenTypes.CONTENT_BEGIN, KteTokenTypes.CONTENT_END, true),
     };
 

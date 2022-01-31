@@ -33,4 +33,8 @@
         <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
+
+    <template name="@raw" value="@raw$END$@endraw" description="jte raw content" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+    </template>
 </templateSet>
