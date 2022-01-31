@@ -14,6 +14,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             "@endif",
             "@for",
             "@endfor",
+            "@raw",
+            "@endraw",
             "@import",
             "@param",
             "@template"
@@ -64,6 +66,8 @@ public class ContentTokenParser extends AbstractTokenParser {
             myTokenInfo.updateData(start, position, lexer.tokens.EXTRA_JAVA_INJECTION());
         } else if (currentState == Lexer.CONTENT_STATE_PARAM_NAME) {
             myTokenInfo.updateData(start, position, lexer.tokens.PARAM_NAME());
+        } else if (currentState == Lexer.CONTENT_STATE_RAW) {
+            myTokenInfo.updateData(start, position, lexer.tokens.HTML_CONTENT());
         } else {
             myTokenInfo.updateData(start, position, lexer.tokens.JAVA_INJECTION());
         }
@@ -88,6 +92,10 @@ public class ContentTokenParser extends AbstractTokenParser {
     }
 
     private boolean isBeginOfJteKeyword(int position) {
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_RAW && !isBeginOf(position, "@endraw")) {
+            return false;
+        }
+
         if (insideString) {
             if (isBeginOf(position, '\"') && myBuffer.charAt(position - 1) != '\\') {
                 insideString = false;

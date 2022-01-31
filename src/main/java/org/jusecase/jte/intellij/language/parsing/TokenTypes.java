@@ -29,6 +29,8 @@ public interface TokenTypes {
     IElementType ELSEIF();
     IElementType FOR();
     IElementType ENDFOR();
+    IElementType RAW();
+    IElementType ENDRAW();
 
     IElementType TEMPLATE();
     IElementType TEMPLATE_NAME();

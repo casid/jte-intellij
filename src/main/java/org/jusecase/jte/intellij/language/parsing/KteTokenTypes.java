@@ -32,6 +32,8 @@ public class KteTokenTypes implements TokenTypes {
     public static final IElementType ELSEIF = new KteElementType("ELSEIF");
     public static final IElementType FOR = new KteElementType("FOR");
     public static final IElementType ENDFOR = new KteElementType("ENDFOR");
+    public static final IElementType RAW = new KteElementType("RAW");
+    public static final IElementType ENDRAW = new KteElementType("ENDRAW");
 
     public static final IElementType TEMPLATE = new KteElementType("TEMPLATE");
     public static final IElementType TEMPLATE_NAME = new KteElementType("TEMPLATE_NAME");
@@ -166,6 +168,16 @@ public class KteTokenTypes implements TokenTypes {
     @Override
     public IElementType ENDFOR() {
         return ENDFOR;
+    }
+
+    @Override
+    public IElementType RAW() {
+        return RAW;
+    }
+
+    @Override
+    public IElementType ENDRAW() {
+        return ENDRAW;
     }
 
     @Override

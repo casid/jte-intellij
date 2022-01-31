@@ -560,4 +560,15 @@ public class JteLexerTest extends LexerTest {
                 ENDFOR, "@endfor"
         );
     }
+
+    @Test
+    public void raw() {
+        givenInput("@raw@template.simple()\n${foo}@endraw");
+
+        thenTokensAre(
+                RAW, "@raw",
+                HTML_CONTENT, "@template.simple()\n${foo}",
+                ENDRAW, "@endraw"
+        );
+    }
 }

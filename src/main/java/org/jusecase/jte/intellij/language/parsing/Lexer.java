@@ -39,6 +39,7 @@ public abstract class Lexer extends LexerBase {
     public static final int CONTENT_STATE_STATEMENT_END = 21;
     public static final int CONTENT_STATE_PARAM_DEFAULT_VALUE = 32;
     public static final int CONTENT_STATE_PARAM_NAME = 33;
+    public static final int CONTENT_STATE_RAW = 34;
 
     public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE = 1;
     public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE_DONE = 2;
@@ -60,6 +61,7 @@ public abstract class Lexer extends LexerBase {
         myTokenParsers = new TokenParser[]{
                 new ContentTokenParser(this),
                 new CommentTokenParser(this),
+                new RawTokenParser(this),
                 new ImportTokenParser(this),
                 new ParamTokenParser(this),
                 new OutputTokenParser(this),

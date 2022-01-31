@@ -32,6 +32,8 @@ public class JteTokenTypes implements TokenTypes {
     public static final IElementType ELSEIF = new JteElementType("ELSEIF");
     public static final IElementType FOR = new JteElementType("FOR");
     public static final IElementType ENDFOR = new JteElementType("ENDFOR");
+    public static final IElementType RAW = new JteElementType("RAW");
+    public static final IElementType ENDRAW = new JteElementType("ENDRAW");
 
     public static final IElementType TEMPLATE = new JteElementType("TEMPLATE");
     public static final IElementType TEMPLATE_NAME = new JteElementType("TEMPLATE_NAME");
@@ -166,6 +168,16 @@ public class JteTokenTypes implements TokenTypes {
     @Override
     public IElementType ENDFOR() {
         return ENDFOR;
+    }
+
+    @Override
+    public IElementType RAW() {
+        return RAW;
+    }
+
+    @Override
+    public IElementType ENDRAW() {
+        return ENDRAW;
     }
 
     @Override

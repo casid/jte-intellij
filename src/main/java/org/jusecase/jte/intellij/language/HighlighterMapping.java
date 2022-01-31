@@ -35,6 +35,8 @@ public class HighlighterMapping {
         mapping.put(tokens.ENDIF(), KEYWORD);
         mapping.put(tokens.FOR(), KEYWORD);
         mapping.put(tokens.ENDFOR(), KEYWORD);
+        mapping.put(tokens.RAW(), KEYWORD);
+        mapping.put(tokens.ENDRAW(), KEYWORD);
         mapping.put(tokens.TEMPLATE(), KEYWORD);
         mapping.put(tokens.CONTENT_BEGIN(), STRING);
         mapping.put(tokens.CONTENT_END(), STRING);
