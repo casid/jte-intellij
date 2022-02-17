@@ -180,7 +180,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                 }
             } else if (child instanceof JtePsiElseIf) {
                 JtePsiJavaInjection part = PsiTreeUtil.getChildOfType(child, JtePsiJavaInjection.class);
-                injectJavaPart("} elseif (", ") {\n", part);
+                injectJavaPart("} else if (", ") {\n", part);
             } else if (child instanceof JtePsiElse) {
                 injectEmptyJavaPart("\n} else {\n", null, child);
             } else if (child instanceof JtePsiEndIf) {
