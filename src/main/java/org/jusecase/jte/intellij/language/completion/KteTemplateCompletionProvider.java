@@ -2,15 +2,12 @@ package org.jusecase.jte.intellij.language.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.MacroCallNode;
 import com.intellij.codeInsight.template.macro.CompleteMacro;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.psi.KtParameter;
 import org.jetbrains.kotlin.psi.KtParameterList;
@@ -20,53 +17,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class KteTemplateCompletionProvider extends CompletionProvider<CompletionParameters> {
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
-        PsiElement position = parameters.getPosition();
-        if (position.getParent() == null) {
-            return;
-        }
+public class KteTemplateCompletionProvider extends AbstractTemplateCompletionProvider {
 
-        if (!(position.getParent() instanceof JtePsiTemplateName)) {
-            return;
-        }
-        JtePsiTemplateName nameElement = (JtePsiTemplateName) position.getParent();
-
-        JtePsiTemplateName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTemplateName.class);
-        if (prevNameElement == null) {
-            PsiDirectory directory = nameElement.findRootDirectory();
-            if (directory != null) {
-                addSuggestionsForDirectory(directory, result);
-            }
-        } else {
-            PsiReference reference = prevNameElement.getReference();
-            if (reference == null) {
-                return;
-            }
-
-            PsiElement prevReferenceElement = reference.resolve();
-            if (prevReferenceElement instanceof PsiDirectory) {
-                addSuggestionsForDirectory((PsiDirectory) prevReferenceElement, result);
-            }
-        }
+    protected KteTemplateCompletionProvider() {
+        super(".kte");
     }
 
-    private void addSuggestionsForDirectory(PsiDirectory directory, @NotNull CompletionResultSet result) {
-        for (PsiDirectory subdirectory : directory.getSubdirectories()) {
-            result.addElement(LookupElementBuilder.create(subdirectory));
-        }
-
-        for (PsiFile file : directory.getFiles()) {
-            String name = file.getName();
-            int index = name.lastIndexOf(".kte");
-            if (index == -1 || !name.endsWith(".kte")) {
-                continue;
-            }
-
-            String referenceName = name.substring(0, index);
-            result.addElement(LookupElementBuilder.create(referenceName).withInsertHandler(new AfterCompletionInsertHandler(file)));
-        }
+    @Override
+    protected InsertHandler<LookupElement> createAfterCompletionInsertHandler(PsiFile file) {
+        return new AfterCompletionInsertHandler(file);
     }
 
     private static class AfterCompletionInsertHandler implements InsertHandler<LookupElement> {
@@ -76,6 +35,7 @@ public class KteTemplateCompletionProvider extends CompletionProvider<Completion
             this.templateFile = templateFile;
         }
 
+        @SuppressWarnings("DuplicatedCode")
         @Override
         public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
             context.setLaterRunnable(() -> {
