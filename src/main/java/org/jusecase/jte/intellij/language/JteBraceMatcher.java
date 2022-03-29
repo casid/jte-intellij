@@ -15,6 +15,8 @@ public class JteBraceMatcher implements PairedBraceMatcher {
             new BracePair(JteTokenTypes.FOR, JteTokenTypes.ENDFOR, true),
             new BracePair(JteTokenTypes.RAW, JteTokenTypes.ENDRAW, true),
             new BracePair(JteTokenTypes.CONTENT_BEGIN, JteTokenTypes.CONTENT_END, true),
+            new BracePair(JteTokenTypes.OUTPUT_BEGIN, JteTokenTypes.OUTPUT_END, false),
+            new BracePair(JteTokenTypes.STATEMENT_BEGIN, JteTokenTypes.STATEMENT_END, false),
     };
 
     @NotNull
