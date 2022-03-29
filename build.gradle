@@ -27,7 +27,7 @@ patchPluginXml {
 }
 
 publishPlugin {
-    token project.findProperty('publishToken')
+    token = System.getenv('ORG_GRADLE_PROJECT_intellijPublishToken')
 }
 
 apply plugin: 'idea'
