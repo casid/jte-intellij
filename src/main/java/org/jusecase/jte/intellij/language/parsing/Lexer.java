@@ -40,6 +40,7 @@ public abstract class Lexer extends LexerBase {
     public static final int CONTENT_STATE_PARAM_DEFAULT_VALUE = 32;
     public static final int CONTENT_STATE_PARAM_NAME = 33;
     public static final int CONTENT_STATE_RAW = 34;
+    public static final int CONTENT_STATE_HTML_CONTENT_BLOCK = 35;
 
     public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE = 1;
     public static final int CONTENT_COUNT_PARAM_NAME_TEMPLATE_DONE = 2;
@@ -212,6 +213,11 @@ public abstract class Lexer extends LexerBase {
                 return true;
         }
         return false;
+    }
+
+    public boolean isInHtmlState() {
+        int currentState = getCurrentState();
+        return currentState == CONTENT_STATE_HTML || currentState == CONTENT_STATE_HTML_CONTENT_BLOCK;
     }
 
     public boolean isImportOrParamIgnored() {

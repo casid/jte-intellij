@@ -15,8 +15,11 @@ public class ContentBlockTokenParser extends AbstractTokenParser {
                 lexer.setCurrentState(Lexer.CONTENT_STATE_TEMPLATE_PARAMS);
             }
             lexer.pushPreviousState();
-            lexer.setCurrentState(Lexer.CONTENT_STATE_HTML);
-            lexer.setCurrentCount(1); // To prevent syntax highlighter bugs, see https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000549784-Is-there-any-way-to-start-syntax-highlighting-lexer-for-the-whole-file-instead-of-starting-it-for-the-part-that-have-changed-
+
+            // To prevent syntax highlighter bugs, see https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000549784-Is-there-any-way-to-start-syntax-highlighting-lexer-for-the-whole-file-instead-of-starting-it-for-the-part-that-have-changed-
+            // The highlighting lexer is only restarted at points where it returned 0 from getState, so we use the special state CONTENT_STATE_HTML_CONTENT_BLOCK for content blocks,
+            // which rely on a deque to restore the previous state (they can't handle everything in one integer).
+            lexer.setCurrentState(Lexer.CONTENT_STATE_HTML_CONTENT_BLOCK);
             return true;
         }
         return false;

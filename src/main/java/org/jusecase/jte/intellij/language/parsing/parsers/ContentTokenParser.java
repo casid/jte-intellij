@@ -48,7 +48,7 @@ public class ContentTokenParser extends AbstractTokenParser {
         position++;
 
         while (position < myEndOffset && !isBeginOfJteKeyword(position)) {
-            if (currentState == Lexer.CONTENT_STATE_HTML && !lexer.isImportOrParamIgnored() && !isWhitespace(position)) {
+            if (lexer.isInHtmlState() && !lexer.isImportOrParamIgnored() && !isWhitespace(position)) {
                 lexer.setImportOrParamIgnored(true);
             }
             position++;
@@ -56,7 +56,7 @@ public class ContentTokenParser extends AbstractTokenParser {
 
         if (currentState == Lexer.CONTENT_STATE_TEMPLATE_NAME_BEGIN) {
             myTokenInfo.updateData(start, position, lexer.tokens.TEMPLATE_NAME());
-        } else if (currentState == Lexer.CONTENT_STATE_HTML) {
+        } else if (lexer.isInHtmlState()) {
             if (isBlank(start, position)) {
                 myTokenInfo.updateData(start, position, lexer.tokens.WHITESPACE());
             } else {
@@ -142,11 +142,11 @@ public class ContentTokenParser extends AbstractTokenParser {
             return true;
         }
 
-        if (isBeginOf(position, "@`") && lexer.getCurrentState() != Lexer.CONTENT_STATE_HTML) {
+        if (isBeginOf(position, "@`") && !lexer.isInHtmlState()) {
             return true;
         }
 
-        if (isBeginOf(position, "`") && lexer.getCurrentState() == Lexer.CONTENT_STATE_HTML) {
+        if (isBeginOf(position, "`") && lexer.isInHtmlState()) {
             return true;
         }
 
@@ -238,7 +238,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
-        if (lexer.getCurrentState() != Lexer.CONTENT_STATE_HTML && isBeginOf(position, '\"')) {
+        if (!lexer.isInHtmlState() && isBeginOf(position, '\"')) {
             insideString = true;
             return false;
         }

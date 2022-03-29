@@ -10,13 +10,12 @@ public class StatementTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        int state = lexer.getCurrentState();
-
-        if (state == Lexer.CONTENT_STATE_HTML && hasToken(position, "!{", lexer.tokens.STATEMENT_BEGIN())) {
+        if (lexer.isInHtmlState() && hasToken(position, "!{", lexer.tokens.STATEMENT_BEGIN())) {
             lexer.setCurrentState(Lexer.CONTENT_STATE_STATEMENT_BEGIN);
             return true;
         }
 
+        int state = lexer.getCurrentState();
         if (state == Lexer.CONTENT_STATE_STATEMENT_BEGIN && hasToken(position, "}", lexer.tokens.STATEMENT_END())) {
             lexer.setCurrentState(Lexer.CONTENT_STATE_STATEMENT_END);
             return true;

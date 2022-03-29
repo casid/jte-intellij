@@ -9,13 +9,12 @@ public class RawTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        int state = lexer.getCurrentState();
-
-        if (state == Lexer.CONTENT_STATE_HTML && hasToken(position, "@raw", lexer.tokens.RAW())) {
+        if (lexer.isInHtmlState() && hasToken(position, "@raw", lexer.tokens.RAW())) {
             lexer.setCurrentState(Lexer.CONTENT_STATE_RAW);
             return true;
         }
 
+        int state = lexer.getCurrentState();
         if (state == Lexer.CONTENT_STATE_RAW && hasToken(position, "@endraw", lexer.tokens.ENDRAW())) {
             lexer.setCurrentState(Lexer.CONTENT_STATE_HTML);
             return true;
