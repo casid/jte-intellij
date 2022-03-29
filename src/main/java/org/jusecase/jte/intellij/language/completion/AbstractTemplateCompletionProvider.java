@@ -3,10 +3,12 @@ package org.jusecase.jte.intellij.language.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.JteIcons;
 import org.jusecase.jte.intellij.language.psi.JtePsiTemplateName;
 
 public abstract class AbstractTemplateCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -51,7 +53,7 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
 
     private void addSuggestionsForDirectory(@NotNull PsiDirectory rootDirectory, @NotNull PsiDirectory directory, @NotNull CompletionResultSet result) {
         for (PsiDirectory subdirectory : directory.getSubdirectories()) {
-            result.addElement(LookupElementBuilder.create(subdirectory));
+            result.addElement(LookupElementBuilder.create(subdirectory).withIcon(AllIcons.Nodes.Folder));
         }
 
         addSuggestionsForDirectoryRecursively("", rootDirectory, result);
@@ -70,7 +72,7 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
             }
 
             String referenceName = prefix + name.substring(0, index);
-            result.addElement(LookupElementBuilder.create(referenceName).withInsertHandler(createAfterCompletionInsertHandler(file)));
+            result.addElement(LookupElementBuilder.create(referenceName).withInsertHandler(createAfterCompletionInsertHandler(file)).withIcon(JteIcons.ICON));
         }
     }
 
