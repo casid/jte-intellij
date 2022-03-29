@@ -10,7 +10,7 @@ public class TemplateTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "@template", lexer.tokens.TEMPLATE()) && isBeginOf(position + "@template".length(), '.')) {
+        if (isBeginOf(position + "@template".length(), '.') && hasToken(position, "@template", lexer.tokens.TEMPLATE())) {
             lexer.setCurrentState(Lexer.CONTENT_STATE_TEMPLATE_BEGIN);
             return true;
         }
