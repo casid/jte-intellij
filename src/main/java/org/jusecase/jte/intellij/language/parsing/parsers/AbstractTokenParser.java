@@ -13,7 +13,7 @@ public abstract class AbstractTokenParser extends TokenParser {
     }
 
     protected final boolean isBeginOf(int position, char token) {
-        if (position > myEndOffset) {
+        if (position >= myEndOffset) {
             return false;
         }
         return myBuffer.charAt(position) == token;
