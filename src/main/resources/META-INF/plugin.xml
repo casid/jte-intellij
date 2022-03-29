@@ -25,6 +25,13 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.0.1</h3>
+<ul>
+    <li>Provide suggestions for all available templates</li>
+    <li>Fix for some syntax highlighting issues</li>
+    <li>Remove $unsafe live template</li>
+    <li>Add brace matcher for ${} and !{}</li>
+</ul>
 <h3>2.0.0</h3>
 <ul>
     <li>Support for jte 2</li>
