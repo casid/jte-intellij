@@ -236,8 +236,8 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
                 processTemplateBody(block);
 
-                JtePsiEndContent endContent = PsiTreeUtil.findChildOfType(element, JtePsiEndContent.class);
-                if (endContent != null) {
+                PsiElement endContent = element.getLastChild();
+                if (endContent instanceof JtePsiEndContent) {
                     injectEmptyJavaPart(null, suffix, endContent);
                 }
             }
