@@ -200,6 +200,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <codeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.KteCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.KteLanguageCodeStyleSettingsProvider"/>
+
+        <notificationGroup id="org.jusecase.jte.intellij.language.convert.notification" displayType="STICKY_BALLOON" isLogByDefault="false" />
     </extensions>
 
     <actions>
