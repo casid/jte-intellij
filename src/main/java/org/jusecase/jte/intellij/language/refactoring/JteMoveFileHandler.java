@@ -10,6 +10,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.DummyHolder;
 import com.intellij.psi.impl.source.DummyHolderFactory;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
+import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -124,9 +125,11 @@ public class JteMoveFileHandler extends MoveFileHandler {
         PsiBuilder psiBuilder = PsiBuilderFactory.getInstance().createBuilder(project, dummyHolder.getTreeElement(), lexer, template.getLanguage(), text);
         ASTNode node = parserDefinition.createParser(project).parse(JteTokenTypes.HTML_CONTENT, psiBuilder);
 
+        dummyHolder.getTreeElement().rawAddChildren((TreeElement) node);
+
         CodeEditUtil.setNodeGeneratedRecursively(node, true);
 
-        return PsiTreeUtil.findChildOfType(node.getPsi(), JtePsiTemplate.class);
+        return PsiTreeUtil.findChildOfType(dummyHolder, JtePsiTemplate.class);
     }
 
     @NotNull
