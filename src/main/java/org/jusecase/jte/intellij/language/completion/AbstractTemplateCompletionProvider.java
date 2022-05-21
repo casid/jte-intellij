@@ -37,7 +37,7 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
 
         JtePsiTemplateName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTemplateName.class);
         if (prevNameElement == null) {
-            addSuggestionsForDirectory(rootDirectory, rootDirectory, result);
+            addSuggestionsForDirectory(rootDirectory, result);
         } else {
             PsiReference reference = prevNameElement.getReference();
             if (reference == null) {
@@ -46,17 +46,17 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
 
             PsiElement prevReferenceElement = reference.resolve();
             if (prevReferenceElement instanceof PsiDirectory) {
-                addSuggestionsForDirectory(rootDirectory, (PsiDirectory) prevReferenceElement, result);
+                addSuggestionsForDirectory((PsiDirectory) prevReferenceElement, result);
             }
         }
     }
 
-    private void addSuggestionsForDirectory(@NotNull PsiDirectory rootDirectory, @NotNull PsiDirectory directory, @NotNull CompletionResultSet result) {
+    private void addSuggestionsForDirectory(@NotNull PsiDirectory directory, @NotNull CompletionResultSet result) {
         for (PsiDirectory subdirectory : directory.getSubdirectories()) {
             result.addElement(LookupElementBuilder.create(subdirectory).withIcon(AllIcons.Nodes.Folder));
         }
 
-        addSuggestionsForDirectoryRecursively("", rootDirectory, result);
+        addSuggestionsForDirectoryRecursively("", directory, result);
     }
 
     private void addSuggestionsForDirectoryRecursively(@NotNull String prefix, @NotNull PsiDirectory directory, @NotNull CompletionResultSet result) {
