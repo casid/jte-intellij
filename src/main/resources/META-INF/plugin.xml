@@ -25,6 +25,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.0.4</h3>
+<ul>
+    <li>Better autocomplete for template suggestions</li>
+</ul>
 <h3>2.0.3</h3>
 <ul>
     <li>Plugin requires IntelliJ 2021.3 or later</li>
