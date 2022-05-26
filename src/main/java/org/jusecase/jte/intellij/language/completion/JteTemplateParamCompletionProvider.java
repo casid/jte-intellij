@@ -48,13 +48,12 @@ public class JteTemplateParamCompletionProvider extends CompletionProvider<Compl
                 return;
             }
             IElementType elementType = prevSibling.getNode().getElementType();
-            // !(prevSibling instanceof JtePsiParamsBegin) && !(prevSibling instanceof JtePsiComma) && !(prevSibling instanceof JtePsiJavaInjection)
             if (elementType != JteTokenTypes.PARAMS_BEGIN && elementType != JteTokenTypes.COMMA && elementType != JteTokenTypes.JAVA_INJECTION) {
                 return;
             }
         }
 
-        JtePsiTemplateName templateName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTemplateName.class);
+        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(jteElement, JtePsiTemplateName.class);
         if (templateName == null) {
             return;
         }

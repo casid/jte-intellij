@@ -50,7 +50,7 @@ public class KteTemplateParamCompletionProvider extends CompletionProvider<Compl
             }
         }
 
-        JtePsiTemplateName templateName = JtePsiUtil.getFirstSiblingOfType(jteElement, JtePsiTemplateName.class);
+        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(jteElement, JtePsiTemplateName.class);
         if (templateName == null) {
             return;
         }
