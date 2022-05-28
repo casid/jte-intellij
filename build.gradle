@@ -23,7 +23,7 @@ intellij {
 }
 
 patchPluginXml {
-    untilBuild = null
+    untilBuild = providers.provider({ null })
 }
 
 publishPlugin {
