@@ -157,6 +157,8 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <editorHighlighterProvider filetype="Java Template Engine File" implementationClass="org.jusecase.jte.intellij.language.JteHighlighterProvider"/>
         <editorHighlighterProvider filetype="Kotlin Template Engine File" implementationClass="org.jusecase.jte.intellij.language.KteHighlighterProvider"/>
 
+        <highlightErrorFilter implementationClass="org.jusecase.jte.intellij.language.highlighting.JsExpressionErrorFilter"/>
+
         <!-- To calculate and display Java warnings in sidebar -->
         <highlightVisitor implementation="org.jusecase.jte.intellij.language.JteHighlightVisitor"/>
 
