@@ -4,7 +4,7 @@
         <variable name="IMPORT" alwaysStopAt="true" expression="complete()" />
     </template>
     <template name="@param" value="@param $TYPE$ $ID$" description="jte param" toReformat="false" toShortenFQNames="false">
-        <context><option name="jte" value="true"/></context>
+        <context><option name="HTML" value="true"/></context>
         <variable name="TYPE" alwaysStopAt="true" expression="complete()" />
         <variable name="ID" alwaysStopAt="true" expression="suggestVariableName()" />
     </template>
