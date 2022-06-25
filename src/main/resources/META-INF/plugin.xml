@@ -230,6 +230,13 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
                 text="Convert JSP file to jte file">
             <add-to-group group-id="CodeMenu" anchor="last"/>
         </action>
+        <action id="org.jusecase.jte.intellij.language.file.CreateJteFileAction"
+                class="org.jusecase.jte.intellij.language.file.CreateJteFileAction"
+                text="JTE Template"
+                icon="org.jusecase.jte.intellij.language.JteIcons.ICON"
+        >
+            <add-to-group group-id="NewGroup" relative-to-action="NewHtmlFile" anchor="after"/>
+        </action>
     </actions>
 
     <applicationListeners>
