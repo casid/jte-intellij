@@ -4,15 +4,15 @@ import com.intellij.ide.actions.CreateFileAction;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.JteIcons;
 
-public class CreateJteFileAction extends CreateFileAction {
+public class CreateKteFileAction extends CreateFileAction {
 
     @SuppressWarnings("DialogTitleCapitalization")
-    public CreateJteFileAction() {
-        super("jte Template", "Create jte Template", JteIcons.ICON);
+    public CreateKteFileAction() {
+        super("kte Template", "Create kte Template", JteIcons.ICON);
     }
 
     @Override
     protected @Nullable String getDefaultExtension() {
-        return "jte";
+        return "kte";
     }
 }
