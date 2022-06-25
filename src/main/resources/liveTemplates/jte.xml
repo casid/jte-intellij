@@ -1,9 +1,12 @@
 <templateSet group="jte">
-    <template name="@import" value="@import $END$" description="jte import" toReformat="false" toShortenFQNames="false">
+    <template name="@import" value="@import $IMPORT$" description="jte import" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
+        <variable name="IMPORT" alwaysStopAt="true" expression="complete()" />
     </template>
-    <template name="@param" value="@param $END$" description="jte param" toReformat="false" toShortenFQNames="false">
+    <template name="@param" value="@param $TYPE$ $ID$" description="jte param" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
+        <variable name="TYPE" alwaysStopAt="true" expression="complete()" />
+        <variable name="ID" alwaysStopAt="true" expression="suggestVariableName()" />
     </template>
     <template name="@if" value="@if($END$)&#10;@endif" description="jte if statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
@@ -14,20 +17,22 @@
     <template name="@else" value="@else$END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@for" value="@for($END$)&#10;@endfor" description="jte for statement" toReformat="false" toShortenFQNames="false">
-        <context><option name="jte" value="true"/></context>
-    </template>
-    <template name="@template." value="@template.$NAME$($END$)" description="jte template" toReformat="false" toShortenFQNames="false">
-        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+    <template name="@for" value="@for($END$)&#10;&#10;@endfor" description="jte for statement" toReformat="true" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
 
-    <template name="${" value="${$END$}" description="jte output" toReformat="false" toShortenFQNames="false">
+    <template name="@template" value="@template.$NAME$$END$" description="jte template" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
+        <variable name="NAME" expression="complete()" alwaysStopAt="true" />
     </template>
 
-    <template name="!{var" value="!{var $NAME$ = $END$;}" description="jte var" toReformat="false" toShortenFQNames="false">
-        <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
+    <template name="${" value="$${$EXPR$$END$}" description="jte output expression" toReformat="false" toShortenFQNames="false">
+        <context><option name="jte" value="true"/></context>
+        <variable name="EXPR" alwaysStopAt="false" />
+    </template>
+
+    <template name="!{var" value="!{var $NAME$ = $END$;}" description="jte variable declaration" toReformat="false" toShortenFQNames="false">
+        <variable name="NAME" expression="complete()" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
 
