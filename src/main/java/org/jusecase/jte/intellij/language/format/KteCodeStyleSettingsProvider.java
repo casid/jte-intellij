@@ -9,19 +9,20 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jusecase.jte.intellij.language.JteLanguage;
 import org.jusecase.jte.intellij.language.KteLanguage;
 
 @SuppressWarnings("DialogTitleCapitalization")
 public class KteCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
+
     @Override
-    public @Nullable CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
-        return new KteCodeStyleSettings(settings);
+    @Nullable
+    public String getConfigurableDisplayName() {
+        return KteLanguage.INSTANCE.getDisplayName();
     }
 
     @Override
-    public @Nullable String getConfigurableDisplayName() {
-        return "kte";
+    public @Nullable CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
+        return new KteCodeStyleSettings(settings);
     }
 
     @Override

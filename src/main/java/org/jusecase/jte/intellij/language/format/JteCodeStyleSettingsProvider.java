@@ -13,14 +13,16 @@ import org.jusecase.jte.intellij.language.JteLanguage;
 
 @SuppressWarnings("DialogTitleCapitalization")
 public class JteCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
+
     @Override
-    public @Nullable CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
-        return new JteCodeStyleSettings(settings);
+    @Nullable
+    public String getConfigurableDisplayName() {
+        return JteLanguage.INSTANCE.getDisplayName();
     }
 
     @Override
-    public @Nullable String getConfigurableDisplayName() {
-        return "jte";
+    public @Nullable CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
+        return new JteCodeStyleSettings(settings);
     }
 
     @Override
