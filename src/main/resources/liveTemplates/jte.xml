@@ -10,21 +10,21 @@
         <variable name="ID" alwaysStopAt="true" expression="suggestVariableName()" />
     </template>
 
-    <template name="@if" value="@if($CONDITION$)&#10;    $END$&#10;@endif" description="jte if statement" toReformat="false" toShortenFQNames="false">
+    <template name="@if" value="@if($CONDITION$)&#10;$END$&#10;@endif" description="jte if statement" toReformat="true" toShortenFQNames="false">
         <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
 
-    <template name="@elseif" value="@elseif($CONDITION$)&#10;    $END$" description="jte elseif statement" toReformat="false" toShortenFQNames="false">
+    <template name="@elseif" value="@elseif($CONDITION$)&#10;$END$" description="jte elseif statement" toReformat="true" toShortenFQNames="false">
         <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
 
-    <template name="@else" value="@else&#10;    $END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
+    <template name="@else" value="@else&#10;$END$" description="jte else statement" toReformat="true" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
 
-    <template name="@for" value="@for($CONDITION$)&#10;    $END$&#10;@endfor" description="jte for statement" toReformat="true" toShortenFQNames="false">
+    <template name="@for" value="@for($CONDITION$)&#10;$END$&#10;@endfor" description="jte for statement" toReformat="true" toShortenFQNames="false">
         <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
