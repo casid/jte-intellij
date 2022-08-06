@@ -3,21 +3,29 @@
         <context><option name="jte" value="true"/></context>
         <variable name="IMPORT" alwaysStopAt="true" expression="complete()" />
     </template>
+
     <template name="@param" value="@param $TYPE$ $ID$" description="jte param" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
         <variable name="TYPE" alwaysStopAt="true" expression="complete()" />
         <variable name="ID" alwaysStopAt="true" expression="suggestVariableName()" />
     </template>
-    <template name="@if" value="@if($END$)&#10;@endif" description="jte if statement" toReformat="false" toShortenFQNames="false">
+
+    <template name="@if" value="@if($CONDITION$)&#10;    $END$&#10;@endif" description="jte if statement" toReformat="false" toShortenFQNames="false">
+        <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@elseif" value="@elseif($END$)" description="jte elseif statement" toReformat="false" toShortenFQNames="false">
+
+    <template name="@elseif" value="@elseif($CONDITION$)&#10;    $END$" description="jte elseif statement" toReformat="false" toShortenFQNames="false">
+        <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@else" value="@else$END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
+
+    <template name="@else" value="@else&#10;    $END$" description="jte else statement" toReformat="false" toShortenFQNames="false">
         <context><option name="jte" value="true"/></context>
     </template>
-    <template name="@for" value="@for($END$)&#10;&#10;@endfor" description="jte for statement" toReformat="true" toShortenFQNames="false">
+
+    <template name="@for" value="@for($CONDITION$)&#10;    $END$&#10;@endfor" description="jte for statement" toReformat="true" toShortenFQNames="false">
+        <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
         <context><option name="jte" value="true"/></context>
     </template>
 
