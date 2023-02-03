@@ -12,7 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.psi.KtePsiJavaContent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class KteKotlinContentManipulator extends AbstractElementManipulator<KtePsiJavaContent> {
+
+    private static final Pattern BROKEN_IMPORT = Pattern.compile("(@import\\s*\\S*)(import\\s*\\S*\\n)");
+
     @Nullable
     @Override
     public KtePsiJavaContent handleContentChange(@NotNull KtePsiJavaContent element, @NotNull TextRange range, String newContent) throws IncorrectOperationException {
@@ -33,18 +39,39 @@ public class KteKotlinContentManipulator extends AbstractElementManipulator<KteP
     }
 
     private void optimizeImportsAfterContentManipulation(@NotNull Document document, @NotNull KtePsiJavaContent element, String newContent) {
-        if (isRequiredToOptimizeImports(newContent)) {
+        ImportReplacement importReplacement = isRequiredToOptimizeImports(newContent);
+
+        if (importReplacement != null) {
             ApplicationManager.getApplication().invokeLater(() -> {
                 //noinspection DialogTitleCapitalization
-                WriteCommandAction.runWriteCommandAction(element.getProject(), "Optimize jte Imports", null, () -> {
-                    String optimizedText = document.getText().replace(";import ", "\n@import ");
+                WriteCommandAction.runWriteCommandAction(element.getProject(), "Optimize kte Imports", null, () -> {
+                    String optimizedText = document.getText().replace(importReplacement.oldText, importReplacement.newText);
                     document.setText(optimizedText);
                 }, element.getContainingFile());
             });
         }
     }
 
-    private boolean isRequiredToOptimizeImports(String newContent) {
-        return false; // TODO
+    static ImportReplacement isRequiredToOptimizeImports(String newContent) {
+        Matcher matcher = BROKEN_IMPORT.matcher(newContent);
+        if (matcher.find()) {
+            String oldText = matcher.group();
+            String import1 = matcher.group(1);
+            String import2 = matcher.group(2);
+
+            return new ImportReplacement(oldText, import1 + "\n@" + import2);
+        }
+
+        return null;
+    }
+
+    static class ImportReplacement {
+        final String oldText;
+        final String newText;
+
+        public ImportReplacement(String oldText, String newText) {
+            this.oldText = oldText;
+            this.newText = newText;
+        }
     }
 }
