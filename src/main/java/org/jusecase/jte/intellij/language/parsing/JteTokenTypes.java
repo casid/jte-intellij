@@ -53,7 +53,7 @@ public class JteTokenTypes implements TokenTypes {
 
     public static final IElementType STRING = new JteElementType("STRING");
 
-    public static final IFileElementType FILE = new IStubFileElementType<>("FILE", JteLanguage.INSTANCE);
+    public static final IFileElementType FILE = new IStubFileElementType<>("JTE_FILE", JteLanguage.INSTANCE);
 
     public static final TokenSet COMMENTS = TokenSet.create(COMMENT, COMMENT_CONTENT);
     public static final TokenSet STRING_LITERALS = TokenSet.create(STRING);
