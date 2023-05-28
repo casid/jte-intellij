@@ -25,6 +25,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.0.9</h3>
+<ul>
+    <li>Live templates adjusted for better typing flow</li>
+    <li>Fix formatting of Kotlin auto-imports</li>
+</ul>
 <h3>2.0.8</h3>
 <ul>
     <li>Indent settings in the bottom editor link to jte/kte settings instead of other file types</li>
