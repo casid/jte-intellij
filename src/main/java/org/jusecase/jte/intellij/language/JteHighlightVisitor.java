@@ -15,6 +15,7 @@ public class JteHighlightVisitor extends HighlightVisitorImpl {
         return file.getName().endsWith(".jte") && file instanceof PsiJavaFile;
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @NotNull
     @Override
     public HighlightVisitorImpl clone() {
