@@ -290,6 +290,24 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
+    public void testForElse() {
+        givenInput("@for(var i : items)${z}@else0@endfor");
+
+        thenTokensAre(
+                FOR, "@for",
+                CONDITION_BEGIN, "(",
+                JAVA_INJECTION, "var i : items",
+                CONDITION_END, ")",
+                OUTPUT_BEGIN, "${",
+                JAVA_INJECTION, "z",
+                OUTPUT_END, "}",
+                ELSE, "@else",
+                HTML_CONTENT, "0",
+                ENDFOR, "@endfor"
+        );
+    }
+
+    @Test
     public void testParam() {
         givenInput("@param");
         thenTokensAre(PARAM, "@param");

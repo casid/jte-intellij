@@ -85,7 +85,7 @@ public class JteAnnotator implements Annotator {
     }
 
     private void doAnnotate(JtePsiElse element, AnnotationHolder holder) {
-        checkParentIsIf(element, holder);
+        checkParentIsIfOrFor(element, holder);
         if (PsiTreeUtil.getPrevSiblingOfType(element, JtePsiElse.class) != null) {
             holder.newAnnotation(HighlightSeverity.ERROR, "More than one @else").create();
         }
@@ -110,6 +110,12 @@ public class JteAnnotator implements Annotator {
     private void checkParentIsIf(JtePsiElement element, AnnotationHolder holder) {
         if (!(element.getParent() instanceof JtePsiIf)) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Missing @if").create();
+        }
+    }
+
+    private void checkParentIsIfOrFor(JtePsiElse element, AnnotationHolder holder) {
+        if (!(element.getParent() instanceof JtePsiIf) && !(element.getParent() instanceof JtePsiFor)) {
+            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @if or @for").create();
         }
     }
 

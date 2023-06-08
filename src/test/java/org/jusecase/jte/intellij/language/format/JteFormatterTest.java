@@ -106,6 +106,21 @@ public class JteFormatterTest extends LightIdeaTestCase {
         );
     }
 
+    public void testForElse() {
+        reformatCode("@for(var i : items)\n" +
+                        "i is ${i}\n" +
+                        "@else\n" +
+                        "Nothing" +
+                        "@endfor\n",
+
+                "@for(var i : items)\n" +
+                        "    i is ${i}\n" +
+                        "@else\n" +
+                        "    Nothing" +
+                        "@endfor\n"
+        );
+    }
+
     public void testContentBlock() {
         reformatCode("@template.card(content = @`\n" +
                 "This is <b>my content</b>!\n" +
