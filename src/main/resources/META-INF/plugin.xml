@@ -25,6 +25,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.1.0</h3>
+<ul>
+    <li>for-else support introduced with jte 3</li>
+    <li>Fix unique debug names for IStubFileElementTypes</li>
+</ul>
 <h3>2.0.9</h3>
 <ul>
     <li>Live templates adjusted for better typing flow</li>
