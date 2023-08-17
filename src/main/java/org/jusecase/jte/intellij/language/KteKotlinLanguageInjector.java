@@ -290,7 +290,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
 
         public MultiHostRegistrar getRegistrar() {
             if (!hasStartedInjection) {
-                registrar.startInjecting(KotlinLanguage.INSTANCE);
+                registrar.startInjecting(KotlinLanguage.INSTANCE, "kt");
                 hasStartedInjection = true;
             }
             return registrar;
