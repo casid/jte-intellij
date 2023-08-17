@@ -25,6 +25,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.1.1</h3>
+<ul>
+    <li>Fix Kotlin language injection in IntelliJ 2023.2</li>
+</ul>
 <h3>2.1.0</h3>
 <ul>
     <li>for-else support introduced with jte 3</li>
