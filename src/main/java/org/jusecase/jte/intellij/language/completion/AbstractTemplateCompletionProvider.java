@@ -65,15 +65,32 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
         }
 
         for (PsiFile file : directory.getFiles()) {
-            String name = file.getName();
-            int index = name.lastIndexOf(fileSuffix);
-            if (index == -1 || !name.endsWith(fileSuffix)) {
+            String referenceName = resolveReferenceName(prefix, file);
+            if (referenceName == null) {
                 continue;
             }
 
-            String referenceName = prefix + name.substring(0, index);
             result.addElement(LookupElementBuilder.create(referenceName).withInsertHandler(createAfterCompletionInsertHandler(file)).withIcon(JteIcons.ICON));
         }
+    }
+
+    private String resolveReferenceName(String prefix, PsiFile file) {
+        String referenceName = resolveReferenceName(prefix, file, fileSuffix);
+        if (referenceName != null) {
+            return referenceName;
+        }
+
+        return resolveReferenceName(prefix, file, ".jte".equals(fileSuffix) ? ".kte" : ".jte");
+    }
+
+    private String resolveReferenceName(String prefix, PsiFile file, String fileSuffix) {
+        String name = file.getName();
+        int index = name.lastIndexOf(fileSuffix);
+        if (index == -1 || !name.endsWith(fileSuffix)) {
+            return null;
+        }
+
+        return prefix + name.substring(0, index);
     }
 
     protected abstract InsertHandler<LookupElement> createAfterCompletionInsertHandler(PsiFile file);

@@ -246,10 +246,18 @@ public class JteAnnotator implements Annotator {
             }
         }
 
-        for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
-             paramName != null;
-             paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
-            missingParameters.remove(paramName.getName());
+        if (element.getLanguage() == KteLanguage.INSTANCE) {
+            for (KtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, KtePsiParamName.class);
+                 paramName != null;
+                 paramName = PsiTreeUtil.getNextSiblingOfType(paramName, KtePsiParamName.class)) {
+                missingParameters.remove(paramName.getName());
+            }
+        } else {
+            for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
+                 paramName != null;
+                 paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
+                missingParameters.remove(paramName.getName());
+            }
         }
 
         if (!missingParameters.isEmpty()) {

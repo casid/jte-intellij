@@ -189,9 +189,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
             return null;
         }
 
-        String relativePath = getRelativePath();
-
-        VirtualFile virtualFile = rootDirectory.getVirtualFile().findFileByRelativePath(relativePath);
+        VirtualFile virtualFile = resolveVirtualFile(rootDirectory);
         if (virtualFile == null) {
             return null;
         }
@@ -200,8 +198,23 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         return psiManager.findFile(virtualFile);
     }
 
+    private VirtualFile resolveVirtualFile(PsiDirectory rootDirectory) {
+        VirtualFile virtualFile = resolveVirtualFile(rootDirectory, extension);
+        if (virtualFile != null) {
+            return virtualFile;
+        }
+
+        return resolveVirtualFile(rootDirectory, ".jte".equals(extension) ? ".kte" : ".jte");
+    }
+
+    private VirtualFile resolveVirtualFile(PsiDirectory rootDirectory, String extension) {
+        String relativePath = getRelativePath(extension);
+
+        return rootDirectory.getVirtualFile().findFileByRelativePath(relativePath);
+    }
+
     @NotNull
-    private String getRelativePath() {
+    private String getRelativePath(String extension) {
         List<JtePsiTemplateName> names = new ArrayList<>();
 
         names.add(this);
