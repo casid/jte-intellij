@@ -6,6 +6,7 @@ import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.junit2.info.MethodLocation;
 import com.intellij.execution.runners.ExecutionUtil;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -83,5 +84,10 @@ public class JteConvertFromJspAction extends AnAction {
         }
 
         e.getPresentation().setEnabledAndVisible("JSP".equals(psiFile.getFileType().getName()));
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }
