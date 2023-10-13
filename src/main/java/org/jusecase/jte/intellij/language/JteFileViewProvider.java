@@ -14,7 +14,6 @@ import com.intellij.psi.templateLanguages.ConfigurableTemplateLanguageFileViewPr
 import com.intellij.psi.templateLanguages.TemplateDataElementType;
 import com.intellij.psi.templateLanguages.TemplateDataLanguageMappings;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.parsing.TokenTypes;
@@ -80,7 +79,7 @@ public class JteFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
     @NotNull
     @Override
     public Set<Language> getLanguages() {
-        return ContainerUtil.set(myBaseLanguage, getTemplateDataLanguage());
+        return Set.of(myBaseLanguage, getTemplateDataLanguage());
     }
 
     @NotNull
