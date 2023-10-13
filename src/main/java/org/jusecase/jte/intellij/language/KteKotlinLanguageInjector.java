@@ -12,7 +12,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
@@ -25,8 +24,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class KteKotlinLanguageInjector implements MultiHostInjector {
     public static final Key<KtFile> KOTLIN_FILE_KEY = Key.create("KteJavaLanguageInjector.KtFile");
@@ -108,20 +105,14 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                     List<PsiFile> files = (List<PsiFile>) resultFiles.get(getRegistrar());
                     KtFile injectedFile = (KtFile) files.get(0);
 
-                    //Module module = ProjectFileIndex.getInstance(host.getProject()).getModuleForFile(host.getContainingFile().getVirtualFile());
-                    //injectedFile.putUserData(ModuleUtilCore.KEY_MODULE, module);
                     injectedFile.clearCaches();
+
+                    // This is the only workaround found so far to get references in kte templates halfway working
+                    // See https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008349720-Kotlin-references-in-MultiHostInjector-are-not-working-correctly
+                    //noinspection deprecation
                     injectedFile.putUserData(UserDataModuleInfoKt.MODULE_ROOT_TYPE_KEY, JavaSourceRootType.SOURCE);
+
                     injectedFile.clearCaches();
-
-
-                    List<PsiReference[]> psiReferences = SyntaxTraverser
-                            .psiTraverser(injectedFile)
-                            .traverse()
-                            .transform(ReferenceProvidersRegistry::getReferencesFromProviders)
-                            .filter(Objects::nonNull)
-                            .filter(it -> it.length > 0)
-                            .toList();
 
                     host.getContainingFile().putUserData(KOTLIN_FILE_KEY, injectedFile);
                 } catch (Exception e) {
@@ -155,8 +146,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
                     continue;
                 }
 
-                if (fileEditor instanceof TextEditor) {
-                    TextEditor textEditor = (TextEditor) fileEditor;
+                if ( fileEditor instanceof TextEditor textEditor ) {
                     Editor editor = textEditor.getEditor();
                     Document document = editor.getDocument();
                     editor.putUserData(LAST_UPDATE_INJECTED_STAMP_KEY, document.getModificationStamp());
@@ -210,7 +200,7 @@ public class KteKotlinLanguageInjector implements MultiHostInjector {
         }
 
         private void injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {
-            List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).collect(Collectors.toList());
+            List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).toList();
 
             boolean prefixWritten = false;
             PsiElement last = children.isEmpty() ? null : children.get(children.size() - 1);
