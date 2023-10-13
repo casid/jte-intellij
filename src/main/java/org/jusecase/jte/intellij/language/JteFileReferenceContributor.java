@@ -2,7 +2,6 @@ package org.jusecase.jte.intellij.language;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.patterns.PlatformPatterns;
@@ -27,7 +26,6 @@ import com.intellij.psi.ElementManipulator;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
@@ -108,15 +106,15 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
 
    private static Collection<String> getJteDirPaths( @NotNull Project project ) {
       return PROJECT_TO_JTE_DIRS_CACHE.computeIfAbsent(project, p -> {
-         PsiFileSystemItem[] jteDirectories = FilenameIndex.getFilesByName(p, "jte", GlobalSearchScope.projectScope(p), true);
-         return Arrays.stream(jteDirectories).map(d -> d.getVirtualFile().getPath()).collect(Collectors.toList());
+         Collection<VirtualFile> roots = FilenameIndex.getVirtualFilesByName(".jteroot", GlobalSearchScope.projectScope(p));
+         return roots.stream().map(f -> f.getParent().getPath()).toList();
       });
    }
 
    private static Collection<String> getJteDirPaths( @NotNull Module module ) {
       return MODULE_TO_JTE_DIRS_CACHE.computeIfAbsent(module, m -> {
-         PsiFileSystemItem[] jteDirectories = FilenameIndex.getFilesByName(m.getProject(), "jte", GlobalSearchScope.moduleScope(m), true);
-         return Arrays.stream(jteDirectories).map(d -> d.getVirtualFile().getPath()).collect(Collectors.toList());
+         Collection<VirtualFile> roots = FilenameIndex.getVirtualFilesByName(".jteroot", GlobalSearchScope.moduleScope(m));
+         return roots.stream().map(f -> f.getParent().getPath()).toList();
       });
    }
 
@@ -166,11 +164,10 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
       public boolean isAcceptable( Object element, PsiElement psiElement ) {
          PsiLiteralExpression literalExpression = (PsiLiteralExpression)element;
          Object value = literalExpression.getValue();
-         if (!(value instanceof String)) {
+         if (!(value instanceof String stringValue)) {
             return false;
          }
 
-         String stringValue = (String)value;
          return stringValue.endsWith(".jte") || stringValue.endsWith(".kte");
       }
 
