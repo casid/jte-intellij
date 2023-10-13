@@ -237,7 +237,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <moveFileHandler implementation="org.jusecase.jte.intellij.language.refactoring.JteMoveFileHandler" id="JavaTemplateEngine"/>
         <moveFileHandler implementation="org.jusecase.jte.intellij.language.refactoring.JteMoveFileHandler" id="KotlinTemplateEngine"/>
 
-        <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor"/>
+        <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor" language="JAVA"/>
 
         <lang.formatter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.JteFormattingModelBuilder"/>
         <lang.formatter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.KteFormattingModelBuilder"/>
