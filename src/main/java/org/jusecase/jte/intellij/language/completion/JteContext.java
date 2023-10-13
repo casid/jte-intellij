@@ -2,12 +2,12 @@ package org.jusecase.jte.intellij.language.completion;
 
 import com.intellij.codeInsight.template.TemplateActionContext;
 import com.intellij.codeInsight.template.TemplateContextType;
-import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 public class JteContext extends TemplateContextType {
+    @SuppressWarnings("DialogTitleCapitalization") // jte is lower case by default
     protected JteContext() {
-        super("jte", "jte");
+        super( "jte");
     }
 
     @Override

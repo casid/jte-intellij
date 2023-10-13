@@ -213,7 +213,7 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
                                 implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributorForKotlin"/>
 
         <defaultLiveTemplates file="liveTemplates/jte.xml"/>
-        <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext"/>
+        <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext" contextId="jte"/>
 
         <typedHandler implementation="org.jusecase.jte.intellij.language.completion.JteTypedActionHandler"/>
 
