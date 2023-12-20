@@ -45,7 +45,7 @@ public class JteConvertFromJspAction extends AnAction {
             return;
         }
 
-        PsiClass converterClass = ClassInheritorsSearch.search(converterBaseClass).findFirst();
+        PsiClass converterClass = ClassInheritorsSearch.search(converterBaseClass, searchScope, true).findFirst();
         if (converterClass == null) {
             JteConvertNotification.error(project, ERROR_TITLE, "Could not locate a class implementing '" + CONVERTER_BASE_CLASS + "'. You need to implement it, to customize JSP conversion for your specific project.");
             return;
