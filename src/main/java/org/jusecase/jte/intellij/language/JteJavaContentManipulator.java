@@ -5,6 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.IncorrectOperationException;
@@ -16,7 +17,13 @@ public class JteJavaContentManipulator extends AbstractElementManipulator<JtePsi
     @Nullable
     @Override
     public JtePsiJavaContent handleContentChange(@NotNull JtePsiJavaContent element, @NotNull TextRange range, String newContent) throws IncorrectOperationException {
-        Document document = FileDocumentManager.getInstance().getDocument(element.getContainingFile().getVirtualFile());
+
+        VirtualFile virtualFile = element.getContainingFile().getVirtualFile();
+        if (virtualFile == null) {
+            return element;
+        }
+
+        Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
         if (document != null) {
             PsiDocumentManager documentManager = PsiDocumentManager.getInstance(element.getProject());
             if (documentManager.isDocumentBlockedByPsi(document)) {
