@@ -342,6 +342,40 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
+    public void testParam_defaultValue_expression() {
+        givenInput("@template.foo(readonly = user == null)");
+        thenTokensAre(
+              TEMPLATE, "@template",
+                NAME_SEPARATOR, ".",
+                TEMPLATE_NAME, "foo",
+                PARAMS_BEGIN, "(",
+                PARAM_NAME, "readonly",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "user == null",
+                PARAMS_END, ")"
+        );
+    }
+
+    @Test
+    public void testParam_defaultValue_negatedExpression() {
+        givenInput("@template.foo(readonly = user != null)");
+        thenTokensAre(
+              TEMPLATE, "@template",
+              NAME_SEPARATOR, ".",
+              TEMPLATE_NAME, "foo",
+              PARAMS_BEGIN, "(",
+              PARAM_NAME, "readonly",
+              WHITESPACE, " ",
+              EQUALS, "=",
+              WHITESPACE, " ",
+              JAVA_INJECTION, "user != null",
+              PARAMS_END, ")"
+        );
+    }
+
+    @Test
     public void testCommentBeforeParam() {
         givenInput("<%-- Comment --%>\n" +
                 "@param String value = \"something\"\n" +

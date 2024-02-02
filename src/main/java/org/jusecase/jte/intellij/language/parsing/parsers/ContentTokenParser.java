@@ -165,7 +165,7 @@ public class ContentTokenParser extends AbstractTokenParser {
                     break;
                 }
 
-                if (currentChar == '=' && index + 1 < myEndOffset && myBuffer.charAt(index + 1) != '=' && myBuffer.charAt(index - 1) != '=') {
+                if (currentChar == '=' && index + 1 < myEndOffset && myBuffer.charAt(index + 1) != '=' && myBuffer.charAt(index - 1) != '=' && myBuffer.charAt(index - 1) != '!') {
                     lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_NAME);
                     lexer.setCurrentCount(Lexer.CONTENT_COUNT_PARAM_NAME_TEMPLATE);
                     return isBeginOf(position, ',');
