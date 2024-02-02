@@ -146,7 +146,7 @@ public class ContentTokenParser extends AbstractTokenParser {
             return true;
         }
 
-        if (isBeginOf(position, "`") && lexer.isInHtmlState()) {
+        if (isBeginOf(position, "`") && lexer.isInHtmlState() && lexer.isInContentBlock()) {
             return true;
         }
 

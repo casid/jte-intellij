@@ -157,6 +157,10 @@ public abstract class Lexer extends LexerBase {
         }
     }
 
+    public boolean isInContentBlock() {
+        return !myPreviousStates.isEmpty();
+    }
+
     protected void handleTokenNotFound() {
         myCurrentToken.updateData(myPosition, myPosition + 1, CustomHighlighterTokenType.CHARACTER);
     }

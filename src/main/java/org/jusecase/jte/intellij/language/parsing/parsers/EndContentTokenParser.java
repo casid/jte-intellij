@@ -10,7 +10,7 @@ public class EndContentTokenParser extends AbstractTokenParser {
 
     @Override
     public boolean hasToken(int position) {
-        if (hasToken(position, "`", lexer.tokens.CONTENT_END())) {
+        if (lexer.isInContentBlock() && hasToken(position, "`", lexer.tokens.CONTENT_END())) {
             lexer.popPreviousState();
             return true;
         }

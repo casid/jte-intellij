@@ -519,6 +519,12 @@ public class JteLexerTest extends LexerTest {
     }
 
     @Test
+    public void backtickIsNotContent() {
+        givenInput("<script>var x = `Hello`;</script>");
+        thenTokensAre(HTML_CONTENT, "<script>var x = `Hello`;</script>");
+    }
+
+    @Test
     public void defaultParamValues() {
         givenInput("@param Content content = @`x${Integer.MAX_VALUE}`\n" +
                 "@param Content content2 = null\n");
