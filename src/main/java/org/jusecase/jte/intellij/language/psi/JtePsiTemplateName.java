@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jusecase.jte.intellij.language.parsing.JteRootParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +50,12 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         }
 
         PsiDirectory nextDirectory = rootDirectory.findSubdirectory(nextSibling.getName());
+        if (nextDirectory == null) {
+            List<PsiDirectory> importDirectories = findImportDirectories(rootDirectory);
+            for (PsiDirectory importDirectory : importDirectories) {
+                nextDirectory = importDirectory.findSubdirectory(nextSibling.getName());
+            }
+        }
 
         while (nextDirectory != null) {
             if (nextSibling == this) {
@@ -191,6 +198,16 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
 
         VirtualFile virtualFile = resolveVirtualFile(rootDirectory);
         if (virtualFile == null) {
+            List<PsiDirectory> importDirectories = findImportDirectories(rootDirectory);
+            for (PsiDirectory importDirectory : importDirectories) {
+                virtualFile = resolveVirtualFile(importDirectory);
+                if (virtualFile != null) {
+                    break;
+                }
+            }
+        }
+
+        if (virtualFile == null) {
             return null;
         }
 
@@ -262,6 +279,33 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         JtePsiUtil.rename(this, name);
         return this;
+    }
+
+    public List<PsiDirectory> findImportDirectories(@NotNull PsiDirectory rootDirectory) {
+
+        PsiFile file = rootDirectory.findFile(JTE_ROOT);
+        if (file == null) {
+            return Collections.emptyList();
+        }
+
+        if (file.getTextLength() == 0) {
+            return Collections.emptyList();
+        }
+
+        List<String> imports = JteRootParser.parse(file.getText());
+        if (imports.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PsiDirectory> importDirectories = new ArrayList<>(imports.size());
+        for (String importDirectoryString : imports) {
+            PsiDirectory importDirectory = PsiFileUtil.resolve(rootDirectory, importDirectoryString);
+            if (importDirectory != null) {
+                importDirectories.add(importDirectory);
+            }
+        }
+
+        return importDirectories;
     }
 
     @Nullable
