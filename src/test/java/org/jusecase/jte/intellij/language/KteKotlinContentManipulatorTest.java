@@ -29,4 +29,21 @@ public class KteKotlinContentManipulatorTest {
 
         Assert.assertNull(importReplacement);
     }
+
+    @Test
+    public void name() {
+        String text = "@import org.example.AnotherDummyimport org.example.Dummy\n" +
+                "\n" +
+                "@param foo: String?\n" +
+                "@param bar: Dummy\n" +
+                "@param x: AnotherDummy\n" +
+                "\n" +
+                "@if(foo?.isBlank())\n" +
+                "    Hello\n" +
+                "@else\n" +
+                "    ${foo}\n" +
+                "@endif\n" +
+                "\n" +
+                "\n";
+    }
 }

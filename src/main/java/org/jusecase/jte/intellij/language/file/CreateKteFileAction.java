@@ -6,9 +6,8 @@ import org.jusecase.jte.intellij.language.JteIcons;
 
 public class CreateKteFileAction extends CreateFileAction {
 
-    @SuppressWarnings("DialogTitleCapitalization")
     public CreateKteFileAction() {
-        super("kte Template", "Create kte Template", JteIcons.ICON);
+        super(() -> "kte Template", () -> "Create kte Template", () -> JteIcons.ICON);
     }
 
     @Override
