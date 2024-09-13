@@ -3,9 +3,7 @@ package org.jusecase.jte.intellij.language.psi;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.kotlin.asJava.elements.KtLightMethod;
 import org.jetbrains.kotlin.psi.*;
-import org.jusecase.jte.intellij.language.JteJavaLanguageInjector;
 import org.jusecase.jte.intellij.language.KteKotlinLanguageInjector;
 
 public class KtePsiUtil {
