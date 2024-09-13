@@ -256,6 +256,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <notificationGroup id="org.jusecase.jte.intellij.language.convert.notification" displayType="STICKY_BALLOON" isLogByDefault="false" />
     </extensions>
 
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK2="true" />
+    </extensions>
+
     <actions>
         <!--suppress PluginXmlCapitalization -->
         <action id="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction" class="org.jusecase.jte.intellij.language.convert.JteConvertFromJspAction" text="Convert JSP file to jte file">
