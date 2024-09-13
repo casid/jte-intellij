@@ -216,8 +216,6 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
                                 implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributor"/>
         <completion.contributor language="kotlin"
                                 implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributorForKotlin"/>
-        <!--suppress PluginXmlValidity -->
-        <completion.htmlInTextCompletionPopupExtension implementation="org.jusecase.jte.intellij.language.completion.JteHtmlInTextCompletionPopupExtension"/>
 
         <defaultLiveTemplates file="liveTemplates/jte.xml"/>
         <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext" contextId="jte"/>
