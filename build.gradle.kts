@@ -16,7 +16,7 @@ repositories {
 dependencies {
     // See https://github.com/JetBrains/intellij-platform-gradle-plugin
     intellijPlatform {
-        intellijIdeaCommunity("2024.2.1")
+        intellijIdeaCommunity("2024.3.6")
 
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
@@ -44,7 +44,7 @@ intellijPlatform {
     }
     pluginVerification {
         ides {
-            ide("2024.2.1")
+            ide("2024.3.6")
         }
     }
 }
