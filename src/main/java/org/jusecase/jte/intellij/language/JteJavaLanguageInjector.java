@@ -21,7 +21,7 @@ import org.jusecase.jte.intellij.language.psi.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class JteJavaLanguageInjector implements MultiHostInjector {
     private static final List<? extends Class<? extends PsiElement>> ELEMENTS = Arrays.asList(
@@ -32,13 +32,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
 
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
-        if (context instanceof JtePsiJavaContent) {
-            JtePsiJavaContent host = (JtePsiJavaContent) context;
-            new Injector(host, registrar, false).inject();
-        } else if (context instanceof JtePsiExtraJavaInjection) {
-            JtePsiExtraJavaInjection host = (JtePsiExtraJavaInjection) context;
-
-            JtePsiJavaInjection param = PsiTreeUtil.getPrevSiblingOfType(context, JtePsiJavaInjection.class);
+        if ( context instanceof JtePsiJavaContent host ) {
+           new Injector(host, registrar, false).inject();
+        } else if ( context instanceof JtePsiExtraJavaInjection host ) {
+           JtePsiJavaInjection param = PsiTreeUtil.getPrevSiblingOfType(context, JtePsiJavaInjection.class);
             if (param != null) {
                 JtePsiContent content = PsiTreeUtil.findChildOfType(host, JtePsiContent.class);
                 if (content == null) {
@@ -141,9 +138,8 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
                     continue;
                 }
 
-                if (fileEditor instanceof TextEditor) {
-                    TextEditor textEditor = (TextEditor) fileEditor;
-                    Editor editor = textEditor.getEditor();
+                if ( fileEditor instanceof TextEditor textEditor ) {
+                   Editor editor = textEditor.getEditor();
                     Document document = editor.getDocument();
                     editor.putUserData(LAST_UPDATE_INJECTED_STAMP_KEY, document.getModificationStamp());
                 }
@@ -196,10 +192,10 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
 
         private void injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {
-            List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).collect(Collectors.toList());
+            List<PsiElement> children = Arrays.stream(child.getChildren()).filter(c -> c instanceof JtePsiJavaInjection || c instanceof JtePsiContent).toList();
 
             boolean prefixWritten = false;
-            PsiElement last = children.isEmpty() ? null : children.get(children.size() - 1);
+            PsiElement last = children.isEmpty() ? null : children.getLast();
             for (PsiElement element : children) {
                 String currentPrefix = null;
                 if (!prefixWritten) {
