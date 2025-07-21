@@ -25,7 +25,9 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testOutput() {
-        givenInput("@param Model x\nbla ${model.hello} bla");
+        givenInput("""
+              @param Model x
+              bla ${model.hello} bla""");
 
         thenTokensAre(
                 PARAM, "@param",
@@ -41,7 +43,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testIfOutput() {
-        givenInput("@param Model x\n@if ((model.x == true) && !somethingElse)\n${model.x}@endif");
+        givenInput("""
+              @param Model x
+              @if ((model.x == true) && !somethingElse)
+              ${model.x}@endif""");
 
         thenTokensAre(
                 PARAM, "@param",
@@ -121,9 +126,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testTemplate_withParamsCallingMethods_2() {
-        givenInput("@template.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`\n" +
-                "<p>Hello, ${x}</p>\n" +
-                "`)");
+        givenInput("""
+              @template.simple(a.getDuration(x.getOffset(), 5), b, c, content = @`
+              <p>Hello, ${x}</p>
+              `)""");
 
         thenTokensAre(
                 TEMPLATE, "@template",
@@ -219,7 +225,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testTemplate_withNamedParams5() {
-        givenInput("@template.named(\none=\"Hello\"\n)");
+        givenInput("""
+              @template.named(
+              one="Hello"
+              )""");
         thenTokensAre(
                 TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
@@ -236,7 +245,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testTemplate_withNamedParams6() {
-        givenInput("@template.named(\r\none=\"Hello\"\r\n)");
+        givenInput("""
+              @template.named(\r
+              one="Hello"\r
+              )""");
         thenTokensAre(
                 TEMPLATE, "@template",
                 NAME_SEPARATOR, ".",
@@ -377,9 +389,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void testCommentBeforeParam() {
-        givenInput("<%-- Comment --%>\n" +
-                "@param String value = \"something\"\n" +
-                "Hello ${value}");
+        givenInput("""
+              <%-- Comment --%>
+              @param String value = "something"
+              Hello ${value}""");
         thenTokensAre(
                 COMMENT, "<%-- Comment --%>",
                 WHITESPACE, "\n",
@@ -468,13 +481,14 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void nestedContent() {
-        givenInput("@param String value\n" +
-                "@param test.Localizer localizer\n" +
-                "@template.simple(text = localizer.localize(\"key\", @`\n" +
-                "        @template.verySimple(value = @`<b>${value}</b>`, localizer = localizer)\n" +
-                "    `,\n" +
-                "    @`<b>${value}</b>`, \"bar\")\n" +
-                ")");
+        givenInput("""
+              @param String value
+              @param test.Localizer localizer
+              @template.simple(text = localizer.localize("key", @`
+                      @template.verySimple(value = @`<b>${value}</b>`, localizer = localizer)
+                  `,
+                  @`<b>${value}</b>`, "bar")
+              )""");
         thenTokensAre(
                 PARAM, "@param",
                 WHITESPACE, " ",
@@ -560,8 +574,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void defaultParamValues() {
-        givenInput("@param Content content = @`x${Integer.MAX_VALUE}`\n" +
-                "@param Content content2 = null\n");
+        givenInput("""
+              @param Content content = @`x${Integer.MAX_VALUE}`
+              @param Content content2 = null
+              """);
 
         thenTokensAre(
                 PARAM, "@param",
@@ -604,7 +620,10 @@ public class JteLexerTest extends LexerTest {
 
     @Test // See https://github.com/casid/jte/issues/27
     public void incompleteIf() {
-        givenInput("@if(\n@for(int i = 0; i < 1; ++i)\n@endfor");
+        givenInput("""
+              @if(
+              @for(int i = 0; i < 1; ++i)
+              @endfor""");
 
         thenTokensAre(
                 IF, "@if",
@@ -621,7 +640,9 @@ public class JteLexerTest extends LexerTest {
 
     @Test
     public void raw() {
-        givenInput("@raw@template.simple()\n${foo}@endraw");
+        givenInput("""
+              @raw@template.simple()
+              ${foo}@endraw""");
 
         thenTokensAre(
                 RAW, "@raw",
