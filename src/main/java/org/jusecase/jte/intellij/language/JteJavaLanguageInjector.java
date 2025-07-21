@@ -59,7 +59,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     }
 
     private static class Injector {
-        private static final String CLASS_PREFIX = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { gg.jte.TemplateOutput jteOutput; void render(";
+        private static final String CLASS_PREFIX = "@SuppressWarnings(\"Convert2Lambda\")\nclass DummyTemplate { gg.jte.TemplateOutput jteOutput; static String JTE_NAME; void render(";
 
         private final PsiLanguageInjectionHost host;
         private final MultiHostRegistrar registrar;
