@@ -38,6 +38,10 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
         JtePsiTemplateName prevNameElement = PsiTreeUtil.getPrevSiblingOfType(nameElement, JtePsiTemplateName.class);
         if (prevNameElement == null) {
             addSuggestionsForDirectory(rootDirectory, result);
+
+            for (PsiDirectory importDirectory : nameElement.findImportDirectories(rootDirectory)) {
+                addSuggestionsForDirectory(importDirectory, result);
+            }
         } else {
             PsiReference reference = prevNameElement.getReference();
             if (reference == null) {
