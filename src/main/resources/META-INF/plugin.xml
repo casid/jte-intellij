@@ -25,6 +25,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.2</h3>
+<ul>
+    <li>Fix compatibility issue with IntelliJ 2025.3</li>
+</ul>
 <h3>2.2.1</h3>
 <ul>
     <li>Mark plugin as supporting K2 mode</li>
