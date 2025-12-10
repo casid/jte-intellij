@@ -1,8 +1,9 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij.platform") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.10.5"
 }
 
 repositories {
@@ -24,7 +25,6 @@ dependencies {
         pluginVerifier()
         zipSigner()
 
-        instrumentationTools()
         testFramework(TestFrameworkType.Platform)
         testFramework(TestFrameworkType.Plugin.Java)
     }
@@ -36,7 +36,7 @@ intellijPlatform {
     pluginConfiguration {
         id = "org.jusecase.jte-intellij"
         name = "jte"
-        version = "2.2.1"
+        version = "2.2.2"
     }
     projectName = "jte-intellij"
     publishing {
@@ -44,7 +44,7 @@ intellijPlatform {
     }
     pluginVerification {
         ides {
-            ide("2024.3.6")
+            create(IntelliJPlatformType.IntellijIdea, "2025.2.5")
         }
     }
 }

@@ -3,6 +3,7 @@ package org.jusecase.jte.intellij.language.format;
 import com.intellij.application.options.CodeStyleAbstractConfigurable;
 import com.intellij.application.options.CodeStyleAbstractPanel;
 import com.intellij.application.options.TabbedLanguageCodeStylePanel;
+import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.CodeStyleConfigurable;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
@@ -18,6 +19,11 @@ public class KteCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     @Nullable
     public String getConfigurableDisplayName() {
         return KteLanguage.INSTANCE.getDisplayName();
+    }
+
+    @Override
+    public @Nullable Language getLanguage() {
+        return KteLanguage.INSTANCE;
     }
 
     @Override
