@@ -22,6 +22,7 @@ public class ContentTokenParser extends AbstractTokenParser {
     };
 
     private boolean insideString;
+    private int paramDepth = 0;
 
     public ContentTokenParser(Lexer lexer) {
         super(lexer);
@@ -30,6 +31,7 @@ public class ContentTokenParser extends AbstractTokenParser {
     @Override
     public boolean hasToken(int position) {
         insideString = false;
+        paramDepth = 0;
 
         if (shouldSkipWhitespaces(position) && isWhitespace(position)) {
             return skipWhitespaces(position);
@@ -125,7 +127,21 @@ public class ContentTokenParser extends AbstractTokenParser {
             }
         }
 
+        if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN) {
+            if (isBeginOf(position, '(') || isBeginOf(position, '{')) {
+                paramDepth++;
+                return false;
+            }
+            if (isBeginOf(position, ')') || isBeginOf(position, '}')) {
+                paramDepth--;
+                return false;
+            }
+        }
+
         if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN && lexer.isExtraParamInjectionRequired()) {
+            if (paramDepth > 0) {
+                return false;
+            }
             for (int index = position; index < myEndOffset; ++index) {
                 if (myBuffer.charAt(index) == '=') {
                     lexer.setCurrentState(Lexer.CONTENT_STATE_PARAM_DEFAULT_VALUE);

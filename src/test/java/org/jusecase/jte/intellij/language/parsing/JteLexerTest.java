@@ -650,4 +650,149 @@ public class JteLexerTest extends LexerTest {
                 ENDRAW, "@endraw"
         );
     }
+
+    @Test
+    public void annotatedParam_simple() {
+        givenInput("""
+              @param @Nullable String model""");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@Nullable String model"
+        );
+    }
+
+    @Test
+    public void annotatedParam_value() {
+        givenInput("""
+              @param @TestAnnotation("value") String model""");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(\"value\") String model"
+        );
+    }
+
+    @Test
+    public void annotatedParam_values() {
+        givenInput("""
+              @param @TestAnnotation(value = "value", number = 123) String model""");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(value = \"value\", number = 123) String model"
+        );
+    }
+
+    @Test
+    public void annotatedParam_arrayValue() {
+        givenInput("""
+              @param @TestAnnotation({"value", "next"}) String model""");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation({\"value\", \"next\"}) String model"
+        );
+    }
+
+    @Test
+    public void annotatedParam_arrayValues() {
+        givenInput("""
+              @param @TestAnnotation(value = {"value", "next"}, number = 123) String model""");
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(value = {\"value\", \"next\"}, number = 123) String model"
+        );
+    }
+
+    @Test
+    public void annotatedParam_simpleDefault() {
+        givenInput("""
+              @param @Nullable String model = "default"
+              """.strip());
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@Nullable String model",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"default\""
+        );
+    }
+
+    @Test
+    public void annotatedParam_valueDefault() {
+        givenInput("""
+              @param @TestAnnotation("value") String model = "default"
+              """.strip());
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(\"value\") String model",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"default\""
+        );
+    }
+
+    @Test
+    public void annotatedParam_valuesDefault() {
+        givenInput("""
+              @param @TestAnnotation(value = "value", number = 123) String model = "default"
+              """.strip());
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(value = \"value\", number = 123) String model",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"default\""
+        );
+    }
+
+    @Test
+    public void annotatedParam_arrayValueDefault() {
+        givenInput("""
+              @param @TestAnnotation({"value", "next"}) String model = "default"
+              """.strip());
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation({\"value\", \"next\"}) String model",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"default\""
+        );
+    }
+
+    @Test
+    public void annotatedParam_arrayValuesDefault() {
+        givenInput("""
+              @param @TestAnnotation(value = {"value", "next"}, number = 123) String model = "default"
+              """.strip());
+
+        thenTokensAre(
+                PARAM, "@param",
+                WHITESPACE, " ",
+                JAVA_INJECTION, "@TestAnnotation(value = {\"value\", \"next\"}, number = 123) String model",
+                WHITESPACE, " ",
+                EQUALS, "=",
+                WHITESPACE, " ",
+                EXTRA_JAVA_INJECTION, "\"default\""
+        );
+    }
 }
