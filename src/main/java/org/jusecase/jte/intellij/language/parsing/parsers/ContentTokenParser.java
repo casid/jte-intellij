@@ -128,11 +128,11 @@ public class ContentTokenParser extends AbstractTokenParser {
         }
 
         if (lexer.getCurrentState() == Lexer.CONTENT_STATE_PARAM_BEGIN) {
-            if (isBeginOf(position, '(') || isBeginOf(position, '{')) {
+            if (isBeginOf(position, '(')) {
                 paramDepth++;
                 return false;
             }
-            if (isBeginOf(position, ')') || isBeginOf(position, '}')) {
+            if (isBeginOf(position, ')')) {
                 paramDepth--;
                 return false;
             }
