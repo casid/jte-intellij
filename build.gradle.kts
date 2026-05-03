@@ -6,6 +6,12 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.10.5"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenCentral()
 
