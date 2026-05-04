@@ -50,33 +50,32 @@ public class JteAnnotator implements Annotator {
     private void doAnnotate(JtePsiTemplateName element, AnnotationHolder holder) {
         if (element.getReference() == null) {
             if (element.findRootDirectory() == null) {
-                holder.newAnnotation(HighlightSeverity.ERROR, "Please add a '" + JtePsiTemplateName.JTE_ROOT + "' file to the root source directory of your jte sources, so that IntelliJ knows how to reference templates.").create();
+                addError(holder, "Please add a '" + JtePsiTemplateName.JTE_ROOT + "' file to the root source directory of your jte sources, so that IntelliJ knows how to reference templates.");
             } else {
                 if (element.isDirectory()) {
-                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved directory " + element.getName()).create();
+                    addError(holder, "Unresolved directory " + element.getName());
                 } else {
-                    holder.newAnnotation(HighlightSeverity.ERROR, "Unresolved template").create();
+                    addError(holder, "Unresolved template");
                 }
             }
-
         }
     }
 
     private void doAnnotate(JtePsiIf element, AnnotationHolder holder) {
         if (!(element.getLastChild() instanceof JtePsiEndIf)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @endif").create();
+            addError(holder, "Missing @endif");
         }
     }
 
     private void doAnnotate(JtePsiFor element, AnnotationHolder holder) {
         if (!(element.getLastChild() instanceof JtePsiEndFor)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @endfor").create();
+            addError(holder, "Missing @endfor");
         }
     }
 
     private void doAnnotate(JtePsiContent element, AnnotationHolder holder) {
         if (!(element.getLastChild() instanceof JtePsiEndContent)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing `").create();
+            addError(holder, "Missing `");
         }
 
         doAnnotateContentParam(element, holder);
@@ -89,7 +88,7 @@ public class JteAnnotator implements Annotator {
     private void doAnnotate(JtePsiElse element, AnnotationHolder holder) {
         checkParentIsIfOrFor(element, holder);
         if (PsiTreeUtil.getPrevSiblingOfType(element, JtePsiElse.class) != null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "More than one @else").create();
+            addError(holder, "More than one @else");
         }
     }
 
@@ -99,25 +98,25 @@ public class JteAnnotator implements Annotator {
 
     private void doAnnotate(JtePsiEndContent element, AnnotationHolder holder) {
         if (!(element.getParent() instanceof JtePsiContent)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @`").create();
+            addError(holder, "Missing @`");
         }
     }
 
     private void doAnnotate(JtePsiEndFor element, AnnotationHolder holder) {
         if (!(element.getParent() instanceof JtePsiFor)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @for").create();
+            addError(holder, "Missing @for");
         }
     }
 
     private void checkParentIsIf(JtePsiElement element, AnnotationHolder holder) {
         if (!(element.getParent() instanceof JtePsiIf)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @if").create();
+            addError(holder, "Missing @if");
         }
     }
 
     private void checkParentIsIfOrFor(JtePsiElse element, AnnotationHolder holder) {
         if (!(element.getParent() instanceof JtePsiIf) && !(element.getParent() instanceof JtePsiFor)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing @if or @for").create();
+            addError(holder, "Missing @if or @for");
         }
     }
 
@@ -172,7 +171,7 @@ public class JteAnnotator implements Annotator {
         }
 
         if (!javaParameter.getType().isAssignableFrom(injectedExpression.getType())) {
-            holder.newAnnotation(HighlightSeverity.ERROR, injectedExpression.getType().getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
+            addError(holder, injectedExpression.getType().getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText());
         }
 
         doAnnotateNullability(javaParameter, injectedExpression, holder);
@@ -241,7 +240,7 @@ public class JteAnnotator implements Annotator {
         PsiClassType contentType = javaPsiFacade.getElementFactory().createType(contentClass);
 
         if (!javaParameter.getType().isAssignableFrom(contentType)) {
-            holder.newAnnotation(HighlightSeverity.ERROR, contentType.getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
+            addError(holder, contentType.getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText());
         }
     }
 
@@ -283,7 +282,7 @@ public class JteAnnotator implements Annotator {
         }
 
         if (!missingParameters.isEmpty()) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing required parameters: " + String.join(", ", missingParameters)).create();
+            addError(holder, "Missing required parameters: " + String.join(", ", missingParameters));
         }
     }
 
@@ -297,7 +296,7 @@ public class JteAnnotator implements Annotator {
         if (injection == null) {
             JtePsiContent content = JtePsiUtil.getNextSiblingIfBefore(element, JtePsiContent.class, JtePsiComma.class);
             if (content == null) {
-                holder.newAnnotation(HighlightSeverity.ERROR, "Missing parameter assignment").create();
+                addError(holder, "Missing parameter assignment");
             }
         }
     }
@@ -320,8 +319,12 @@ public class JteAnnotator implements Annotator {
 
         Set<String> availableParameterNames = JtePsiUtil.resolveAvailableParameterNames(templateFile);
         if (!availableParameterNames.contains(element.getName())) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Unknown parameter " + element.getName()).create();
+            addError(holder, "Unknown parameter " + element.getName());
         }
+    }
+
+    private void addError(@NotNull AnnotationHolder holder, String message) {
+        holder.newAnnotation(HighlightSeverity.ERROR, message).create();
     }
 
     private void addWarning(@NotNull AnnotationHolder holder, String message) {
