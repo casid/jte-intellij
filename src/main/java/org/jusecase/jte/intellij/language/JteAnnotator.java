@@ -1,9 +1,8 @@
 package org.jusecase.jte.intellij.language;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.intellij.codeInsight.Nullability;
+import com.intellij.codeInsight.NullableNotNullManager;
+import com.intellij.codeInspection.dataFlow.NullabilityUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
@@ -11,9 +10,12 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.psi.*;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class JteAnnotator implements Annotator {
     @Override
@@ -27,21 +29,21 @@ public class JteAnnotator implements Annotator {
         } else if (element instanceof JtePsiContent) {
             doAnnotate((JtePsiContent) element, holder);
         } else if (element instanceof JtePsiElseIf) {
-            doAnnotate((JtePsiElseIf)element, holder);
+            doAnnotate((JtePsiElseIf) element, holder);
         } else if (element instanceof JtePsiElse) {
-            doAnnotate((JtePsiElse)element, holder);
+            doAnnotate((JtePsiElse) element, holder);
         } else if (element instanceof JtePsiEndIf) {
-            doAnnotate((JtePsiEndIf)element, holder);
+            doAnnotate((JtePsiEndIf) element, holder);
         } else if (element instanceof JtePsiEndContent) {
-            doAnnotate((JtePsiEndContent)element, holder);
+            doAnnotate((JtePsiEndContent) element, holder);
         } else if (element instanceof JtePsiEndFor) {
-            doAnnotate((JtePsiEndFor)element, holder);
+            doAnnotate((JtePsiEndFor) element, holder);
         } else if (element instanceof JtePsiJavaInjection) {
-            doAnnotate((JtePsiJavaInjection)element, holder);
+            doAnnotate((JtePsiJavaInjection) element, holder);
         } else if (element instanceof JtePsiTemplate) {
             doAnnotateMissingTemplateParams(element, holder);
         } else if (element instanceof JtePsiParamName) {
-            doAnnotate((JtePsiParamName)element, holder);
+            doAnnotate((JtePsiParamName) element, holder);
         }
     }
 
@@ -172,6 +174,26 @@ public class JteAnnotator implements Annotator {
         if (!javaParameter.getType().isAssignableFrom(injectedExpression.getType())) {
             holder.newAnnotation(HighlightSeverity.ERROR, injectedExpression.getType().getCanonicalText() + " cannot be cast to " + javaParameter.getType().getCanonicalText()).create();
         }
+
+        doAnnotateNullability(javaParameter, injectedExpression, holder);
+    }
+
+    private void doAnnotateNullability(@NotNull PsiParameter javaParameter, @NotNull PsiExpression injectedExpression, @NotNull AnnotationHolder holder) {
+        Nullability parameterNullability = NullableNotNullManager.getNullability(javaParameter);
+
+        if (parameterNullability != Nullability.NOT_NULL) {
+            return;
+        }
+
+        Nullability expressionNullability = NullabilityUtil.getExpressionNullability(injectedExpression, true);
+
+        if (expressionNullability == Nullability.NULLABLE) {
+            addWarning(holder, "Argument '" + injectedExpression.getText() + "' is nullable for non-null parameter '" + javaParameter.getName() + "'");
+        }
+
+        if (expressionNullability == Nullability.UNKNOWN) {
+            addWeakWarning(holder, "Argument '" + injectedExpression.getText() + "' might be null for non-null parameter '" + javaParameter.getName() + "'");
+        }
     }
 
     private void doAnnotateContentParam(@NotNull JtePsiContent element, @NotNull AnnotationHolder holder) {
@@ -223,7 +245,7 @@ public class JteAnnotator implements Annotator {
         }
     }
 
-    private void doAnnotateMissingTemplateParams(PsiElement element, AnnotationHolder holder ) {
+    private void doAnnotateMissingTemplateParams(PsiElement element, AnnotationHolder holder) {
         JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(element, JtePsiTemplateName.class);
         if (templateName == null) {
             return;
@@ -300,5 +322,13 @@ public class JteAnnotator implements Annotator {
         if (!availableParameterNames.contains(element.getName())) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Unknown parameter " + element.getName()).create();
         }
+    }
+
+    private void addWarning(@NotNull AnnotationHolder holder, String message) {
+        holder.newAnnotation(HighlightSeverity.WARNING, message).create();
+    }
+
+    private void addWeakWarning(@NotNull AnnotationHolder holder, String message) {
+        holder.newAnnotation(HighlightSeverity.WEAK_WARNING, message).create();
     }
 }
