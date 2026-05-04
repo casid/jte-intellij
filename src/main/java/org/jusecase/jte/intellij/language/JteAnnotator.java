@@ -20,30 +20,20 @@ import java.util.Set;
 public class JteAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (element instanceof JtePsiTemplateName) {
-            doAnnotate((JtePsiTemplateName) element, holder);
-        } else if (element instanceof JtePsiIf) {
-            doAnnotate((JtePsiIf) element, holder);
-        } else if (element instanceof JtePsiFor) {
-            doAnnotate((JtePsiFor) element, holder);
-        } else if (element instanceof JtePsiContent) {
-            doAnnotate((JtePsiContent) element, holder);
-        } else if (element instanceof JtePsiElseIf) {
-            doAnnotate((JtePsiElseIf) element, holder);
-        } else if (element instanceof JtePsiElse) {
-            doAnnotate((JtePsiElse) element, holder);
-        } else if (element instanceof JtePsiEndIf) {
-            doAnnotate((JtePsiEndIf) element, holder);
-        } else if (element instanceof JtePsiEndContent) {
-            doAnnotate((JtePsiEndContent) element, holder);
-        } else if (element instanceof JtePsiEndFor) {
-            doAnnotate((JtePsiEndFor) element, holder);
-        } else if (element instanceof JtePsiJavaInjection) {
-            doAnnotate((JtePsiJavaInjection) element, holder);
-        } else if (element instanceof JtePsiTemplate) {
-            doAnnotateMissingTemplateParams(element, holder);
-        } else if (element instanceof JtePsiParamName) {
-            doAnnotate((JtePsiParamName) element, holder);
+        switch (element) {
+            case JtePsiTemplateName jtePsiTemplateName -> doAnnotate(jtePsiTemplateName, holder);
+            case JtePsiIf jtePsiIf -> doAnnotate(jtePsiIf, holder);
+            case JtePsiFor jtePsiFor -> doAnnotate(jtePsiFor, holder);
+            case JtePsiContent jtePsiContent -> doAnnotate(jtePsiContent, holder);
+            case JtePsiElseIf jtePsiElseIf -> doAnnotate(jtePsiElseIf, holder);
+            case JtePsiElse jtePsiElse -> doAnnotate(jtePsiElse, holder);
+            case JtePsiEndIf jtePsiEndIf -> doAnnotate(jtePsiEndIf, holder);
+            case JtePsiEndContent jtePsiEndContent -> doAnnotate(jtePsiEndContent, holder);
+            case JtePsiEndFor jtePsiEndFor -> doAnnotate(jtePsiEndFor, holder);
+            case JtePsiJavaInjection jtePsiJavaInjection -> doAnnotate(jtePsiJavaInjection, holder);
+            case JtePsiTemplate ignored -> doAnnotateMissingTemplateParams(element, holder);
+            case JtePsiParamName jtePsiParamName -> doAnnotate(jtePsiParamName, holder);
+            default -> {}
         }
     }
 
