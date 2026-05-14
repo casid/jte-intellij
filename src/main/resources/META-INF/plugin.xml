@@ -25,6 +25,11 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.3</h3>
+<ul>
+    <li>Support for annotated parameters in jte templates</li>
+    <li>Nullability inspections for template parameters</li>
+</ul>
 <h3>2.2.2</h3>
 <ul>
     <li>Fix compatibility issue with IntelliJ 2025.3</li>
