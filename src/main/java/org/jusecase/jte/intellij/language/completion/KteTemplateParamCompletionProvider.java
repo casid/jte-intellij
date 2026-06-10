@@ -4,34 +4,23 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.source.resolve.FileContextUtil;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.kotlin.psi.KtParameter;
-import org.jetbrains.kotlin.psi.KtParameterList;
 import org.jusecase.jte.intellij.language.parsing.KteTokenTypes;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 import org.jusecase.jte.intellij.language.psi.*;
+import org.jusecase.jte.intellij.language.template.KteTemplateCallArguments;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class KteTemplateParamCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private final boolean kotlin;
-
-    public KteTemplateParamCompletionProvider(boolean kotlin) {
-        this.kotlin = kotlin;
-    }
-
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
-        PsiElement jteElement = getPsiElement(parameters);
+        PsiElement jteElement = parameters.getOriginalPosition();
         if (jteElement == null) {
             return;
         }
@@ -39,6 +28,8 @@ public class KteTemplateParamCompletionProvider extends CompletionProvider<Compl
         if (jteElement.getNode().getElementType() == KteTokenTypes.PARAM_NAME) {
             // The user already started typing, that's okay
             jteElement = jteElement.getParent();
+        } else if (isAfterParamSeparator(jteElement, parameters.getOffset())) {
+            // The KTE lexer can keep "value, <caret>" inside the previous JAVA_INJECTION token.
         } else {
             PsiElement prevSibling = JtePsiUtil.getPrevSiblingIgnoring(jteElement, KteTokenTypes.WHITESPACE);
             if (prevSibling == null) {
@@ -50,7 +41,12 @@ public class KteTemplateParamCompletionProvider extends CompletionProvider<Compl
             }
         }
 
-        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(jteElement, JtePsiTemplateName.class);
+        JtePsiTemplate template = PsiTreeUtil.getParentOfType(jteElement, JtePsiTemplate.class);
+        if (template == null) {
+            return;
+        }
+
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(template, JtePsiTemplateName.class);
         if (templateName == null) {
             return;
         }
@@ -60,51 +56,33 @@ public class KteTemplateParamCompletionProvider extends CompletionProvider<Compl
             return;
         }
 
-        KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
-        if (parameterList == null) {
-            return;
-        }
-
-        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(templateName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
-        for (KtParameter parameter : parameterList.getParameters()) {
-            if (parameter.isVarArg()) {
-                continue;
-            }
-            if (!usedNames.contains(parameter.getName())) {
-                result.addElement(LookupElementBuilder.create(parameter.getName() + " = "));
+        KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+        Set<String> usedNames = KteTemplateCallArguments.usedNamedParameters(template);
+        for (KteTemplateSignatureService.Parameter parameter : signature.parameters()) {
+            if (!usedNames.contains(parameter.name())) {
+                result.addElement(LookupElementBuilder.create(parameter.name() + " =").withTypeText(parameter.typeText()));
             }
         }
     }
 
-    @Nullable
-    private PsiElement getPsiElement(@NotNull CompletionParameters parameters) {
-        if (kotlin) {
-            return getKotlinPsiElement(parameters);
-        } else {
-            return getJtePsiElement(parameters);
-        }
-    }
-
-    @Nullable
-    private PsiElement getJtePsiElement(CompletionParameters parameters) {
-        return parameters.getOriginalPosition();
-    }
-
-    @Nullable
-    private PsiElement getKotlinPsiElement(@NotNull CompletionParameters parameters) {
-        PsiElement fileContext = FileContextUtil.getFileContext(parameters.getOriginalFile());
-        if (fileContext == null) {
-            return null;
+    private boolean isAfterParamSeparator(@NotNull PsiElement element, int caretOffset) {
+        if (element.getNode().getElementType() != KteTokenTypes.JAVA_INJECTION) {
+            return false;
         }
 
-        PsiElement originalPosition = parameters.getPosition();
-
-        int injectionOffsetInMasterFile = InjectedLanguageManager.getInstance(fileContext.getProject()).injectedToHost(originalPosition, parameters.getOffset(), false);
-        PsiElement result = fileContext.getContainingFile().findElementAt(injectionOffsetInMasterFile);
-
-        if (result instanceof LeafPsiElement && result.getParent() instanceof JtePsiJavaInjection) {
-            return result.getParent();
+        int offsetInElement = Math.clamp(
+                caretOffset - element.getTextRange().getStartOffset(),
+                0,
+                element.getTextLength()
+        );
+        String text = element.getText();
+        for (int index = offsetInElement - 1; index >= 0; index--) {
+            char current = text.charAt(index);
+            if (!Character.isWhitespace(current)) {
+                return current == ',';
+            }
         }
-        return result;
+
+        return false;
     }
 }

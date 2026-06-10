@@ -3,19 +3,24 @@ package org.jusecase.jte.intellij.language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jusecase.jte.intellij.language.psi.KtePsiJavaContent;
+import org.jusecase.jte.intellij.language.refactoring.KteNativeTemplateSourceEditUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Source-edit hook for IntelliJ element manipulation on the parsed .kte host PSI.
+ * This is intentionally separate from K2 semantic analysis: it only applies text edits to the
+ * template file and repairs the historical collapsed-import shape produced by some content edits.
+ */
 public class KteKotlinContentManipulator extends AbstractElementManipulator<KtePsiJavaContent> {
 
     private static final Pattern BROKEN_IMPORT = Pattern.compile("(@import\\s*\\S*)(import\\s*\\S*\\n)");
@@ -23,22 +28,10 @@ public class KteKotlinContentManipulator extends AbstractElementManipulator<KteP
     @Nullable
     @Override
     public KtePsiJavaContent handleContentChange(@NotNull KtePsiJavaContent element, @NotNull TextRange range, String newContent) throws IncorrectOperationException {
-
-        VirtualFile virtualFile = element.getContainingFile().getVirtualFile();
-        if (virtualFile == null) {
-            return element;
-        }
-
-        Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
+        PsiFile file = element.getContainingFile();
+        KteNativeTemplateSourceEditUtil.replace(file, range, newContent);
+        Document document = PsiDocumentManager.getInstance(element.getProject()).getDocument(file);
         if (document != null) {
-            PsiDocumentManager documentManager = PsiDocumentManager.getInstance(element.getProject());
-            if (documentManager.isDocumentBlockedByPsi(document)) {
-                documentManager.doPostponedOperationsAndUnblockDocument(document);
-            }
-
-            document.replaceString(range.getStartOffset(), range.getEndOffset(), newContent);
-            documentManager.commitDocument(document);
-
             optimizeImportsAfterContentManipulation(document, element, newContent);
         }
 
@@ -52,7 +45,7 @@ public class KteKotlinContentManipulator extends AbstractElementManipulator<KteP
             ApplicationManager.getApplication().invokeLater(() -> {
                 //noinspection DialogTitleCapitalization
                 WriteCommandAction.runWriteCommandAction(element.getProject(), "Optimize kte Imports", null, () -> {
-                    String optimizedText = document.getText().replace(importReplacement.oldText, importReplacement.newText);
+                    String optimizedText = document.getText().replace(importReplacement.oldText(), importReplacement.newText());
                     document.setText(optimizedText);
                 }, element.getContainingFile());
             });
@@ -72,13 +65,6 @@ public class KteKotlinContentManipulator extends AbstractElementManipulator<KteP
         return null;
     }
 
-    static class ImportReplacement {
-        final String oldText;
-        final String newText;
-
-        public ImportReplacement(String oldText, String newText) {
-            this.oldText = oldText;
-            this.newText = newText;
-        }
+    record ImportReplacement(@NotNull String oldText, @NotNull String newText) {
     }
 }

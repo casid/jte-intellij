@@ -11,6 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 import org.jusecase.jte.intellij.language.psi.*;
 
 import java.util.LinkedHashSet;
@@ -245,6 +246,11 @@ public class JteAnnotator implements Annotator {
             return;
         }
 
+        if (KteTemplateSignatureService.isKteTemplate(templateFile)) {
+            doAnnotateMissingKteTemplateParams(element, templateFile, holder);
+            return;
+        }
+
         List<PsiParameter> requiredParameters = JtePsiUtil.resolveRequiredParameters(templateFile);
         if (requiredParameters.isEmpty()) {
             return;
@@ -269,6 +275,36 @@ public class JteAnnotator implements Annotator {
                  paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
                 missingParameters.remove(paramName.getName());
             }
+        }
+
+        if (!missingParameters.isEmpty()) {
+            addError(holder, "Missing required parameters: " + String.join(", ", missingParameters));
+        }
+    }
+
+    private void doAnnotateMissingKteTemplateParams(@NotNull PsiElement element,
+                                                    @NotNull PsiFile templateFile,
+                                                    @NotNull AnnotationHolder holder) {
+        // KTE callers are handled by KteSyntheticKotlinDiagnosticAnnotator. This bridge only covers .jte callers
+        // that reference .kte children.
+        if (!JteLanguage.INSTANCE.equals(element.getLanguage())) {
+            return;
+        }
+
+        KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+        if (signature.requiredParameters().isEmpty()) {
+            return;
+        }
+
+        Set<String> missingParameters = new LinkedHashSet<>(signature.requiredParameters().size());
+        for (KteTemplateSignatureService.Parameter parameter : signature.requiredParameters()) {
+            missingParameters.add(parameter.name());
+        }
+
+        for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
+             paramName != null;
+             paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
+            missingParameters.remove(paramName.getName());
         }
 
         if (!missingParameters.isEmpty()) {
@@ -304,6 +340,18 @@ public class JteAnnotator implements Annotator {
 
         PsiFile templateFile = templateName.resolveFile();
         if (templateFile == null) {
+            return;
+        }
+
+        if (KteTemplateSignatureService.isKteTemplate(templateFile)) {
+            if (!JteLanguage.INSTANCE.equals(element.getLanguage())) {
+                return;
+            }
+
+            KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+            if (signature.parameter(element.getName()) == null) {
+                addError(holder, "Unknown parameter " + element.getName());
+            }
             return;
         }
 

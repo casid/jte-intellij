@@ -62,7 +62,7 @@ public class JteMoveFileHandler extends MoveFileHandler {
     }
 
     @Override
-    public void retargetUsages(List<UsageInfo> usageInfos, Map<PsiElement, PsiElement> oldToNewMap) {
+    public void retargetUsages(List<? extends UsageInfo> usageInfos, Map<PsiElement, PsiElement> oldToNewMap) {
         for (UsageInfo usage : usageInfos) {
             if (usage instanceof MoveRenameUsageInfo) {
                 retargetUsage((MoveRenameUsageInfo) usage);

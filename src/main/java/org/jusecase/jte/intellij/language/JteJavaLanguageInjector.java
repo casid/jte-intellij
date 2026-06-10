@@ -16,6 +16,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 import org.jusecase.jte.intellij.language.psi.*;
 
 import java.lang.reflect.Field;
@@ -33,8 +34,14 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement context) {
         if ( context instanceof JtePsiJavaContent host ) {
+            if (KteTemplateSignatureService.isKteTemplate(host.getContainingFile())) {
+                return;
+            }
            new Injector(host, registrar, false).inject();
         } else if ( context instanceof JtePsiExtraJavaInjection host ) {
+            if (KteTemplateSignatureService.isKteTemplate(host.getContainingFile())) {
+                return;
+            }
            JtePsiJavaInjection param = PsiTreeUtil.getPrevSiblingOfType(context, JtePsiJavaInjection.class);
             if (param != null) {
                 JtePsiContent content = PsiTreeUtil.findChildOfType(host, JtePsiContent.class);
@@ -103,7 +110,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
             }
 
             if (hasWrittenClass) {
-                getRegistrar().addPlace(null, "\n}\nvoid dummyCall(Object ... o) {}\n}", host, new TextRange(host.getTextLength(), host.getTextLength()));
+                getRegistrar().addPlace(null, "\n}\n}", host, new TextRange(host.getTextLength(), host.getTextLength()));
             }
 
             if (hasStartedInjection) {
@@ -188,7 +195,7 @@ public class JteJavaLanguageInjector implements MultiHostInjector {
         }
 
         private void injectTemplateParams(PsiElement child) {
-            injectContentAwareJavaPart("dummyCall(", ");\n", child);
+            injectContentAwareJavaPart("if (new Object[]{", "} == null) {}\n", child);
         }
 
         private void injectContentAwareJavaPart(String prefix, String suffix, PsiElement child) {

@@ -1,8 +1,10 @@
 package org.jusecase.jte.intellij.language.psi;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.SharedPsiElementImplUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference;
@@ -103,7 +105,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
 
             @Override
             public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
-                return null; // TODO ???
+                return bindToTemplateElement(element);
             }
 
             @Override
@@ -162,7 +164,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
 
             @Override
             public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
-                return null; // TODO ???
+                return bindToTemplateElement(element);
             }
 
             @Override
@@ -264,6 +266,81 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         return this;
     }
 
+    private PsiElement bindToTemplateElement(@NotNull PsiElement element) throws IncorrectOperationException {
+        String templatePath = rootRelativeTemplatePath(element);
+        if (templatePath == null) {
+            return this;
+        }
+
+        return replaceTemplatePath(templatePath);
+    }
+
+    @Nullable
+    private String rootRelativeTemplatePath(@NotNull PsiElement element) {
+        PsiDirectory rootDirectory = findRootDirectory();
+        if (rootDirectory == null) {
+            return null;
+        }
+
+        VirtualFile target = null;
+        boolean file = false;
+        if (element instanceof PsiFile psiFile) {
+            target = psiFile.getVirtualFile();
+            file = true;
+        } else if (element instanceof PsiDirectory directory) {
+            target = directory.getVirtualFile();
+        }
+        if (target == null) {
+            return null;
+        }
+
+        String relativePath = VfsUtilCore.getRelativePath(target, rootDirectory.getVirtualFile(), '/');
+        if (relativePath == null || relativePath.isBlank()) {
+            return null;
+        }
+
+        if (file) {
+            int extensionOffset = relativePath.lastIndexOf('.');
+            if (extensionOffset != -1) {
+                relativePath = relativePath.substring(0, extensionOffset);
+            }
+        }
+
+        return relativePath.replace('/', '.');
+    }
+
+    private PsiElement replaceTemplatePath(@NotNull String templatePath) throws IncorrectOperationException {
+        JtePsiTemplate template = PsiTreeUtil.getParentOfType(this, JtePsiTemplate.class, false);
+        if (template == null) {
+            return this;
+        }
+
+        JtePsiTemplateName firstTemplateName = PsiTreeUtil.getChildOfType(template, JtePsiTemplateName.class);
+        JtePsiTemplateName lastTemplateName = JtePsiUtil.getLastChildOfType(template, JtePsiTemplateName.class);
+        if (firstTemplateName == null || lastTemplateName == null) {
+            return this;
+        }
+
+        PsiFile containingFile = getContainingFile();
+        Document document = PsiDocumentManager.getInstance(getProject()).getDocument(containingFile);
+        if (document == null) {
+            throw new IncorrectOperationException("Cannot update template reference without a document");
+        }
+
+        TextRange range = TextRange.create(
+                firstTemplateName.getTextRange().getStartOffset(),
+                lastTemplateName.getTextRange().getEndOffset()
+        );
+        PsiDocumentManager documentManager = PsiDocumentManager.getInstance(getProject());
+        if (documentManager.isDocumentBlockedByPsi(document)) {
+            documentManager.doPostponedOperationsAndUnblockDocument(document);
+        }
+
+        document.replaceString(range.getStartOffset(), range.getEndOffset(), templatePath);
+        documentManager.commitDocument(document);
+        return this;
+    }
+
     @Nullable
     public PsiDirectory findRootDirectory() {
         return findRootDirectory(getContainingFile().getOriginalFile().getParent());
@@ -282,4 +359,3 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
         return findRootDirectory(parent.getParent());
     }
 }
-

@@ -9,6 +9,7 @@ import com.intellij.codeInsight.template.macro.CompleteMacro;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 import org.jusecase.jte.intellij.language.psi.JtePsiExtraJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParam;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
@@ -57,18 +58,15 @@ public class JteTemplateCompletionProvider extends AbstractTemplateCompletionPro
                     template.addTextSegment("(");
                 }
 
-                PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
-                if (parameterList != null) {
-                    int i = 0;
-                    List<PsiParameter> parameters = resolveRequiredParams(parameterList);
-                    for (PsiParameter parameter : parameters) {
-                        template.addTextSegment(parameter.getName() + " = ");
-                        MacroCallNode param = new MacroCallNode(new CompleteMacro());
-                        template.addVariable("param" + i, param, param, true);
+                int i = 0;
+                List<String> parameterNames = resolveRequiredParamNames();
+                for (String parameterName : parameterNames) {
+                    template.addTextSegment(parameterName + " = ");
+                    MacroCallNode param = new MacroCallNode(new CompleteMacro());
+                    template.addVariable("param" + i, param, param, true);
 
-                        if (++i < parameters.size()) {
-                            template.addTextSegment(", ");
-                        }
+                    if (++i < parameterNames.size()) {
+                        template.addTextSegment(", ");
                     }
                 }
 
@@ -78,6 +76,25 @@ public class JteTemplateCompletionProvider extends AbstractTemplateCompletionPro
 
                 manager.startTemplate(editor, template);
             });
+        }
+
+        private List<String> resolveRequiredParamNames() {
+            if (KteTemplateSignatureService.isKteTemplate(templateFile)) {
+                return KteTemplateSignatureService.resolve(templateFile)
+                        .requiredParameters()
+                        .stream()
+                        .map(KteTemplateSignatureService.Parameter::name)
+                        .toList();
+            }
+
+            PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
+            if (parameterList == null) {
+                return Collections.emptyList();
+            }
+
+            return resolveRequiredParams(parameterList).stream()
+                    .map(PsiParameter::getName)
+                    .toList();
         }
 
         private List<PsiParameter> resolveRequiredParams(PsiParameterList parameterList) {
