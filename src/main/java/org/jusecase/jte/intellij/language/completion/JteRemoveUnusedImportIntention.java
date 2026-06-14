@@ -64,6 +64,7 @@ public class JteRemoveUnusedImportIntention extends PsiElementBaseIntentionActio
         }
 
         String qualifiedName = JteImportUtil.extractQualifiedName(possibleImport.getText());
-        return JteImportUtil.isImportUsed(jteFile, qualifiedName) ? null : possibleImport;
+        boolean unused = !JteImportUtil.isImportUsed(jteFile, qualifiedName) || JteImportUtil.hasDuplicateImport(possibleImport);
+        return unused ? possibleImport : null;
     }
 }

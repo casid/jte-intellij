@@ -32,6 +32,15 @@ public class JteRemoveUnusedImportIntentionTest extends LightJavaCodeInsightFixt
         myFixture.checkResult("@param String name\n${name}");
     }
 
+    public void testRemovesDuplicateImport() {
+        myFixture.configureByText("test.jte", "@import java.util.Date\n@import java.util.D<caret>ate\n\n@param String name\n${new Date()}");
+
+        IntentionAction intention = findIntention();
+        myFixture.launchAction(intention);
+
+        myFixture.checkResult("@import java.util.Date\n\n@param String name\n${new Date()}");
+    }
+
     public void testNotAvailableForUsedImport() {
         myFixture.configureByText("test.jte", "@import java.util.Has<caret>hMap\n\n@param String name\n${new HashMap<String, String>().size()}");
 

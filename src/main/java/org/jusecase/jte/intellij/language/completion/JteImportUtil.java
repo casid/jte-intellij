@@ -180,6 +180,23 @@ final class JteImportUtil {
         return importText.substring(IMPORT_KEYWORD.length()).trim();
     }
 
+    /**
+     * Returns whether the given {@code @import} statement names the same class as another
+     * {@code @import} statement in the same file, making it redundant regardless of whether the
+     * class is referenced.
+     */
+    static boolean hasDuplicateImport(@NotNull JtePsiImport importElement) {
+        String qualifiedName = extractQualifiedName(importElement.getText());
+
+        int count = 0;
+        for (JtePsiImport existingImport : PsiTreeUtil.findChildrenOfType(importElement.getContainingFile(), JtePsiImport.class)) {
+            if (extractQualifiedName(existingImport.getText()).equals(qualifiedName) && ++count > 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static int skipLineBreaks(@NotNull Document document, int offset) {
         CharSequence text = document.getCharsSequence();
         while (offset < text.length() && (text.charAt(offset) == '\n' || text.charAt(offset) == '\r')) {
