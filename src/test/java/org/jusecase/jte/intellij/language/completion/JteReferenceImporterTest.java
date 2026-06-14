@@ -41,7 +41,7 @@ public class JteReferenceImporterTest extends LightJavaCodeInsightFixtureTestCas
         assertNotNull(supplier);
         assertTrue(supplier.getAsBoolean());
 
-        myFixture.checkResult("@import java.util.HashMap\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+        myFixture.checkResult("@import java.util.HashMap\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
     }
 
     public void testComputeAutoImportReturnsNullForAmbiguousCandidate() {

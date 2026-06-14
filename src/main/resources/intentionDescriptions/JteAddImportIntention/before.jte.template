@@ -1,0 +1,2 @@
+@param String name
+${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + <spot>HashMap</spot>.class.getName().length()}
