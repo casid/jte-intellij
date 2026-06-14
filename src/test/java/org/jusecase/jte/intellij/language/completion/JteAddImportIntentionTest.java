@@ -18,7 +18,7 @@ public class JteAddImportIntentionTest extends LightJavaCodeInsightFixtureTestCa
         IntentionAction action = myFixture.findSingleIntention("Add @import java.util.HashMap");
         myFixture.launchAction(action);
 
-        myFixture.checkResult("@import java.util.HashMap\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+        myFixture.checkResult("@import java.util.HashMap\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
     }
 
     public void testAddsImportWhenOtherImportExists() {
@@ -27,7 +27,43 @@ public class JteAddImportIntentionTest extends LightJavaCodeInsightFixtureTestCa
         IntentionAction action = myFixture.findSingleIntention("Add @import java.util.HashMap");
         myFixture.launchAction(action);
 
-        myFixture.checkResult("@import java.util.HashMap\n@import java.util.List\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+        myFixture.checkResult("@import java.util.HashMap\n@import java.util.List\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+    }
+
+    public void testInsertsImportAlphabeticallyBetweenExistingImports() {
+        myFixture.configureByText("test.jte", "@import java.util.ArrayList\n@import java.util.List\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + <caret>HashMap.class.getName().length()}");
+
+        IntentionAction action = myFixture.findSingleIntention("Add @import java.util.HashMap");
+        myFixture.launchAction(action);
+
+        myFixture.checkResult("@import java.util.ArrayList\n@import java.util.HashMap\n@import java.util.List\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+    }
+
+    public void testInsertsImportAfterExistingImportsWhenItSortsLast() {
+        myFixture.configureByText("test.jte", "@import java.util.ArrayList\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + <caret>TreeMap.class.getName().length()}");
+
+        IntentionAction action = myFixture.findSingleIntention("Add @import java.util.TreeMap");
+        myFixture.launchAction(action);
+
+        myFixture.checkResult("@import java.util.ArrayList\n@import java.util.TreeMap\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + TreeMap.class.getName().length()}");
+    }
+
+    public void testSortsExistingUnsortedImports() {
+        myFixture.configureByText("test.jte", "@import java.util.List\n@import java.util.ArrayList\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + <caret>HashMap.class.getName().length()}");
+
+        IntentionAction action = myFixture.findSingleIntention("Add @import java.util.HashMap");
+        myFixture.launchAction(action);
+
+        myFixture.checkResult("@import java.util.ArrayList\n@import java.util.HashMap\n@import java.util.List\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
+    }
+
+    public void testKeepsExistingBlankLineBeforeParamsSingle() {
+        myFixture.configureByText("test.jte", "@import java.util.List\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + <caret>HashMap.class.getName().length()}");
+
+        IntentionAction action = myFixture.findSingleIntention("Add @import java.util.HashMap");
+        myFixture.launchAction(action);
+
+        myFixture.checkResult("@import java.util.HashMap\n@import java.util.List\n\n@param String name\n${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}");
     }
 
     public void testNotAvailableForResolvedReference() {

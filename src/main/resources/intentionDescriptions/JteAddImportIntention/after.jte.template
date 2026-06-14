@@ -1,0 +1,4 @@
+@import java.util.HashMap
+
+@param String name
+${new java.util.concurrent.atomic.AtomicInteger().incrementAndGet() + HashMap.class.getName().length()}
