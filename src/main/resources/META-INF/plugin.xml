@@ -223,6 +223,15 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <completion.contributor language="JAVA"
                                 implementationClass="org.jusecase.jte.intellij.language.completion.JteCompletionContributorForJava"/>
 
+        <intentionAction>
+            <language>JAVA</language>
+            <className>org.jusecase.jte.intellij.language.completion.JteAddImportIntention</className>
+            <category>jte</category>
+        </intentionAction>
+
+        <referenceImporter implementation="org.jusecase.jte.intellij.language.completion.JteReferenceImporter"/>
+        <daemon.intentionActionFilter implementation="org.jusecase.jte.intellij.language.completion.JteImportClassFixFilter"/>
+
         <lang.findUsagesProvider language="KotlinTemplateEngine"
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.KteFindUsagesProvider"/>
         <completion.contributor language="KotlinTemplateEngine"
