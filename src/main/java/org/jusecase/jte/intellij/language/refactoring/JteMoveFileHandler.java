@@ -21,6 +21,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 import org.jusecase.jte.intellij.language.psi.*;
 
@@ -44,7 +45,7 @@ public class JteMoveFileHandler extends MoveFileHandler {
     }
 
     @Override
-    public @Nullable List<UsageInfo> findUsages(PsiFile psiFile, PsiDirectory newParent, boolean searchInComments, boolean searchInNonJavaFiles) {
+    public @Nullable List<UsageInfo> findUsages(@NotNull PsiFile psiFile, @NotNull PsiDirectory newParent, boolean searchInComments, boolean searchInNonJavaFiles) {
         List<UsageInfo> result = new ArrayList<>();
 
         Set<PsiReference> foundReferences = new HashSet<>();
@@ -62,7 +63,7 @@ public class JteMoveFileHandler extends MoveFileHandler {
     }
 
     @Override
-    public void retargetUsages(List<UsageInfo> usageInfos, Map<PsiElement, PsiElement> oldToNewMap) {
+    public void retargetUsages(@Unmodifiable @NotNull List<? extends UsageInfo> usageInfos, @NotNull Map<PsiElement, PsiElement> oldToNewMap) {
         for (UsageInfo usage : usageInfos) {
             if (usage instanceof MoveRenameUsageInfo) {
                 retargetUsage((MoveRenameUsageInfo) usage);
