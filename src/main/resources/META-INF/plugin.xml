@@ -229,8 +229,16 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
             <category>jte</category>
         </intentionAction>
 
+        <intentionAction>
+            <language>JavaTemplateEngine</language>
+            <className>org.jusecase.jte.intellij.language.completion.JteRemoveUnusedImportIntention</className>
+            <category>jte</category>
+        </intentionAction>
+
         <referenceImporter implementation="org.jusecase.jte.intellij.language.completion.JteReferenceImporter"/>
         <daemon.intentionActionFilter implementation="org.jusecase.jte.intellij.language.completion.JteImportClassFixFilter"/>
+        <daemon.intentionActionFilter implementation="org.jusecase.jte.intellij.language.completion.JteUnusedImportFixFilter"/>
+        <lang.importOptimizer language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.completion.JteImportOptimizer"/>
 
         <lang.findUsagesProvider language="KotlinTemplateEngine"
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.KteFindUsagesProvider"/>

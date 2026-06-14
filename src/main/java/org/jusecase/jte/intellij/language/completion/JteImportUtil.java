@@ -16,6 +16,7 @@ import org.jusecase.jte.intellij.language.psi.JtePsiParam;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Shared logic for resolving unresolved references inside jte's injected Java fragments and
@@ -80,33 +81,83 @@ final class JteImportUtil {
         }
 
         WriteCommandAction.runWriteCommandAction(project, "Add Import", null, () -> {
-            insertImportSorted(jteFile, document, qualifiedName);
+            TreeSet<String> names = collectImportNames(jteFile);
+            names.add(qualifiedName);
+            rewriteImports(jteFile, document, names);
             PsiDocumentManager.getInstance(project).commitDocument(document);
         }, jteFile);
     }
 
     /**
-     * Rewrites the leading block of {@code @import} statements in sorted order, including the
-     * new import, and ensures a blank line separates it from a following {@code @param} block.
+     * Removes {@code @import} statements that are no longer referenced from any injected Java
+     * fragment, keeping the remaining imports sorted. Wildcard and static imports are kept as-is
+     * since usage cannot be determined reliably.
      */
-    private static void insertImportSorted(@NotNull PsiFile jteFile, @NotNull Document document, @NotNull String qualifiedName) {
+    static void removeUnusedImports(@NotNull PsiFile jteFile) {
+        Project project = jteFile.getProject();
+        Document document = PsiDocumentManager.getInstance(project).getDocument(jteFile);
+        if (document == null) {
+            return;
+        }
+
+        TreeSet<String> names = collectImportNames(jteFile);
+        names.removeIf(name -> !isImportUsed(jteFile, name));
+
+        if (rewriteImports(jteFile, document, names)) {
+            PsiDocumentManager.getInstance(project).commitDocument(document);
+        }
+    }
+
+    private static TreeSet<String> collectImportNames(@NotNull PsiFile jteFile) {
+        TreeSet<String> names = new TreeSet<>();
+        for (JtePsiImport existingImport : PsiTreeUtil.findChildrenOfType(jteFile, JtePsiImport.class)) {
+            names.add(extractQualifiedName(existingImport.getText()));
+        }
+        return names;
+    }
+
+    static boolean isImportUsed(@NotNull PsiFile jteFile, @NotNull String importedName) {
+        if (importedName.startsWith("static ") || importedName.endsWith(".*")) {
+            return true;
+        }
+
+        String simpleName = importedName.substring(importedName.lastIndexOf('.') + 1);
+        InjectedLanguageManager injectedLanguageManager = InjectedLanguageManager.getInstance(jteFile.getProject());
+
+        AtomicBoolean used = new AtomicBoolean(false);
+        for (PsiLanguageInjectionHost host : PsiTreeUtil.findChildrenOfType(jteFile, PsiLanguageInjectionHost.class)) {
+            injectedLanguageManager.enumerate(host, (injectedPsi, places) -> {
+                if (PsiTreeUtil.findChildrenOfType(injectedPsi, PsiJavaCodeReferenceElement.class).stream()
+                        .anyMatch(ref -> ref.getQualifier() == null && simpleName.equals(ref.getReferenceName()))) {
+                    used.set(true);
+                }
+            });
+
+            if (used.get()) {
+                break;
+            }
+        }
+
+        return used.get();
+    }
+
+    /**
+     * Rewrites the leading block of {@code @import} statements to match the given (sorted) set of
+     * names, ensuring a blank line separates it from a following {@code @param} block. Returns
+     * whether the document was changed.
+     */
+    private static boolean rewriteImports(@NotNull PsiFile jteFile, @NotNull Document document, @NotNull TreeSet<String> names) {
         List<JtePsiImport> imports = PsiTreeUtil.findChildrenOfType(jteFile, JtePsiImport.class).stream()
                 .sorted(Comparator.comparingInt(element -> element.getTextRange().getStartOffset()))
                 .toList();
 
-        TreeSet<String> sortedNames = new TreeSet<>();
-        for (JtePsiImport existingImport : imports) {
-            sortedNames.add(extractQualifiedName(existingImport.getText()));
-        }
-        sortedNames.add(qualifiedName);
-
         boolean hasParams = PsiTreeUtil.findChildOfType(jteFile, JtePsiParam.class) != null;
 
         StringBuilder replacement = new StringBuilder();
-        for (String name : sortedNames) {
+        for (String name : names) {
             replacement.append(IMPORT_PREFIX).append(name).append('\n');
         }
-        if (hasParams) {
+        if (hasParams && !names.isEmpty()) {
             replacement.append('\n');
         }
 
@@ -117,10 +168,15 @@ final class JteImportUtil {
             endOffset = skipLineBreaks(document, imports.getLast().getTextRange().getEndOffset());
         }
 
+        if (document.getCharsSequence().subSequence(startOffset, endOffset).toString().equals(replacement.toString())) {
+            return false;
+        }
+
         document.replaceString(startOffset, endOffset, replacement);
+        return true;
     }
 
-    private static String extractQualifiedName(@NotNull String importText) {
+    static String extractQualifiedName(@NotNull String importText) {
         return importText.substring(IMPORT_KEYWORD.length()).trim();
     }
 
