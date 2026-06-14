@@ -32,7 +32,7 @@ public class JteRemoveUnusedImportIntention extends PsiElementBaseIntentionActio
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @Nullable PsiElement element) {
-        JtePsiImport unusedImport = findUnusedImport(element);
+        JtePsiImport unusedImport = findUnusedImport(editor, element);
         if (unusedImport == null) {
             return false;
         }
@@ -43,7 +43,7 @@ public class JteRemoveUnusedImportIntention extends PsiElementBaseIntentionActio
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-        JtePsiImport unusedImport = findUnusedImport(element);
+        JtePsiImport unusedImport = findUnusedImport(editor, element);
         if (unusedImport == null) {
             return;
         }
@@ -53,12 +53,20 @@ public class JteRemoveUnusedImportIntention extends PsiElementBaseIntentionActio
     }
 
     @Nullable
-    private static JtePsiImport findUnusedImport(@Nullable PsiElement element) {
+    private static JtePsiImport findUnusedImport(@NotNull Editor editor, @Nullable PsiElement element) {
         if (element == null || !(element.getContainingFile() instanceof JtePsiFile jteFile)) {
             return null;
         }
 
         JtePsiImport possibleImport = PsiTreeUtil.getParentOfType(element, JtePsiImport.class, false);
+        if (possibleImport == null) {
+            // The @import element's range ends right after the imported class name, so a caret
+            // placed at the end of the line resolves to the following whitespace/newline element.
+            int offset = editor.getCaretModel().getOffset();
+            if (offset > 0) {
+                possibleImport = PsiTreeUtil.getParentOfType(jteFile.findElementAt(offset - 1), JtePsiImport.class, false);
+            }
+        }
         if (possibleImport == null) {
             return null;
         }
