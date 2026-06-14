@@ -1,6 +1,10 @@
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
+val intellijBaselineVersion = "2026.1.1"
+val intellijSinceBuild = "261"
+val intellijVerificationVersions = listOf("2026.1.1")
+
 plugins {
     id("java")
     id("org.jetbrains.intellij.platform") version "2.10.5"
@@ -21,7 +25,7 @@ repositories {
 dependencies {
     // See https://github.com/JetBrains/intellij-platform-gradle-plugin
     intellijPlatform {
-        intellijIdeaCommunity("2024.3.6")
+        intellijIdea(intellijBaselineVersion)
 
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
@@ -40,7 +44,7 @@ intellijPlatform {
     pluginConfiguration {
         id = "org.jusecase.jte-intellij"
         name = "jte"
-        version = "2.2.3"
+        version = "2.2.4"
     }
     projectName = "jte-intellij"
     publishing {
@@ -48,13 +52,16 @@ intellijPlatform {
     }
     pluginVerification {
         ides {
-            create(IntelliJPlatformType.IntellijIdea, "2025.2.5")
+            intellijVerificationVersions.forEach { version ->
+                create(IntelliJPlatformType.IntellijIdea, version)
+            }
         }
     }
 }
 
 tasks {
     patchPluginXml {
+        sinceBuild = provider { intellijSinceBuild }
         untilBuild = provider { null }
     }
 }

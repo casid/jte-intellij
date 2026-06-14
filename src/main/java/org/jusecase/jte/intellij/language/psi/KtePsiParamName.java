@@ -8,8 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.kotlin.psi.KtParameter;
-import org.jetbrains.kotlin.psi.KtParameterList;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 
 public class KtePsiParamName extends JtePsiElement {
     public KtePsiParamName(@NotNull ASTNode node) {
@@ -33,12 +32,8 @@ public class KtePsiParamName extends JtePsiElement {
             return null;
         }
 
-        KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
-        if (parameterList == null) {
-            return null;
-        }
-
-        KtParameter parameter = getParameterWithSameName(name, parameterList);
+        KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+        KteTemplateSignatureService.Parameter parameter = signature.parameter(name);
         if (parameter == null) {
             return null;
         }
@@ -57,16 +52,7 @@ public class KtePsiParamName extends JtePsiElement {
         return getText();
     }
 
-    private KtParameter getParameterWithSameName(String name, KtParameterList parameterList) {
-        for (KtParameter parameter : parameterList.getParameters()) {
-            if (name.equals(parameter.getName())) {
-                return parameter;
-            }
-        }
-        return null;
-    }
-
-    private PsiReference createReferenceFor(KtParameter parameter) {
+    private PsiReference createReferenceFor(KteTemplateSignatureService.Parameter parameter) {
         return new PsiReference() {
             @NotNull
             @Override
@@ -83,7 +69,7 @@ public class KtePsiParamName extends JtePsiElement {
             @Nullable
             @Override
             public PsiElement resolve() {
-                return parameter;
+                return parameter.sourceElement();
             }
 
             @NotNull
@@ -105,7 +91,8 @@ public class KtePsiParamName extends JtePsiElement {
 
             @Override
             public boolean isReferenceTo(@NotNull PsiElement element) {
-                return element == parameter;
+                return element == parameter.sourceElement() ||
+                        element.getManager().areElementsEquivalent(element, parameter.sourceElement());
             }
 
             @Override

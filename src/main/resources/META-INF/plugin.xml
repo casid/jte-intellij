@@ -25,6 +25,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.4</h3>
+<ul>
+    <li>Require IntelliJ IDEA 2026.1 or newer for .kte Kotlin K2 completion compatibility.</li>
+    <li>Route .kte Kotlin editor support through a synthetic Kotlin model for K2 compatibility.</li>
+    <li>Add child-template parameter contract diagnostics and deterministic native .kte source edits.</li>
+</ul>
 <h3>2.2.3</h3>
 <ul>
     <li>Support for annotated parameters in jte templates</li>
@@ -209,7 +215,6 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <highlightVisitor implementation="org.jusecase.jte.intellij.language.JteHighlightVisitor"/>
 
         <multiHostInjector implementation="org.jusecase.jte.intellij.language.JteJavaLanguageInjector"/>
-        <multiHostInjector implementation="org.jusecase.jte.intellij.language.KteKotlinLanguageInjector"/>
 
         <lang.elementManipulator forClass="org.jusecase.jte.intellij.language.psi.JtePsiJavaContent"
                                  implementationClass="org.jusecase.jte.intellij.language.JteJavaContentManipulator"/>
@@ -225,10 +230,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <lang.findUsagesProvider language="KotlinTemplateEngine"
                                  implementationClass="org.jusecase.jte.intellij.language.refactoring.KteFindUsagesProvider"/>
+        <lang.documentationProvider language="KotlinTemplateEngine"
+                                    implementationClass="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinDocumentationProvider"/>
         <completion.contributor language="KotlinTemplateEngine"
                                 implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributor"/>
-        <completion.contributor language="kotlin"
-                                implementationClass="org.jusecase.jte.intellij.language.completion.KteCompletionContributorForKotlin"/>
 
         <defaultLiveTemplates file="liveTemplates/jte.xml"/>
         <liveTemplateContext implementation="org.jusecase.jte.intellij.language.completion.JteContext" contextId="jte"/>
@@ -242,6 +247,13 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <annotator language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
         <annotator language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteAnnotator"/>
+        <annotator language="KotlinTemplateEngine"
+                   implementationClass="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinDiagnosticAnnotator"/>
+        <intentionAction>
+            <className>org.jusecase.jte.intellij.language.refactoring.KteOptimizeImportsIntention</className>
+            <category>jte</category>
+            <language>KotlinTemplateEngine</language>
+        </intentionAction>
 
         <lang.commenter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
         <lang.commenter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.JteCommenter"/>
@@ -256,6 +268,9 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <moveFileHandler implementation="org.jusecase.jte.intellij.language.refactoring.JteMoveFileHandler" id="KotlinTemplateEngine"/>
 
         <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.JteFileReferenceContributor" language="JAVA"/>
+        <psi.referenceContributor implementation="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinReferenceContributor"
+                                  language="KotlinTemplateEngine"/>
+        <referencesSearch implementation="org.jusecase.jte.intellij.language.refactoring.JteTemplateParamReferencesSearcher"/>
 
         <lang.formatter language="JavaTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.JteFormattingModelBuilder"/>
         <lang.formatter language="KotlinTemplateEngine" implementationClass="org.jusecase.jte.intellij.language.format.KteFormattingModelBuilder"/>
@@ -265,6 +280,10 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
 
         <codeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.KteCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="org.jusecase.jte.intellij.language.format.KteLanguageCodeStyleSettingsProvider"/>
+
+        <projectService serviceImplementation="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinAnalysisContextService"/>
+        <projectService serviceImplementation="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinModelService"/>
+        <projectService serviceImplementation="org.jusecase.jte.intellij.language.k2.KteSyntheticKotlinSemanticService"/>
 
         <notificationGroup id="org.jusecase.jte.intellij.language.convert.notification" displayType="STICKY_BALLOON" isLogByDefault="false" />
     </extensions>
@@ -284,6 +303,12 @@ Support for <a href="https://github.com/casid/jte">jte</a> templates.
         <action id="org.jusecase.jte.intellij.language.file.CreateKteFileAction" class="org.jusecase.jte.intellij.language.file.CreateKteFileAction">
             <add-to-group group-id="NewGroup" relative-to-action="NewHtmlFile" anchor="after"/>
         </action>
+        <group id="org.jusecase.jte.intellij.language.k2.KteToolsGroup" text="jte" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="org.jusecase.jte.intellij.language.k2.KteOpenSyntheticKotlinAction"
+                    class="org.jusecase.jte.intellij.language.k2.KteOpenSyntheticKotlinAction"
+                    text="Open Synthetic Kotlin for Current .kte"/>
+        </group>
     </actions>
 
     <applicationListeners>

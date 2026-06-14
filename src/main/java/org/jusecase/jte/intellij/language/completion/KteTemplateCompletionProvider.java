@@ -9,12 +9,8 @@ import com.intellij.codeInsight.template.macro.CompleteMacro;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.kotlin.psi.KtParameter;
-import org.jetbrains.kotlin.psi.KtParameterList;
-import org.jusecase.jte.intellij.language.psi.*;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class KteTemplateCompletionProvider extends AbstractTemplateCompletionProvider {
@@ -56,12 +52,12 @@ public class KteTemplateCompletionProvider extends AbstractTemplateCompletionPro
                     template.addTextSegment("(");
                 }
 
-                KtParameterList parameterList = KtePsiUtil.resolveParameterList(templateFile);
-                if (parameterList != null) {
+                KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+                if (!signature.parameters().isEmpty()) {
                     int i = 0;
-                    List<KtParameter> parameters = resolveRequiredParams(parameterList);
-                    for (KtParameter parameter : parameters) {
-                        template.addTextSegment(parameter.getName() + " = ");
+                    List<KteTemplateSignatureService.Parameter> parameters = signature.requiredParameters();
+                    for (KteTemplateSignatureService.Parameter parameter : parameters) {
+                        template.addTextSegment(parameter.name() + " = ");
                         MacroCallNode param = new MacroCallNode(new CompleteMacro());
                         template.addVariable("param" + i, param, param, true);
 
@@ -77,23 +73,6 @@ public class KteTemplateCompletionProvider extends AbstractTemplateCompletionPro
 
                 manager.startTemplate(editor, template);
             });
-        }
-
-        private List<KtParameter> resolveRequiredParams(KtParameterList parameterList) {
-            List<KtParameter> parameters = parameterList.getParameters();
-            if (parameters.isEmpty()) {
-                return Collections.emptyList();
-            }
-
-            List<KtParameter> result = new ArrayList<>();
-
-            for (KtParameter parameter : parameters) {
-                if (!parameter.hasDefaultValue() && !parameter.isVarArg()) {
-                    result.add(parameter);
-                }
-            }
-
-            return result;
         }
 
     }

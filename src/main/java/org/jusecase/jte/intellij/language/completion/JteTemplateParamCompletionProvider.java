@@ -16,9 +16,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 import org.jusecase.jte.intellij.language.parsing.JteTokenTypes;
 import org.jusecase.jte.intellij.language.psi.JtePsiJavaInjection;
 import org.jusecase.jte.intellij.language.psi.JtePsiParamName;
+import org.jusecase.jte.intellij.language.psi.JtePsiTemplate;
 import org.jusecase.jte.intellij.language.psi.JtePsiTemplateName;
 import org.jusecase.jte.intellij.language.psi.JtePsiUtil;
 
@@ -42,6 +44,8 @@ public class JteTemplateParamCompletionProvider extends CompletionProvider<Compl
         if (jteElement.getNode().getElementType() == JteTokenTypes.PARAM_NAME) {
             // The user already started typing, that's okay
             jteElement = jteElement.getParent();
+        } else if (isAfterParamSeparator(jteElement, parameters.getOffset())) {
+            // The lexer can keep "value, <caret>" inside the previous JAVA_INJECTION token.
         } else {
             PsiElement prevSibling = JtePsiUtil.getPrevSiblingIgnoring(jteElement, JteTokenTypes.WHITESPACE);
             if (prevSibling == null) {
@@ -53,7 +57,12 @@ public class JteTemplateParamCompletionProvider extends CompletionProvider<Compl
             }
         }
 
-        JtePsiTemplateName templateName = PsiTreeUtil.getPrevSiblingOfType(jteElement, JtePsiTemplateName.class);
+        JtePsiTemplate template = PsiTreeUtil.getParentOfType(jteElement, JtePsiTemplate.class);
+        if (template == null) {
+            return;
+        }
+
+        JtePsiTemplateName templateName = JtePsiUtil.getLastChildOfType(template, JtePsiTemplateName.class);
         if (templateName == null) {
             return;
         }
@@ -63,12 +72,17 @@ public class JteTemplateParamCompletionProvider extends CompletionProvider<Compl
             return;
         }
 
+        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(templateName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
+        if (KteTemplateSignatureService.isKteTemplate(templateFile)) {
+            addKteTemplateParamCompletions(templateFile, usedNames, result);
+            return;
+        }
+
         PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
         if (parameterList == null) {
             return;
         }
 
-        Set<String> usedNames = PsiTreeUtil.findChildrenOfType(templateName.getParent(), JtePsiParamName.class).stream().map(JtePsiParamName::getName).collect(Collectors.toSet());
         for (PsiParameter parameter : parameterList.getParameters()) {
             if (parameter.isVarArgs()) {
                 continue;
@@ -77,6 +91,37 @@ public class JteTemplateParamCompletionProvider extends CompletionProvider<Compl
                 result.addElement(LookupElementBuilder.create(parameter.getName() + " = ").withTypeText(parameter.getType().getPresentableText()));
             }
         }
+    }
+
+    private void addKteTemplateParamCompletions(@NotNull PsiFile templateFile,
+                                                @NotNull Set<String> usedNames,
+                                                @NotNull CompletionResultSet result) {
+        KteTemplateSignatureService.TemplateSignature signature = KteTemplateSignatureService.resolve(templateFile);
+        for (KteTemplateSignatureService.Parameter parameter : signature.parameters()) {
+            if (parameter.vararg()) {
+                continue;
+            }
+            if (!usedNames.contains(parameter.name())) {
+                result.addElement(LookupElementBuilder.create(parameter.name() + " = ").withTypeText(parameter.typeText()));
+            }
+        }
+    }
+
+    private boolean isAfterParamSeparator(@NotNull PsiElement element, int caretOffset) {
+        if (element.getNode().getElementType() != JteTokenTypes.JAVA_INJECTION) {
+            return false;
+        }
+
+        int offsetInElement = Math.min(caretOffset - element.getTextRange().getStartOffset(), element.getTextLength());
+        String text = element.getText();
+        for (int index = offsetInElement - 1; index >= 0; index--) {
+            char current = text.charAt(index);
+            if (!Character.isWhitespace(current)) {
+                return current == ',';
+            }
+        }
+
+        return false;
     }
 
     @Nullable

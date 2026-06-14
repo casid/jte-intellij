@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jusecase.jte.intellij.language.k2.KteTemplateSignatureService;
 
 public class JtePsiParamName extends JtePsiElement {
     public JtePsiParamName(@NotNull ASTNode node) {
@@ -29,6 +30,13 @@ public class JtePsiParamName extends JtePsiElement {
         PsiFile templateFile = templateName.resolveFile();
         if (templateFile == null) {
             return null;
+        }
+
+        if (KteTemplateSignatureService.isKteTemplate(templateFile)) {
+            KteTemplateSignatureService.TemplateSignature signature =
+                    KteTemplateSignatureService.resolve(templateFile);
+            KteTemplateSignatureService.Parameter parameter = signature.parameter(name);
+            return parameter == null ? null : createReferenceFor(parameter.sourceElement());
         }
 
         PsiParameterList parameterList = JtePsiUtil.resolveParameterList(templateFile);
@@ -73,6 +81,14 @@ public class JtePsiParamName extends JtePsiElement {
     }
 
     private PsiReference createReferenceFor(PsiParameter parameter) {
+        return createReferenceForElement(parameter);
+    }
+
+    private PsiReference createReferenceFor(PsiElement target) {
+        return createReferenceForElement(target);
+    }
+
+    private PsiReference createReferenceForElement(PsiElement target) {
         return new PsiReference() {
             @NotNull
             @Override
@@ -89,7 +105,7 @@ public class JtePsiParamName extends JtePsiElement {
             @Nullable
             @Override
             public PsiElement resolve() {
-                return parameter;
+                return target;
             }
 
             @NotNull
@@ -111,7 +127,8 @@ public class JtePsiParamName extends JtePsiElement {
 
             @Override
             public boolean isReferenceTo(@NotNull PsiElement element) {
-                return element == parameter;
+                return element == target ||
+                        element.getManager().areElementsEquivalent(element, target);
             }
 
             @Override
