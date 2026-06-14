@@ -1,0 +1,3 @@
+@import <spot>java.util.HashMap</spot>
+@param String name
+${name}
