@@ -40,7 +40,7 @@ intellijPlatform {
     pluginConfiguration {
         id = "org.jusecase.jte-intellij"
         name = "jte"
-        version = "2.2.3"
+        version = "2.3.0"
     }
     projectName = "jte-intellij"
     publishing {
