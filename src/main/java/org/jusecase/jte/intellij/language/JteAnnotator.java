@@ -111,7 +111,6 @@ public class JteAnnotator implements Annotator {
     }
 
     private void doAnnotate(@NotNull JtePsiJavaInjection element, @NotNull AnnotationHolder holder) {
-        // This only works for jte, not kte templates! If needed for kte, this would require an additional implementation using Kotlin PSI elements.
         if (!JteLanguage.INSTANCE.equals(element.getLanguage())) {
             return;
         }
@@ -186,7 +185,6 @@ public class JteAnnotator implements Annotator {
     }
 
     private void doAnnotateContentParam(@NotNull JtePsiContent element, @NotNull AnnotationHolder holder) {
-        // This only works for jte, not kte templates! If needed for kte, this would require an additional implementation using Kotlin PSI elements.
         if (!JteLanguage.INSTANCE.equals(element.getLanguage())) {
             return;
         }
@@ -257,18 +255,10 @@ public class JteAnnotator implements Annotator {
             }
         }
 
-        if (element.getLanguage() == KteLanguage.INSTANCE) {
-            for (KtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, KtePsiParamName.class);
-                 paramName != null;
-                 paramName = PsiTreeUtil.getNextSiblingOfType(paramName, KtePsiParamName.class)) {
-                missingParameters.remove(paramName.getName());
-            }
-        } else {
-            for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
-                 paramName != null;
-                 paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
-                missingParameters.remove(paramName.getName());
-            }
+        for (JtePsiParamName paramName = PsiTreeUtil.getChildOfType(element, JtePsiParamName.class);
+             paramName != null;
+             paramName = PsiTreeUtil.getNextSiblingOfType(paramName, JtePsiParamName.class)) {
+            missingParameters.remove(paramName.getName());
         }
 
         if (!missingParameters.isEmpty()) {

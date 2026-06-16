@@ -39,7 +39,6 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ProcessingContext;
-import org.jusecase.jte.intellij.language.psi.KtePsiFile;
 
 
 public class JteFileReferenceContributor extends PsiReferenceContributor {
@@ -139,7 +138,7 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
 
       @Override
       public PsiElement bindToElement( @NotNull PsiElement element ) throws IncorrectOperationException {
-         if ( element instanceof JtePsiFile || element instanceof KtePsiFile) {
+         if ( element instanceof JtePsiFile) {
             String newPath = ((PsiFileBase)element).getVirtualFile().getPath();
             for ( String basePath : getBasePaths(element) ) {
                int basePathIndex = basePath == null ? -1 : newPath.indexOf(basePath);
@@ -168,7 +167,7 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
             return false;
          }
 
-         return stringValue.endsWith(".jte") || stringValue.endsWith(".kte");
+         return stringValue.endsWith(".jte");
       }
 
       public boolean isClassAcceptable( Class aClass ) {
@@ -192,7 +191,7 @@ public class JteFileReferenceContributor extends PsiReferenceContributor {
          }
 
          String stringValue = entry.getText();
-         return stringValue.endsWith(".jte") || stringValue.endsWith(".kte");
+         return stringValue.endsWith(".jte");
       }
 
       public boolean isClassAcceptable( Class aClass ) {

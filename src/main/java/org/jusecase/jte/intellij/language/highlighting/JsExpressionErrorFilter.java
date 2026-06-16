@@ -2,7 +2,6 @@ package org.jusecase.jte.intellij.language.highlighting;
 
 import org.jetbrains.annotations.NotNull;
 import org.jusecase.jte.intellij.language.JteLanguage;
-import org.jusecase.jte.intellij.language.KteLanguage;
 
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter;
 import com.intellij.lang.Language;
@@ -32,7 +31,7 @@ final class JsExpressionErrorFilter extends HighlightErrorFilter {
       }
 
       Language baseLanguage = psiFile.getViewProvider().getBaseLanguage();
-      if ( baseLanguage != JteLanguage.INSTANCE && baseLanguage != KteLanguage.INSTANCE ) {
+      if ( baseLanguage != JteLanguage.INSTANCE ) {
          return true;
       }
 

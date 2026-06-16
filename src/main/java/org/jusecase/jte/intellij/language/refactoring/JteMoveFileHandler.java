@@ -31,7 +31,7 @@ public class JteMoveFileHandler extends MoveFileHandler {
 
     @Override
     public boolean canProcessElement(PsiFile element) {
-        return element instanceof JtePsiFile || element instanceof KtePsiFile;
+        return element instanceof JtePsiFile;
     }
 
     @Override
@@ -77,15 +77,13 @@ public class JteMoveFileHandler extends MoveFileHandler {
             return;
         }
 
-        if (!(usage.getReferencedElement() instanceof PsiFile)) {
+        if (!(usage.getReferencedElement() instanceof PsiFile newFile)) {
             return;
         }
-        PsiFile newFile = (PsiFile) usage.getReferencedElement();
 
-        if (!(reference.getElement() instanceof JtePsiTemplateName)) {
+        if (!(reference.getElement() instanceof JtePsiTemplateName templateName)) {
             return;
         }
-        JtePsiTemplateName templateName = (JtePsiTemplateName) reference.getElement();
 
         PsiDirectory rootDirectory = templateName.findRootDirectory();
         if (rootDirectory == null) {

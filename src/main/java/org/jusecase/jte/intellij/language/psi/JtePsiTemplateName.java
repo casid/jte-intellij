@@ -199,12 +199,7 @@ public class JtePsiTemplateName extends JtePsiElement implements PsiNamedElement
     }
 
     private VirtualFile resolveVirtualFile(PsiDirectory rootDirectory) {
-        VirtualFile virtualFile = resolveVirtualFile(rootDirectory, extension);
-        if (virtualFile != null) {
-            return virtualFile;
-        }
-
-        return resolveVirtualFile(rootDirectory, ".jte".equals(extension) ? ".kte" : ".jte");
+        return resolveVirtualFile(rootDirectory, extension);
     }
 
     private VirtualFile resolveVirtualFile(PsiDirectory rootDirectory, String extension) {
