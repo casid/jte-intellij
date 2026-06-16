@@ -13,6 +13,6 @@ public class JteContext extends TemplateContextType {
     @Override
     public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
         String name = templateActionContext.getFile().getName();
-        return name.endsWith(".jte") || name.endsWith(".kte");
+        return name.endsWith(".jte");
     }
 }

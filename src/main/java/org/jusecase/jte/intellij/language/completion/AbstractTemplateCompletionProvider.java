@@ -26,10 +26,9 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
             return;
         }
 
-        if (!(position.getParent() instanceof JtePsiTemplateName)) {
+        if (!(position.getParent() instanceof JtePsiTemplateName nameElement)) {
             return;
         }
-        JtePsiTemplateName nameElement = (JtePsiTemplateName) position.getParent();
         PsiDirectory rootDirectory = nameElement.findRootDirectory();
         if (rootDirectory == null) {
             return;
@@ -75,12 +74,7 @@ public abstract class AbstractTemplateCompletionProvider extends CompletionProvi
     }
 
     private String resolveReferenceName(String prefix, PsiFile file) {
-        String referenceName = resolveReferenceName(prefix, file, fileSuffix);
-        if (referenceName != null) {
-            return referenceName;
-        }
-
-        return resolveReferenceName(prefix, file, ".jte".equals(fileSuffix) ? ".kte" : ".jte");
+        return resolveReferenceName(prefix, file, fileSuffix);
     }
 
     private String resolveReferenceName(String prefix, PsiFile file, String fileSuffix) {
