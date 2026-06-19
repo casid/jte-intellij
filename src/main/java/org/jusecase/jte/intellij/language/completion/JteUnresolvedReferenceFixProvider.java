@@ -22,10 +22,6 @@ public class JteUnresolvedReferenceFixProvider extends UnresolvedReferenceQuickF
             return;
         }
 
-        if (JteImportUtil.resolveCandidates(ref.getProject(), ref).length == 0) {
-            return;
-        }
-
         registrar.register(new JteAddImportIntention());
     }
 

@@ -1,6 +1,5 @@
 package org.jusecase.jte.intellij.language.completion;
 
-import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.codeInsight.navigation.PsiTargetNavigator;
 import com.intellij.openapi.editor.Editor;
@@ -20,7 +19,7 @@ import java.util.Arrays;
  * The generic "Import class" quick fix is unusable for jte's injected Java fragments (it
  * can crash or silently corrupt the host file), so this edits the host .jte document directly.
  */
-public class JteAddImportIntention extends PsiElementBaseIntentionAction implements HighPriorityAction {
+public class JteAddImportIntention extends PsiElementBaseIntentionAction {
 
     @Override
     public @NotNull String getFamilyName() {
