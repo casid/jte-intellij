@@ -1,10 +1,12 @@
 package org.jusecase.jte.intellij.language.completion;
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.ide.util.PsiClassListCellRenderer;
+import com.intellij.codeInsight.navigation.PsiTargetNavigator;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -12,9 +14,6 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * The generic "Import class" quick fix is unusable for jte's injected Java fragments (it
@@ -74,12 +73,11 @@ public class JteAddImportIntention extends PsiElementBaseIntentionAction {
 
         Arrays.sort(candidates, Comparator.comparing(PsiClass::getQualifiedName, Comparator.nullsLast(Comparator.naturalOrder())));
 
-        JBPopupFactory.getInstance()
-                .createPopupChooserBuilder(Arrays.asList(candidates))
-                .setRenderer(new PsiClassListCellRenderer())
-                .setTitle("Add Import")
-                .setItemChosenCallback(target -> addImport(project, injectedFile, target))
-                .createPopup()
+        new PsiTargetNavigator<>(candidates)
+                .createPopup(project, "Add Import", target -> {
+                    addImport(project, injectedFile, target);
+                    return true;
+                })
                 .showInBestPositionFor(editor);
     }
 
