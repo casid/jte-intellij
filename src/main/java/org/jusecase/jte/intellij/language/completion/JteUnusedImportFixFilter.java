@@ -2,9 +2,7 @@ package org.jusecase.jte.intellij.language.completion;
 
 import com.intellij.codeInsight.daemon.impl.IntentionActionFilter;
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.IntentionActionDelegate;
 import com.intellij.lang.injection.InjectedLanguageManager;
-import com.intellij.lang.impl.modcommand.ModCommandActionWrapper;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,12 +29,8 @@ public class JteUnusedImportFixFilter implements IntentionActionFilter {
             return true;
         }
 
-        IntentionAction delegate = IntentionActionDelegate.unwrap(intentionAction);
-        String className = delegate instanceof ModCommandActionWrapper wrapper
-                ? wrapper.asModCommandAction().getClass().getName()
-                : delegate.getClass().getName();
-
-        return !className.startsWith("com.intellij.codeInsight.daemon.impl.analysis.RemoveAllUnusedImportsFix")
-                && !className.startsWith("com.intellij.codeInsight.intention.impl.config.QuickFixFactoryImpl$OptimizeImportsFix");
+        String familyName = intentionAction.getFamilyName();
+        return !familyName.equals("Remove unused imports")
+                && !familyName.equals("Optimize imports");
     }
 }
