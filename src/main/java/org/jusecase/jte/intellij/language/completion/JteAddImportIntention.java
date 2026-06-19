@@ -4,16 +4,16 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.codeInsight.navigation.PsiTargetNavigator;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-
-import java.util.Arrays;
-import java.util.Comparator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.util.proximity.PsiProximityComparator;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 /**
  * The generic "Import class" quick fix is unusable for jte's injected Java fragments (it
@@ -71,7 +71,7 @@ public class JteAddImportIntention extends PsiElementBaseIntentionAction {
             return;
         }
 
-        Arrays.sort(candidates, Comparator.comparing(PsiClass::getQualifiedName, Comparator.nullsLast(Comparator.naturalOrder())));
+        Arrays.sort(candidates, new PsiProximityComparator(element));
 
         new PsiTargetNavigator<>(candidates)
                 .createPopup(project, "Add Import", target -> {
